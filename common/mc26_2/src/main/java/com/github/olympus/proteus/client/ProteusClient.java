@@ -10,9 +10,6 @@ public final class ProteusClient {
     public static final String MOD_ID = "proteus";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    private static Path configDirectory = Path.of("config");
-    private static KeyBindings keys;
-
     private ProteusClient() {
     }
 
@@ -20,27 +17,7 @@ public final class ProteusClient {
         return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 
-    public static void configure(Path directory) {
-        configDirectory = directory;
-    }
-
     public static Path configDirectory() {
-        return configDirectory;
-    }
-
-    public static synchronized KeyBindings keys() {
-        if (keys == null) {
-            keys = KeyFactory.create(KeyFactory.registerCategory());
-        }
-        return keys;
-    }
-
-    public static synchronized void installKeys(KeyBindings bindings) {
-        keys = bindings;
-    }
-
-    /** Runs at the start of every client tick, called from ClientTickMixin. */
-    public static void tick(Minecraft minecraft) {
-        keys().poll(minecraft);
+        return Minecraft.getInstance().gameDirectory.toPath().resolve("config");
     }
 }

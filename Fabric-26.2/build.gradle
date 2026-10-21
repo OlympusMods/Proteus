@@ -76,7 +76,7 @@ ext.proteusPublish = [
 	loader: 'fabric',
 	label: '26.2-26.3',
 	java: 25,
-	requires: ['fabric-api'],
+	requires: [],
 	jar: { tasks.jar.archiveFile }
 ]
 apply from: '../publish.gradle'
