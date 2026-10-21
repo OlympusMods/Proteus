@@ -637,6 +637,10 @@ public final class Gui {
         focused = null;
     }
 
+    public void focus(String id) {
+        focused = id;
+    }
+
     public boolean keyPressed(int key, int mods) {
         if (focused == null) {
             return false;
