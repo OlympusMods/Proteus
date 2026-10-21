@@ -1,5 +1,6 @@
 package com.github.olympus.proteus.client;
 
+import com.github.olympus.proteus.client.ui.Overlays;
 import com.github.olympus.proteus.client.ui.ToastOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -11,7 +12,8 @@ public final class ToastHud {
     }
 
     public static void render(GuiGraphics graphics) {
-        if (!ToastOverlay.active()) {
+        boolean toast = ToastOverlay.active();
+        if (!toast && !Overlays.any()) {
             return;
         }
         Minecraft minecraft = Minecraft.getInstance();
@@ -21,7 +23,10 @@ public final class ToastHud {
         try {
             graphics.nextStratum();
             CANVAS.bind(graphics, minecraft.font, graphics.guiWidth(), graphics.guiHeight());
-            ToastOverlay.render(CANVAS);
+            Overlays.render(CANVAS);
+            if (toast) {
+                ToastOverlay.render(CANVAS);
+            }
         } catch (RuntimeException exception) {
             ProteusClient.LOGGER.warn("Proteus: could not draw the toast", exception);
             ToastOverlay.dismiss();
