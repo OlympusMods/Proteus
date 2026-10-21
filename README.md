@@ -67,19 +67,18 @@ Without any token the tasks only do a dry run. The Minecraft versions each jar i
 
 ## Project layout
 
+This branch holds Minecraft 1.21 to 1.21.11. The other lines are on the branches listed above.
+
 ```
 common/
   core/        Loader- and version-independent logic
   client/      Code shared by every build
-  mc1_20/     Minecraft-specific glue and mixins for 1.20-1.20.6
-  mc1_21/     ... for 1.21-1.21.1
+  mc1_21/     Minecraft-specific glue and mixins for 1.21-1.21.1
   mc1_21_2/   ... for 1.21.2-1.21.3
   mc1_21_4/   ... for 1.21.4-1.21.5
   mc1_21_6/   ... for 1.21.6-1.21.8
   mc1_21_9/   ... for 1.21.9-1.21.10
   mc1_21_11/  ... for 1.21.11
-  mc26/       ... for 26.1-26.1.2
-  mc26_2/     ... for 26.2-26.3
   resources/   Language file and icon
 Fabric-*/  Forge-*/  NeoForge-*/    Thin per-loader projects
 publish.gradle   Modrinth and CurseForge setup shared by every project
