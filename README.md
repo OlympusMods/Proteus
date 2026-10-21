@@ -41,9 +41,12 @@ public final class MyUi implements UiApp {
 Screen screen = new ProteusScreen(Component.translatable("mymod.title"), parent, MyUi::new);
 ```
 
-- `Gui` is the immediate-mode toolkit: buttons, steppers, segmented controls, sliders, switches, text fields, scroll areas and tooltips, all themed
+- `UiShell` is a ready-made base class for an animated menu window: extend it, implement `renderContent`, and you get the open and close animation, the backdrop, the theme and the input forwarding
+- `Gui` is the immediate-mode toolkit: buttons, steppers, segmented controls, sliders, switches, single-line text fields, a multi-line text area with word wrap (`textArea`), scroll areas and tooltips, all themed. `focus` and `insertAtFocus` let a screen move the cursor or write into the field being edited
 - `AppearancePanel` is the ready-made Appearance tab, so a mod does not have to rebuild the style and toast settings
 - `ToastOverlay.show(title, body, itemName)` shows a toast, for example `ToastOverlay.show("Now Playing", "Song - Artist", "music_disc_cat")`
+- `Overlays.add(overlay)` draws something on the HUD every frame, such as pinned notes. An `Overlay` says whether it is `visible()` and draws itself through a `Canvas`
+- `Icons.register("modid:name", classicWidth, classicHeight, painter)` adds a mod's own icon. The Modern style calls the painter, and the Classic style draws the sprite `modid:classic/icon/name`
 
 ## Supported versions
 
