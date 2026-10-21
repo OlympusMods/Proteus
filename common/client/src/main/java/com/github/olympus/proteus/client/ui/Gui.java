@@ -641,6 +641,23 @@ public final class Gui {
         focused = id;
     }
 
+    public boolean insertAtFocus(String text) {
+        if (focused == null) {
+            return false;
+        }
+        Area area = areas.get(focused);
+        if (area != null) {
+            area.insert(text);
+            return true;
+        }
+        Field field = fields.get(focused);
+        if (field == null) {
+            return false;
+        }
+        insert(field, text);
+        return true;
+    }
+
     public boolean keyPressed(int key, int mods) {
         if (focused == null) {
             return false;
