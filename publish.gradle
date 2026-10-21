@@ -137,8 +137,6 @@ tasks.configureEach {
     }
 }
 
-// Other mods compile against this one, so every build is also published to Maven under the same
-// name as its uploaded jar: com.github.olympus.proteus:proteus-<loader>-<label>:<version>.
 apply plugin: 'maven-publish'
 
 if (publishing.publications.findByName('mavenJava') == null) {

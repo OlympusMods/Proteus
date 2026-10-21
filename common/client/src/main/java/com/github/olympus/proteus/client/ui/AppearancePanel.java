@@ -2,7 +2,6 @@ package com.github.olympus.proteus.client.ui;
 
 import net.minecraft.network.chat.Component;
 
-/** The Appearance settings every Olympus mod shows: style, accent color, effects and where toasts appear. */
 public final class AppearancePanel {
     private static final int ROW = 20;
     private static final int GAP = 6;
@@ -17,10 +16,6 @@ public final class AppearancePanel {
         this.fade = fade;
     }
 
-    /**
-     * Draws the settings inside a scrolling area and returns true on the frame the style was switched.
-     * The preview runs when the player moves the toast or presses the preview button.
-     */
     public boolean render(int ix, int cy, int iw, int ch, Runnable preview) {
         boolean changed = false;
         Theme theme = gui.theme();

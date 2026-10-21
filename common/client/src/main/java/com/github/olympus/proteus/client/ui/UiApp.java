@@ -1,6 +1,5 @@
 package com.github.olympus.proteus.client.ui;
 
-/** What a mod hands to ProteusScreen: the screen forwards drawing and input to it. */
 public interface UiApp {
     void resize(int width, int height);
 
@@ -22,11 +21,9 @@ public interface UiApp {
 
     boolean vanillaBackdrop(boolean inWorld);
 
-    /** The screen was taken off the display, for whatever reason. */
     default void removed() {
     }
 
-    /** The close animation finished and the screen is going back to its parent. */
     default void closed() {
     }
 }

@@ -17,7 +17,6 @@ public final class ProteusClient {
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 
-    /** The game's config folder, which is where every loader keeps its mod configs. */
     public static Path configDirectory() {
         return Minecraft.getInstance().gameDirectory.toPath().resolve("config");
     }

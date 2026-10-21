@@ -31,7 +31,6 @@ public interface Canvas {
 
     void item(String name, int x, int y);
 
-    /** Draws a GUI sprite; the path is in the proteus namespace unless it is written as modid:path. */
     void sprite(String path, int x, int y, int w, int h);
 
     boolean exists(String namespace, String path);

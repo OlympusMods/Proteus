@@ -4,13 +4,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class Icons {
-    /** Draws a mod's icon in the Modern style, centered on cx and cy. */
     @FunctionalInterface
     public interface Painter {
         void draw(Canvas c, int cx, int cy, int color);
     }
 
-    /** An icon a mod added: its Modern painter and the size of its Classic sprite. */
     public record Custom(Painter painter, int classicWidth, int classicHeight) {
     }
 
@@ -19,10 +17,6 @@ public final class Icons {
     private Icons() {
     }
 
-    /**
-     * Adds an icon under a name with the mod id in front, such as "orpheus:play". The Classic style
-     * draws the sprite modid:classic/icon/name, so the mod ships its own sprite and resource packs can restyle it.
-     */
     public static void register(String name, int classicWidth, int classicHeight, Painter painter) {
         if (name.indexOf(':') <= 0) {
             throw new IllegalArgumentException("Icon names start with the mod id: " + name);
