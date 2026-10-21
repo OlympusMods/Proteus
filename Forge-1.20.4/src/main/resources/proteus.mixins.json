@@ -5,7 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [],
   "client": [
-    "ClientTickMixin"
+    "ToastOverlayMixin"
   ],
   "injectors": {
     "defaultRequire": 1

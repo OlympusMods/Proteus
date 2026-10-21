@@ -136,3 +136,16 @@ tasks.configureEach {
         finalizedBy 'modrinthEnvironment'
     }
 }
+
+apply plugin: 'maven-publish'
+
+if (publishing.publications.findByName('mavenJava') == null) {
+    publishing.publications.create('mavenJava', MavenPublication) {
+        from components.java
+    }
+}
+
+publishing.publications.withType(MavenPublication).configureEach {
+    groupId = 'com.github.olympus.proteus'
+    artifactId = base.archivesName.get()
+}
