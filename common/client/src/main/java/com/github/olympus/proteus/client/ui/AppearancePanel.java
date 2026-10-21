@@ -89,17 +89,13 @@ public final class AppearancePanel {
         y += cardH + GAP;
 
         y = heading(text("proteus.ui.effects"), ix, y);
-        theme.card(fade, ix, y, lw, 62);
-        if (gui.switchRow("blur", ix + 10, y + 6, lw - 20, ROW, text("proteus.ui.blur"), prefs.blur(), true,
-                text("proteus.ui.blur.tooltip"), text("proteus.state.on"), text("proteus.state.off"))) {
-            prefs.setBlur(!prefs.blur());
-        }
-        if (gui.switchRow("animations", ix + 10, y + 6 + ROW + 6, lw - 20, ROW, text("proteus.ui.animations"),
+        theme.card(fade, ix, y, lw, 32);
+        if (gui.switchRow("animations", ix + 10, y + 6, lw - 20, ROW, text("proteus.ui.animations"),
                 prefs.animations(), true, text("proteus.ui.animations.tooltip"), text("proteus.state.on"),
                 text("proteus.state.off"))) {
             prefs.setAnimations(!prefs.animations());
         }
-        y += 62 + GAP;
+        y += 32 + GAP;
         y = toastSection(ix, y, lw, preview);
         gui.scrollEnd(y - top);
         return changed;

@@ -4,7 +4,7 @@ A shared UI toolkit for Olympus mods: animated widgets, themes and toasts.
 
 Proteus is the UI library behind Olympus mods. On its own it only adds the shared look: players install it because a mod asks for it, and the style, accent color and toast placement they pick apply to every mod that uses it.
 
-- **Modern style** with rounded widgets, background blur, smooth animations and an accent color (presets, a custom hue, or a chroma that cycles through the rainbow)
+- **Modern style** with rounded widgets, smooth animations and an accent color (presets, a custom hue, or a chroma that cycles through the rainbow)
 - **Classic style** that brings back the old Minecraft look: dirt background, bevelled gray buttons, no animation. It is drawn from GUI sprites under `proteus:classic`, so resource packs can restyle it
 - **Toasts** drawn by Proteus: they ease in and out, show an item icon, grow to fit their text, appear over menus and in game, and can sit in any corner
 - One toolkit across every supported version: widgets are drawn through a small `Canvas` interface, and each Minecraft range only implements that interface
