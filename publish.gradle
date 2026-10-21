@@ -1,0 +1,138 @@
+// Shared Modrinth and CurseForge publishing for every loader and Minecraft project.
+// The including build declares an `proteusPublish` map before applying this script:
+//   loader   fabric, forge or neoforge
+//   label    text shown after the loader in the published name, such as 1.21.4-1.21.5
+//   java     the Java version the jar needs
+//   jar      closure returning the file Provider of the jar to upload
+//   requires dependency slugs (Fabric API for Fabric)
+// The supported Minecraft releases come from `publish_minecraft_versions` in gradle.properties.
+
+def info = project.ext.proteusPublish
+
+// Filled in by init.py. A platform whose id is still TEMPLATE_* is skipped, so nothing is ever uploaded by accident.
+def modrinthId = 'TEMPLATE_MODRINTH_ID'
+def curseforgeId = 'TEMPLATE_CURSEFORGE_ID'
+def modrinthReady = !modrinthId.startsWith('TEMPLATE_')
+def curseforgeReady = !curseforgeId.startsWith('TEMPLATE_')
+
+base {
+    archivesName = "proteus-${info.loader}-${info.label}".toString()
+}
+
+String changelogFor(String text, String ver) {
+    List<String> section = []
+    boolean inside = false
+    for (String line : text.readLines()) {
+        if (line.startsWith('## ')) {
+            if (inside) {
+                break
+            }
+            inside = line.substring(3).trim() == ver
+        } else if (inside) {
+            section.add(line)
+        }
+    }
+    String entry = section.join('\n').trim()
+    if (entry.isEmpty()) {
+        throw new GradleException("CHANGELOG.md has no entry for ${ver}")
+    }
+    return entry
+}
+
+def modrinthToken = providers.environmentVariable('MODRINTH_TOKEN').orElse(providers.gradleProperty('modrinthToken'))
+def curseforgeToken = providers.environmentVariable('CURSEFORGE_TOKEN').orElse(providers.gradleProperty('curseforgeToken'))
+def rehearsal = providers.gradleProperty('dryRun').map { it.toBoolean() }.getOrElse(false) ||
+        (!modrinthToken.present && !curseforgeToken.present)
+def publishVersion = String.valueOf(findProperty('mod_version') ?: version)
+def supportedVersions = String.valueOf(findProperty('publish_minecraft_versions')).split(',').collect { it.trim() }.findAll { !it.isEmpty() }
+def loaderName = info.loader.substring(0, 1).toUpperCase(Locale.ROOT) + info.loader.substring(1)
+def loaderTitle = info.loader == 'neoforge' ? 'NeoForge' : loaderName
+
+publishMods {
+    file = info.jar()
+    version = publishVersion
+    displayName = "Proteus ${publishVersion} (${loaderTitle} ${info.label})"
+    changelog = providers.fileContents(layout.projectDirectory.file('../CHANGELOG.md')).asText.map { changelogFor(it, publishVersion) }
+    type = publishVersion.contains('alpha') ? ALPHA : (publishVersion.contains('beta') ? BETA : STABLE)
+    modLoaders.add(info.loader)
+    dryRun = rehearsal
+
+    if (modrinthReady && (rehearsal || modrinthToken.present)) {
+        modrinth {
+            projectId = modrinthId
+            accessToken = modrinthToken
+            minecraftVersions.addAll(supportedVersions)
+            info.requires.each { requires(it) }
+        }
+    }
+
+    if (curseforgeReady && (rehearsal || curseforgeToken.present)) {
+        curseforge {
+            projectId = curseforgeId
+            accessToken = curseforgeToken
+            minecraftVersions.addAll(supportedVersions)
+            javaVersions.add(JavaVersion.toVersion(info.java))
+            clientRequired = true
+            serverRequired = false
+            info.requires.each { requires(it) }
+        }
+    }
+}
+
+// Modrinth sets the environment per version and the upload plugin cannot send it, so every version it
+// just created is switched to client only through the v3 API once the upload is done.
+tasks.register('modrinthEnvironment') {
+    group = 'publishing'
+    description = 'Marks the Modrinth version of this project as client only'
+    onlyIf { modrinthReady && !rehearsal && modrinthToken.present }
+    notCompatibleWithConfigurationCache('it talks to the Modrinth API at run time')
+    doLast {
+        def token = modrinthToken.get()
+        def name = "Proteus ${publishVersion} (${loaderTitle} ${info.label})".toString()
+        def http = java.net.http.HttpClient.newHttpClient()
+        def request = { String method, String url, String body ->
+            def builder = java.net.http.HttpRequest.newBuilder(URI.create(url))
+                    .header('Authorization', token)
+                    .header('User-Agent', 'OlympusMods/Proteus publishing')
+                    .header('Content-Type', 'application/json')
+            builder.method(method, body == null
+                    ? java.net.http.HttpRequest.BodyPublishers.noBody()
+                    : java.net.http.HttpRequest.BodyPublishers.ofString(body))
+            http.send(builder.build(), java.net.http.HttpResponse.BodyHandlers.ofString())
+        }
+        def versions = []
+        for (int attempt = 0; attempt < 6 && versions.isEmpty(); attempt++) {
+            if (attempt > 0) {
+                Thread.sleep(3000)
+            }
+            def listing = request('GET', "https://api.modrinth.com/v3/project/${modrinthId}/version?nocache=${System.nanoTime()}", null)
+            if (listing.statusCode() != 200) {
+                throw new GradleException("Modrinth answered ${listing.statusCode()} when listing versions")
+            }
+            versions = new groovy.json.JsonSlurper().parseText(listing.body()).findAll { it.name == name }
+        }
+        if (versions.isEmpty()) {
+            throw new GradleException("Modrinth has no version named '${name}' to mark as client only")
+        }
+        versions.each { version ->
+            if (version.environment == 'client_only') {
+                logger.lifecycle("${name} is already client only")
+                return
+            }
+            def result = request('PATCH', "https://api.modrinth.com/v3/version/${version.id}", '{"environment":"client_only"}')
+            if (result.statusCode() != 204) {
+                throw new GradleException("Modrinth answered ${result.statusCode()} when setting ${version.id} to client only: ${result.body()}")
+            }
+            logger.lifecycle("${name} set to client only")
+        }
+    }
+}
+
+tasks.configureEach {
+    if (name in ['publishMods', 'publishModrinth', 'publishCurseforge']) {
+        notCompatibleWithConfigurationCache('the changelog reads project properties at run time')
+    }
+    if (name == 'publishModrinth') {
+        finalizedBy 'modrinthEnvironment'
+    }
+}
