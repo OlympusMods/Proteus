@@ -2,7 +2,48 @@
 
 A shared UI toolkit for Olympus mods: animated widgets, themes and toasts.
 
-Describe what the mod does here, what makes it worth installing and how to use it.
+Proteus is the UI library behind Olympus mods. On its own it only adds the shared look: players install it because a mod asks for it, and the style, accent color and toast placement they pick apply to every mod that uses it.
+
+- **Modern style** with rounded widgets, background blur, smooth animations and an accent color (presets, a custom hue, or a chroma that cycles through the rainbow)
+- **Classic style** that brings back the old Minecraft look: dirt background, bevelled gray buttons, no animation. It is drawn from GUI sprites under `proteus:classic`, so resource packs can restyle it
+- **Toasts** drawn by Proteus: they ease in and out, show an item icon, grow to fit their text, appear over menus and in game, and can sit in any corner
+- One toolkit across every supported version: widgets are drawn through a small `Canvas` interface, and each Minecraft range only implements that interface
+
+Settings are stored in `config/proteus/ui.json`.
+
+## For mod authors
+
+Add Proteus as a dependency (the artifact name follows the jar: `proteus-<loader>-<minecraft versions>`):
+
+```groovy
+repositories { mavenLocal() }   // until the library is on a public Maven repository
+
+dependencies {
+    modImplementation "com.github.olympus.proteus:proteus-fabric-1.21-1.21.1:1.0.0"   // Fabric
+    implementation "com.github.olympus.proteus:proteus-neoforge-1.21-1.21.1:1.0.0"    // NeoForge
+}
+```
+
+Then declare it as a required dependency in `fabric.mod.json`, `neoforge.mods.toml` or `mods.toml`.
+
+A menu is a `UiApp`. Proteus owns the Minecraft screen and forwards drawing and input:
+
+```java
+public final class MyUi implements UiApp {
+    private final Gui gui;
+
+    public MyUi(UiHost host) {
+        this.gui = new Gui(host);
+    }
+    // resize, tick, render(Canvas, mouseX, mouseY), mousePressed, keyPressed, ...
+}
+
+Screen screen = new ProteusScreen(Component.translatable("mymod.title"), parent, MyUi::new);
+```
+
+- `Gui` is the immediate-mode toolkit: buttons, steppers, segmented controls, sliders, switches, text fields, scroll areas and tooltips, all themed
+- `AppearancePanel` is the ready-made Appearance tab, so a mod does not have to rebuild the style and toast settings
+- `ToastOverlay.show(title, body, itemName)` shows a toast, for example `ToastOverlay.show("Now Playing", "Song - Artist", "music_disc_cat")`
 
 ## Supported versions
 
@@ -22,13 +63,13 @@ Describe what the mod does here, what makes it worth installing and how to use i
 
 Each Minecraft line lives on its own branch and `main` is always the newest one.
 
-Fabric needs Fabric API. NeoForge has no stable release for 1.20.2 or 1.21.2 and Forge has none for 1.21.2.
+NeoForge has no stable release for 1.20.2 or 1.21.2 and Forge has none for 1.21.2.
 
 
 ## Installing
 
 1. Download the jar for your loader and Minecraft version from [Modrinth](https://modrinth.com/mod/proteus) or [Releases](https://github.com/OlympusMods/Proteus/releases).
-2. Put it in your `mods` folder. Fabric also needs Fabric API.
+2. Put it in your `mods` folder. Mods that use Proteus tell you when it is needed.
 
 ## Building
 
@@ -71,8 +112,7 @@ This branch holds Minecraft 1.21 to 1.21.11. The other lines are on the branches
 
 ```
 common/
-  core/        Loader- and version-independent logic
-  client/      Code shared by every build
+  client/      The toolkit: Gui, themes, Canvas, toasts and the Appearance panel (shared by every build)
   mc1_21/     Minecraft-specific glue and mixins for 1.21-1.21.1
   mc1_21_2/   ... for 1.21.2-1.21.3
   mc1_21_4/   ... for 1.21.4-1.21.5
@@ -85,7 +125,7 @@ publish.gradle   Modrinth and CurseForge setup shared by every project
 ```
 
 
-Most behavior should live in `common/core`, which has no Minecraft dependency. The version folders only adapt it to each game version, so a change to the logic usually only touches `core`.
+Most of the toolkit lives in `common/client` and draws through the `Canvas` interface, so it has no Minecraft dependency. The version folders implement `Canvas` (`GuiCanvas`), the screen (`ProteusScreen`) and the toast hook for each game version, so a change to a widget usually only touches `client`.
 
 When a Minecraft update breaks the shared code, copy the newest `common/mc*` folder, fix what the compiler reports, and add a project for each loader. Each folder covers the range of versions where its code compiles and its mixin targets still exist.
 
