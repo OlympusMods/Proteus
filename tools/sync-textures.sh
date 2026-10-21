@@ -10,7 +10,7 @@ for branch in 1.20 1.21 26.1 main; do
     index=$(mktemp)
     rm -f "$index"
     GIT_INDEX_FILE=$index git read-tree "$branch"
-    GIT_INDEX_FILE=$index git rm --cached -r -q --ignore-unmatch "$dir"
+    GIT_INDEX_FILE=$index git rm --cached -f -r -q --ignore-unmatch "$dir"
     GIT_INDEX_FILE=$index git read-tree --prefix="$dir/" "$tree"
     new=$(GIT_INDEX_FILE=$index git write-tree)
     rm -f "$index"
