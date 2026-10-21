@@ -18,6 +18,7 @@ public final class Gui {
     private final Map<String, Float> values = new HashMap<>();
     private final Map<String, Field> fields = new HashMap<>();
     private final Map<String, Scroll> scrolls = new HashMap<>();
+    private final Map<String, Area> areas = new HashMap<>();
     private final Deque<int[]> clips = new ArrayDeque<>();
 
     private Canvas canvas;
@@ -531,6 +532,87 @@ public final class Gui {
         return best;
     }
 
+    public String textArea(String id, int x, int y, int w, int h, String hint, int maxLength) {
+        Area area = areas.computeIfAbsent(id, key -> new Area());
+        area.max = maxLength;
+        boolean hot = hot(id, x, y, w, h);
+        boolean focus = id.equals(focused);
+        float hover = anim(id + "#h", hot ? 1f : 0f, 16f);
+        float glow = anim(id + "#f", focus ? 1f : 0f, 16f);
+        theme.field(canvas, x, y, w, h, glow, hover);
+        int textW = w - 14;
+        area.wrap(canvas, textW);
+        int line = canvas.lineHeight() + 2;
+        int total = area.lines.size() * line + 8;
+        area.content = total;
+        float maxScroll = Math.max(0, total - h);
+        if (hot && pressed) {
+            consumed = true;
+            focused = id;
+            focus = true;
+            area.all = false;
+            int row = (int) Math.floor((mouseY - (y + 4) + area.scroll) / (double) line);
+            row = Math.max(0, Math.min(area.lines.size() - 1, row));
+            area.cursor = area.indexAt(canvas, row, mouseX - (x + 5));
+            area.wantX = -1;
+        }
+        if (over(x, y, w, h) && wheel != 0f) {
+            area.scroll -= wheel * line * 2;
+            wheel = 0f;
+        }
+        if (area.follow) {
+            int caretLine = area.lineOf(area.cursor);
+            float top = caretLine * line;
+            if (top < area.scroll) {
+                area.scroll = top;
+            } else if (top + line + 8 > area.scroll + h) {
+                area.scroll = top + line + 8 - h;
+            }
+            area.follow = false;
+        }
+        area.scroll = Motion.clamp(area.scroll, 0f, maxScroll);
+        canvas.clip(x + 2, y + 1, w - 4, h - 2);
+        int scroll = Math.round(area.scroll);
+        if (area.text.isEmpty() && !focus) {
+            canvas.text(hint, x + 5, y + 5, theme.textDisabled(), false);
+        }
+        for (int i = 0; i < area.lines.size(); i++) {
+            int ly = y + 4 + i * line - scroll;
+            if (ly + line < y || ly > y + h) {
+                continue;
+            }
+            int[] seg = area.lines.get(i);
+            String shown = area.text.substring(seg[0], seg[1]);
+            if (area.all && focus && !shown.isEmpty()) {
+                canvas.fill(x + 4, ly - 1, canvas.textWidth(shown) + 2, line, 0x663B82F6);
+            }
+            canvas.text(shown, x + 5, ly, theme.textPrimary(), theme.shadowText());
+        }
+        if (focus && !area.all && (int) (time * 2) % 2 == 0) {
+            int caretLine = area.lineOf(area.cursor);
+            int[] seg = area.lines.get(caretLine);
+            int caretX = x + 5 + canvas.textWidth(area.text.substring(seg[0], Math.min(area.cursor, seg[1])));
+            canvas.fill(caretX, y + 3 + caretLine * line - scroll, 1, line, theme.textPrimary());
+        }
+        canvas.unclip();
+        if (total > h) {
+            int thumbH = Math.max(12, Math.round(h * (h / (float) total)));
+            int thumbY = y + Math.round((h - thumbH) * (area.scroll / maxScroll));
+            theme.scrollbar(canvas, x + w - 6, y + 1, 3, h - 2, thumbY, thumbH, 0f);
+        }
+        area.cursor = Math.min(area.cursor, area.text.length());
+        return area.text;
+    }
+
+    public void setTextArea(String id, String value) {
+        Area area = areas.computeIfAbsent(id, key -> new Area());
+        area.text = value;
+        area.cursor = value.length();
+        area.all = false;
+        area.scroll = 0f;
+        area.follow = true;
+    }
+
     public void setField(String id, String value) {
         Field field = fields.computeIfAbsent(id, key -> new Field());
         field.text = value;
@@ -558,6 +640,15 @@ public final class Gui {
     public boolean keyPressed(int key, int mods) {
         if (focused == null) {
             return false;
+        }
+        Area area = areas.get(focused);
+        if (area != null) {
+            if (key == GLFW.GLFW_KEY_ESCAPE) {
+                focused = null;
+                return true;
+            }
+            return area.key(canvas, key, mods, text -> Minecraft.getInstance().keyboardHandler.setClipboard(text),
+                    () -> Minecraft.getInstance().keyboardHandler.getClipboard());
         }
         Field field = fields.get(focused);
         if (field == null) {
@@ -638,6 +729,11 @@ public final class Gui {
     public boolean charTyped(int codepoint) {
         if (focused == null || Character.isISOControl(codepoint)) {
             return false;
+        }
+        Area area = areas.get(focused);
+        if (area != null) {
+            area.insert(new String(Character.toChars(codepoint)));
+            return true;
         }
         Field field = fields.get(focused);
         if (field == null) {
