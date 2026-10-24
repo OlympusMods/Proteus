@@ -62,12 +62,24 @@ public abstract class UiShell implements UiApp {
         return clock;
     }
 
+    protected final int top() {
+        return host.topInset();
+    }
+
     protected int windowWidth() {
         return Math.max(260, Math.min(width - 16, 440));
     }
 
     protected int windowHeight() {
-        return Math.max(176, Math.min(height - 12, 330));
+        return Math.max(176, Math.min(height - top() - 12, 330));
+    }
+
+    protected final int windowX(int windowWidth) {
+        return (width - windowWidth) / 2;
+    }
+
+    protected final int windowY(int windowHeight) {
+        return top() + Math.max(0, (height - top() - windowHeight) / 2);
     }
 
     protected final void restartContentFade() {
@@ -105,6 +117,16 @@ public abstract class UiShell implements UiApp {
             return false;
         }
         return prefs.blur() || !inWorld;
+    }
+
+    @Override
+    public float visibility() {
+        return open;
+    }
+
+    @Override
+    public void skipOpening() {
+        open = 1f;
     }
 
     @Override

@@ -14,12 +14,21 @@
 	"license": "GPL-3.0-only",
 	"icon": "icon.png",
 	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"com.github.olympus.proteus.ProteusFabric"
+		],
+		"modmenu": [
+			"com.github.olympus.proteus.ProteusModMenu"
+		]
+	},
 	"mixins": [
 		"proteus.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.19.5",
 		"minecraft": ">=26.2 <26.4-",
-		"java": ">=25"
+		"java": ">=25",
+		"fabric-api": "*"
 	}
 }
