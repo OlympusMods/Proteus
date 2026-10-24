@@ -111,7 +111,9 @@ final class GuiCanvas implements Canvas {
         ItemStack stack = STACKS.get(name);
         if (stack == null) {
             try {
-                Item item = BuiltInRegistries.ITEM.get(new ResourceLocation("minecraft", name));
+                Item item = BuiltInRegistries.ITEM.get(name.indexOf(':') < 0
+                        ? new ResourceLocation("minecraft", name)
+                        : new ResourceLocation(name));
                 stack = new ItemStack(item == Items.AIR ? Items.MUSIC_DISC_CAT : item);
             } catch (RuntimeException exception) {
                 return null;
