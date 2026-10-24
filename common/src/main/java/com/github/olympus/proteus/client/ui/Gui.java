@@ -240,6 +240,28 @@ public final class Gui {
         return hot && enabled && pressed && take();
     }
 
+    public boolean tabCard(String id, int x, int y, int w, int h, String label, String icon, boolean selected,
+            String tip) {
+        boolean hot = hot(id, x, y, w, h);
+        float hover = anim(id + "#h", hot ? 1f : 0f, 16f);
+        float press = anim(id + "#p", hot && mouseDown ? 1f : 0f, 30f);
+        ButtonKind kind = selected && theme.slidingSegments() ? ButtonKind.PRIMARY : ButtonKind.NORMAL;
+        theme.button(canvas, x, y, w, h, kind, hover, press, selected ? 1f : 0f, true);
+        int color = theme.buttonText(kind, hover, selected ? 1f : 0f, true);
+        boolean hasIcon = icon != null && !icon.isEmpty() && canvas.hasItem(icon);
+        int iconW = hasIcon ? 20 : 0;
+        String shown = fit(label, w - 8 - iconW);
+        int left = x + (w - iconW - canvas.textWidth(shown)) / 2;
+        if (hasIcon) {
+            canvas.item(icon, left, y + (h - 16) / 2);
+        }
+        canvas.text(shown, left + iconW, textY(y, h), color, theme.shadowText());
+        if (hot) {
+            tooltip(tip);
+        }
+        return hot && pressed && !selected && take();
+    }
+
     public int repeatButton(String id, int x, int y, int w, int h, String label, boolean enabled, String tip) {
         boolean hot = hot(id, x, y, w, h);
         float hover = anim(id + "#h", hot && enabled ? 1f : 0f, 16f);
