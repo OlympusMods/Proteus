@@ -101,7 +101,7 @@ final class GuiCanvas implements Canvas {
         if (stack == null) {
             try {
                 stack = new ItemStack(BuiltInRegistries.ITEM
-                        .getOptional(Identifier.fromNamespaceAndPath("minecraft", name))
+                        .getOptional(name.indexOf(':') < 0 ? Identifier.withDefaultNamespace(name) : Identifier.parse(name))
                         .orElse(Items.MUSIC_DISC_CAT));
             } catch (RuntimeException exception) {
                 return null;
