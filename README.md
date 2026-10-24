@@ -2,14 +2,16 @@
 
 A shared UI toolkit for Olympus mods: animated widgets, themes and toasts.
 
-Proteus is the UI library behind Olympus mods. On its own it only adds the shared look: players install it because a mod asks for it, and the style, accent color and toast placement they pick apply to every mod that uses it.
+Proteus is the UI library behind Olympus mods, and it also works on its own. The style, accent color and toast placement you pick apply to every mod that uses it, and it can draw the game's own toasts in the same style.
 
 - **Modern style** with rounded widgets, smooth animations and an accent color (presets, a custom hue, or a chroma that cycles through the rainbow)
 - **Classic style** that brings back the old Minecraft look: dirt background, bevelled gray buttons, no animation. It is drawn from GUI sprites under `proteus:classic`, so resource packs can restyle it
 - **Toasts** drawn by Proteus: they ease in and out, show an item icon, grow to fit their text, appear over menus and in game, and can sit in any corner
+- **One menu for every mod**: each mod built on Proteus gets a card at the top of its menu, so you can go from Orpheus to Mneme to the Proteus settings without closing anything. When there are more cards than fit, the arrows page through them
+- **Game toasts** for advancements, recipes, tutorial hints and system notices can be drawn by Proteus. Each kind can be set back to the vanilla toast
 - One toolkit across every supported version: widgets are drawn through a small `Canvas` interface, and each Minecraft range only implements that interface
 
-Settings are stored in `config/proteus/ui.json`.
+Open the settings with the Proteus key (unbound by default, set it under Controls, Miscellaneous), with the config button in Mod Menu or the mods list, or from the Proteus card in any mod's menu. Settings are stored in `config/proteus/ui.json`.
 
 ## For mod authors
 
@@ -41,9 +43,19 @@ public final class MyUi implements UiApp {
 Screen screen = new ProteusScreen(Component.translatable("mymod.title"), parent, MyUi::new);
 ```
 
+To give the menu a card in the hub instead, register it once when the client starts and open the hub on it:
+
+```java
+Hub.register("mymod", () -> Component.translatable("mymod.title").getString(), "compass", MyUi::new);
+
+Screen screen = ProteusScreen.open(parent, "mymod");
+```
+
+The icon is an item id, and a name without a namespace means `minecraft:`. The Proteus card is always there and always last. `UiShell` already keeps its window below the card bar; a plain `UiApp` should start drawing below `host.topInset()`.
+
 - `UiShell` is a ready-made base class for an animated menu window: extend it, implement `renderContent`, and you get the open and close animation, the backdrop, the theme and the input forwarding
 - `Gui` is the immediate-mode toolkit: buttons, steppers, segmented controls, sliders, switches, single-line text fields, a multi-line text area with word wrap (`textArea`), scroll areas and tooltips, all themed. `focus` and `insertAtFocus` let a screen move the cursor or write into the field being edited
-- `AppearancePanel` is the ready-made Appearance tab, so a mod does not have to rebuild the style and toast settings
+- `AppearancePanel` is the Appearance tab from the Proteus card, for a mod that wants the same settings inside its own screen
 - `ToastOverlay.show(title, body, itemName)` shows a toast, for example `ToastOverlay.show("Now Playing", "Song - Artist", "music_disc_cat")`
 - `Overlays.add(overlay)` draws something on the HUD every frame, such as pinned notes. An `Overlay` says whether it is `visible()` and draws itself through a `Canvas`
 - `Icons.register("modid:name", classicWidth, classicHeight, painter)` adds a mod's own icon. The Modern style calls the painter, and the Classic style draws the sprite `modid:classic/icon/name`
@@ -72,7 +84,7 @@ NeoForge has no stable release for 1.20.2 or 1.21.2 and Forge has none for 1.21.
 ## Installing
 
 1. Download the jar for your loader and Minecraft version from [Modrinth](https://modrinth.com/mod/proteus) or [Releases](https://github.com/OlympusMods/Proteus/releases).
-2. Put it in your `mods` folder. Mods that use Proteus tell you when it is needed.
+2. Put it in your `mods` folder. It works on its own, and mods that use Proteus tell you when it is needed. Fabric also needs Fabric API.
 
 ## Building
 
