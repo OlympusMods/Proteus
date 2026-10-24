@@ -6,4 +6,8 @@ public interface UiHost {
     void playClick();
 
     boolean inWorld();
+
+    default int topInset() {
+        return 0;
+    }
 }
