@@ -26,4 +26,11 @@ public interface UiApp {
 
     default void closed() {
     }
+
+    default float visibility() {
+        return 1f;
+    }
+
+    default void skipOpening() {
+    }
 }
