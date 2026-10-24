@@ -1,5 +1,7 @@
 package com.github.olympus.proteus.client.ui;
 
+import net.minecraft.client.Minecraft;
+
 public final class FadeCanvas implements Canvas {
     private Canvas target;
     private float alpha = 1f;
@@ -74,11 +76,17 @@ public final class FadeCanvas implements Canvas {
 
     @Override
     public int textWidth(String text) {
+        if (target == null) {
+            return Minecraft.getInstance().font.width(text);
+        }
         return target.textWidth(text);
     }
 
     @Override
     public int lineHeight() {
+        if (target == null) {
+            return Minecraft.getInstance().font.lineHeight;
+        }
         return target.lineHeight();
     }
 
