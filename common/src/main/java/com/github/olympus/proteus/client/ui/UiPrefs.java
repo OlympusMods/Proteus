@@ -11,6 +11,8 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.EnumSet;
+import java.util.Set;
 
 public final class UiPrefs {
     public static final int[] ACCENTS = {
@@ -34,6 +36,7 @@ public final class UiPrefs {
     private int toastSeconds = 5;
     private boolean blur = true;
     private boolean animations = true;
+    private final Set<ToastKind> vanillaToasts = EnumSet.noneOf(ToastKind.class);
 
     private UiPrefs() {
     }
@@ -132,6 +135,19 @@ public final class UiPrefs {
         save();
     }
 
+    public boolean replaces(ToastKind kind) {
+        return !vanillaToasts.contains(kind);
+    }
+
+    public void setReplaces(ToastKind kind, boolean value) {
+        if (value) {
+            vanillaToasts.remove(kind);
+        } else {
+            vanillaToasts.add(kind);
+        }
+        save();
+    }
+
     private static Path file() {
         return ProteusClient.configDirectory().resolve(ProteusClient.MOD_ID).resolve(FILE);
     }
@@ -165,6 +181,14 @@ public final class UiPrefs {
             if (object.has("animations")) {
                 prefs.animations = object.get("animations").getAsBoolean();
             }
+            if (object.has("toasts")) {
+                JsonObject toasts = object.getAsJsonObject("toasts");
+                for (ToastKind kind : ToastKind.values()) {
+                    if (toasts.has(kind.key()) && "vanilla".equals(toasts.get(kind.key()).getAsString())) {
+                        prefs.vanillaToasts.add(kind);
+                    }
+                }
+            }
         } catch (IOException | RuntimeException exception) {
             ProteusClient.LOGGER.warn("Could not read {}: {}", path, exception.getMessage());
         }
@@ -183,6 +207,11 @@ public final class UiPrefs {
         object.addProperty("toastSeconds", toastSeconds);
         object.addProperty("blur", blur);
         object.addProperty("animations", animations);
+        JsonObject toasts = new JsonObject();
+        for (ToastKind kind : ToastKind.values()) {
+            toasts.addProperty(kind.key(), vanillaToasts.contains(kind) ? "vanilla" : "proteus");
+        }
+        object.add("toasts", toasts);
         try {
             Files.createDirectories(path.getParent());
             try (Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
