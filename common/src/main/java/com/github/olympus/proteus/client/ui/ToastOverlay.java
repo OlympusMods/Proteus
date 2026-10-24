@@ -1,5 +1,7 @@
 package com.github.olympus.proteus.client.ui;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import net.minecraft.network.chat.Component;
 
@@ -16,6 +18,12 @@ public final class ToastOverlay {
     private static final Theme MODERN = new ModernTheme();
     private static final Theme CLASSIC = new ClassicTheme();
     private static final FadeCanvas FADE = new FadeCanvas();
+
+    private record Pending(String title, String body, String icon) {
+    }
+
+    private static final int MAX_QUEUED = 8;
+    private static final Deque<Pending> QUEUE = new ArrayDeque<>();
 
     private static String title = "";
     private static String body = "";
@@ -44,6 +52,24 @@ public final class ToastOverlay {
         active = true;
     }
 
+    public static synchronized void queue(String newTitle, String newBody, String newIcon) {
+        if (!active) {
+            show(newTitle, newBody, newIcon);
+            return;
+        }
+        if (title.equals(newTitle) && body.equals(newBody)) {
+            return;
+        }
+        for (Pending pending : QUEUE) {
+            if (pending.title().equals(newTitle) && pending.body().equals(newBody)) {
+                return;
+            }
+        }
+        if (QUEUE.size() < MAX_QUEUED) {
+            QUEUE.add(new Pending(newTitle, newBody, newIcon));
+        }
+    }
+
     public static void preview() {
         show(Component.translatable("proteus.toast.preview").getString(),
                 Component.translatable("proteus.ui.toast.sample").getString(), "music_disc_cat");
@@ -55,6 +81,7 @@ public final class ToastOverlay {
 
     public static synchronized void dismiss() {
         active = false;
+        QUEUE.clear();
     }
 
     public static synchronized void render(Canvas target) {
@@ -75,6 +102,10 @@ public final class ToastOverlay {
         float exit = animated ? Motion.clamp((float) (age - hold) / EXIT, 0f, 1f) : age >= hold ? 1f : 0f;
         if (exit >= 1f) {
             active = false;
+            Pending next = QUEUE.poll();
+            if (next != null) {
+                show(next.title(), next.body(), next.icon());
+            }
             return;
         }
 
