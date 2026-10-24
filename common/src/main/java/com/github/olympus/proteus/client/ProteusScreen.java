@@ -1,5 +1,6 @@
 package com.github.olympus.proteus.client;
 
+import com.github.olympus.proteus.client.ui.Hub;
 import com.github.olympus.proteus.client.ui.UiApp;
 import com.github.olympus.proteus.client.ui.UiHost;
 import java.util.function.Function;
@@ -21,6 +22,10 @@ public final class ProteusScreen extends Screen implements UiHost {
         super(title);
         this.parent = parent;
         this.ui = app.apply(this);
+    }
+
+    public static Screen open(Screen parent, String tab) {
+        return new ProteusScreen(Component.translatable("proteus.hub.title"), parent, Hub.app(tab));
     }
 
     @Override
