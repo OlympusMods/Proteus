@@ -596,7 +596,10 @@ public final class Gui {
         canvas.clip(x + 2, y + 1, w - 4, h - 2);
         int scroll = Math.round(area.scroll);
         if (area.text.isEmpty() && !focus) {
-            canvas.text(hint, x + 5, y + 5, theme.textDisabled(), false);
+            String[] hintLines = hint.split("\n");
+            for (int i = 0; i < hintLines.length; i++) {
+                canvas.text(fit(hintLines[i], textW), x + 5, y + 5 + i * line, theme.textDisabled(), false);
+            }
         }
         for (int i = 0; i < area.lines.size(); i++) {
             int ly = y + 4 + i * line - scroll;
