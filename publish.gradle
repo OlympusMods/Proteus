@@ -11,7 +11,7 @@ def info = project.ext.proteusPublish
 
 // Filled in by init.py. A platform whose id is still TEMPLATE_* is skipped, so nothing is ever uploaded by accident.
 def modrinthId = 'S9H9TVdr'
-def curseforgeId = 'TEMPLATE_CURSEFORGE_ID'
+def curseforgeId = '1765880'
 def modrinthReady = !modrinthId.startsWith('TEMPLATE_')
 def curseforgeReady = !curseforgeId.startsWith('TEMPLATE_')
 
