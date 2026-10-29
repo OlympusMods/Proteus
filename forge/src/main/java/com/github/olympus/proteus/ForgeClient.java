@@ -18,14 +18,14 @@ public final class ForgeClient {
                 () -> new ConfigScreenHandler.ConfigScreenFactory(
                         (minecraft, parent) -> ProteusScreen.open(parent, Hub.PROTEUS)));
         RegisterKeyMappingsEvent.BUS.addListener(ForgeClient::onRegisterKeys);
+        RegisterClientReloadListenersEvent.BUS.addListener(ForgeClient::onRegisterReloadListeners);
     }
 
     private static void onRegisterKeys(RegisterKeyMappingsEvent event) {
         event.register(ProteusClient.openKey());
     }
 
-    @SubscribeEvent
-    public static void onRegisterReloadListeners(RegisterClientReloadListenersEvent event) {
+    private static void onRegisterReloadListeners(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener(new ThemeReloader());
     }
 }
