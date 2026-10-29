@@ -162,30 +162,33 @@ public final class Layer {
             }
             c.translate(-cx, -cy);
         }
-        int r = round(radius, scope, 0);
-        switch (type) {
-            case FILL -> c.fill(lx, ly, lw, lh, color(color, scope));
-            case ROUND -> Draw.round(c, lx, ly, lw, lh, r, color(color, scope));
-            case RING -> Draw.ring(c, lx, ly, lw, lh, r, color(color, scope));
-            case PANEL -> Draw.panel(c, lx, ly, lw, lh, r, color(color, scope), color(border, scope));
-            case GRADIENT -> c.gradient(lx, ly, lw, lh, color(top, scope), color(bottom, scope));
-            case SHADOW -> Draw.shadow(c, lx, ly, lw, lh, r, round(spread, scope, 4), round(alpha, scope, 90));
-            case SPRITE -> c.sprite(resource.string(scope), lx, ly, lw, lh);
-            case TILED -> tiled(scope, lx, ly, lw, lh);
-            case ICON -> scope.theme.icon(c, resource.string(scope), lx + lw / 2, ly + lh / 2, color(color, scope));
-            case CHECK -> Icons.check(c, lx, ly, color(color, scope));
-            case TEXT -> text(scope, lx, ly, lw, lh);
-            case GROUP -> nested(scope, children, lx, ly, lw, lh);
-            case WIDGET -> {
-                Map<String, Object> state = new LinkedHashMap<>(scope.values);
-                for (Map.Entry<String, Expr> entry : vars.entrySet()) {
-                    state.put(entry.getKey(), entry.getValue().eval(scope));
+        try {
+            int r = round(radius, scope, 0);
+            switch (type) {
+                case FILL -> c.fill(lx, ly, lw, lh, color(color, scope));
+                case ROUND -> Draw.round(c, lx, ly, lw, lh, r, color(color, scope));
+                case RING -> Draw.ring(c, lx, ly, lw, lh, r, color(color, scope));
+                case PANEL -> Draw.panel(c, lx, ly, lw, lh, r, color(color, scope), color(border, scope));
+                case GRADIENT -> c.gradient(lx, ly, lw, lh, color(top, scope), color(bottom, scope));
+                case SHADOW -> Draw.shadow(c, lx, ly, lw, lh, r, round(spread, scope, 4), round(alpha, scope, 90));
+                case SPRITE -> c.sprite(resource.string(scope), lx, ly, lw, lh);
+                case TILED -> tiled(scope, lx, ly, lw, lh);
+                case ICON -> scope.theme.icon(c, resource.string(scope), lx + lw / 2, ly + lh / 2, color(color, scope));
+                case CHECK -> Icons.check(c, lx, ly, color(color, scope));
+                case TEXT -> text(scope, lx, ly, lw, lh);
+                case GROUP -> nested(scope, children, lx, ly, lw, lh);
+                case WIDGET -> {
+                    Map<String, Object> state = new LinkedHashMap<>(scope.values);
+                    for (Map.Entry<String, Expr> entry : vars.entrySet()) {
+                        state.put(entry.getKey(), entry.getValue().eval(scope));
+                    }
+                    scope.theme.render(widget, c, lx, ly, lw, lh, state);
                 }
-                scope.theme.render(widget, c, lx, ly, lw, lh, state);
             }
-        }
-        if (transform) {
-            c.pop();
+        } finally {
+            if (transform) {
+                c.pop();
+            }
         }
     }
 

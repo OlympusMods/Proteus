@@ -163,4 +163,31 @@ class StyledThemeTest {
         theme.button(new RecordingCanvas(), 0, 0, 1, 1, ButtonKind.NORMAL, 0f, 0f, 0f, true);
         assertEquals(List.of("button"), seen);
     }
+
+    @Test
+    void widgetCycleWarnsInsteadOfOverflowing() {
+        ThemeSpec parent = spec("{\"widgets\": {\"button\": {\"layers\": [{\"type\": \"fill\", \"color\": \"#FF0000FF\"}]}}}",
+                null);
+        ThemeSpec child = spec("""
+                {"widgets": {"button": {"layers": [{"type": "widget", "widget": "toggle"}]},
+                             "toggle": {"layers": [{"type": "widget", "widget": "button"}]}}}
+                """, parent);
+        RecordingCanvas actual = new RecordingCanvas();
+        new StyledTheme(child).button(actual, 0, 0, 4, 4, ButtonKind.NORMAL, 0f, 0f, 0f, true);
+        assertTrue(actual.calls().contains("fill 0 0 4 4 #FF0000FF"), actual.calls().toString());
+        assertTrue(!warnings.isEmpty());
+    }
+
+    @Test
+    void failingTransformedLayerStillPops() {
+        ThemeSpec parent = spec("{\"widgets\": {\"card\": {\"layers\": []}}}", null);
+        ThemeSpec child = spec("""
+                {"widgets": {"card": {"layers": [{"type": "fill", "rotate": 30, "color": "nothing"}]}}}
+                """, parent);
+        RecordingCanvas actual = new RecordingCanvas();
+        new StyledTheme(child).card(actual, 0, 0, 4, 4);
+        long pushes = actual.calls().stream().filter("push"::equals).count();
+        long pops = actual.calls().stream().filter("pop"::equals).count();
+        assertEquals(pushes, pops);
+    }
 }

@@ -11,12 +11,20 @@ import java.util.Set;
 
 public class StyledTheme implements Theme {
     private static final int MAX_DEPTH = 8;
+    private static final int MAX_WIDGET_DEPTH = 8;
+
+    private static final class WidgetCycle extends RuntimeException {
+        WidgetCycle(String name) {
+            super("widget '" + name + "' draws itself");
+        }
+    }
 
     private final ThemeSpec spec;
     private final StyledTheme fallback;
     private final Set<String> failed = new HashSet<>();
     private int accent;
     private int depth;
+    private int renderDepth;
 
     public StyledTheme(ThemeSpec spec) {
         this.spec = spec;
@@ -146,7 +154,11 @@ public class StyledTheme implements Theme {
             }
             return;
         }
+        if (renderDepth >= MAX_WIDGET_DEPTH) {
+            throw new WidgetCycle(name);
+        }
         DrawScope scope = new DrawScope(this, c, state);
+        renderDepth++;
         try {
             scope.values.put("w", (float) w);
             scope.values.put("h", (float) h);
@@ -157,10 +169,15 @@ public class StyledTheme implements Theme {
                 layer.draw(scope, x, y, w, h);
             }
         } catch (RuntimeException exception) {
+            if (exception instanceof WidgetCycle && renderDepth > 1) {
+                throw exception;
+            }
             warnOnce("widgets." + name, exception);
             if (fallback != null) {
                 fallback.render(name, c, x, y, w, h, state);
             }
+        } finally {
+            renderDepth--;
         }
     }
 
