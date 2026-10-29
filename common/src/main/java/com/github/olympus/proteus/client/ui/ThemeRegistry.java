@@ -88,7 +88,9 @@ public final class ThemeRegistry {
         }
         for (Map.Entry<String, JsonObject> entry : files.entrySet()) {
             Styled mod = styled.get(entry.getKey());
-            raw.put(entry.getKey(), mod != null ? ThemeSources.merge(mod.spec(), entry.getValue()) : entry.getValue());
+            JsonObject base = mod != null ? mod.spec() : raw.get(entry.getKey());
+            boolean builtIn = entry.getKey().equals(MODERN) || entry.getKey().equals(CLASSIC);
+            raw.put(entry.getKey(), mod != null || builtIn ? ThemeSources.merge(base, entry.getValue()) : entry.getValue());
         }
         ThemeSources sources = new ThemeSources(raw, warn);
         Map<String, ThemeSpec> specs = new HashMap<>();

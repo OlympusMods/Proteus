@@ -57,7 +57,12 @@ class ThemeRegistryTest {
     @Test
     void packOverridesBuiltIn() {
         reload("proteus:modern", "{\"colors\": {\"text\": \"#FF000002\"}}");
-        assertEquals(0xFF000002, registry.get("proteus:modern").textPrimary());
+        Theme modern = registry.get("proteus:modern");
+        assertEquals(0xFF000002, modern.textPrimary());
+        assertEquals(0xFF9AA3B2, modern.textSecondary());
+        RecordingCanvas canvas = new RecordingCanvas();
+        modern.card(canvas, 0, 0, 20, 20);
+        assertTrue(!canvas.calls().isEmpty());
     }
 
     @Test
