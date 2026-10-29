@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 class SizesTest {
@@ -46,5 +47,21 @@ class SizesTest {
         Sizes sizes = sizes("{\"mneme:entry\": 30}");
         assertEquals(30, sizes.get("mneme:entry", 24));
         assertEquals(26, sizes.get("orpheus:song_row", 26));
+    }
+
+    @Test
+    void nonNumericValuesFallBack() {
+        Sizes sizes = sizes("{\"toggle\": {\"height\": \"tall\", \"width\": true}, \"mneme:entry\": \"big\"}");
+        assertEquals(16, sizes.toggleHeight());
+        assertEquals(30, sizes.toggleWidth());
+        assertEquals(24, sizes.get("mneme:entry", 24));
+    }
+
+    @Test
+    void nonsenseValuesAreClamped() {
+        Sizes sizes = sizes("{\"toast\": {\"max_lines\": 0, \"min_width\": -5}, \"toggle\": {\"width\": -3}}");
+        assertEquals(1, sizes.toastMaxLines());
+        assertTrue(sizes.toastMinWidth() >= 1);
+        assertTrue(sizes.toggleWidth() >= 1);
     }
 }
