@@ -1,0 +1,1031 @@
+shadowText true
+centeredTitle true
+slidingSegments false
+toggleWidth 34
+textPrimary #FFE0E0E0
+textSecondary #FFA0A0A0
+textDisabled #FF707070
+titleColor #FFFFFFFF
+> backdrop true
+gradient 0 0 427 240 #C0101010 #D0101010
+> backdrop false
+tiled minecraft:textures/block/dirt.png 0 0 427 240
+fill 0 0 427 240 #B0000000
+> backdrop textured
+tiled proteus:textures/gui/classic/background.png 0 0 427 240
+> window
+> card
+sprite classic/panel 12 22 100 36
+> inset
+sprite classic/inset 5 6 40 20
+> tooltip
+sprite classic/tooltip 30 40 80 24
+> toast
+sprite classic/tooltip 8 8 160 40
+> segmentTrack
+> segmentThumb
+> button NORMAL 0.0 0.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button NORMAL 0.0 0.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 0.0 0.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button NORMAL 0.0 0.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 0.0 0.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button NORMAL 0.0 0.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 0.0 0.5 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button NORMAL 0.0 0.5 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 0.0 0.5 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button NORMAL 0.0 0.5 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 0.0 0.5 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button NORMAL 0.0 0.5 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 0.0 1.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button NORMAL 0.0 1.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 0.0 1.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button NORMAL 0.0 1.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 0.0 1.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button NORMAL 0.0 1.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 0.5 0.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button NORMAL 0.5 0.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 0.5 0.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button NORMAL 0.5 0.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 0.5 0.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button NORMAL 0.5 0.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 0.5 0.5 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button NORMAL 0.5 0.5 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 0.5 0.5 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button NORMAL 0.5 0.5 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 0.5 0.5 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button NORMAL 0.5 0.5 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 0.5 1.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button NORMAL 0.5 1.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 0.5 1.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button NORMAL 0.5 1.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 0.5 1.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button NORMAL 0.5 1.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 1.0 0.0 0.0 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button NORMAL 1.0 0.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 1.0 0.0 0.5 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button NORMAL 1.0 0.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 1.0 0.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button NORMAL 1.0 0.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 1.0 0.5 0.0 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button NORMAL 1.0 0.5 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 1.0 0.5 0.5 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button NORMAL 1.0 0.5 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 1.0 0.5 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button NORMAL 1.0 0.5 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 1.0 1.0 0.0 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button NORMAL 1.0 1.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 1.0 1.0 0.5 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button NORMAL 1.0 1.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button NORMAL 1.0 1.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button NORMAL 1.0 1.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.0 0.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button PRIMARY 0.0 0.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.0 0.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button PRIMARY 0.0 0.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.0 0.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button PRIMARY 0.0 0.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.0 0.5 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button PRIMARY 0.0 0.5 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.0 0.5 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button PRIMARY 0.0 0.5 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.0 0.5 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button PRIMARY 0.0 0.5 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.0 1.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button PRIMARY 0.0 1.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.0 1.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button PRIMARY 0.0 1.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.0 1.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button PRIMARY 0.0 1.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.5 0.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button PRIMARY 0.5 0.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.5 0.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button PRIMARY 0.5 0.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.5 0.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button PRIMARY 0.5 0.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.5 0.5 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button PRIMARY 0.5 0.5 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.5 0.5 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button PRIMARY 0.5 0.5 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.5 0.5 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button PRIMARY 0.5 0.5 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.5 1.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button PRIMARY 0.5 1.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.5 1.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button PRIMARY 0.5 1.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 0.5 1.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button PRIMARY 0.5 1.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 1.0 0.0 0.0 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button PRIMARY 1.0 0.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 1.0 0.0 0.5 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button PRIMARY 1.0 0.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 1.0 0.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button PRIMARY 1.0 0.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 1.0 0.5 0.0 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button PRIMARY 1.0 0.5 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 1.0 0.5 0.5 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button PRIMARY 1.0 0.5 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 1.0 0.5 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button PRIMARY 1.0 0.5 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 1.0 1.0 0.0 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button PRIMARY 1.0 1.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 1.0 1.0 0.5 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button PRIMARY 1.0 1.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button PRIMARY 1.0 1.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button PRIMARY 1.0 1.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.0 0.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.0 0.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.0 0.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.0 0.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.0 0.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.0 0.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.0 0.5 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.0 0.5 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.0 0.5 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.0 0.5 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.0 0.5 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.0 0.5 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.0 1.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.0 1.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.0 1.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.0 1.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.0 1.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.0 1.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.5 0.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.5 0.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.5 0.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.5 0.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.5 0.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.5 0.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.5 0.5 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.5 0.5 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.5 0.5 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.5 0.5 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.5 0.5 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.5 0.5 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.5 1.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.5 1.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.5 1.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.5 1.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 0.5 1.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFF7777
+> button DANGER 0.5 1.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 1.0 0.0 0.0 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFAAAA
+> button DANGER 1.0 0.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 1.0 0.0 0.5 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFAAAA
+> button DANGER 1.0 0.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 1.0 0.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFAAAA
+> button DANGER 1.0 0.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 1.0 0.5 0.0 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFAAAA
+> button DANGER 1.0 0.5 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 1.0 0.5 0.5 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFAAAA
+> button DANGER 1.0 0.5 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 1.0 0.5 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFAAAA
+> button DANGER 1.0 0.5 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 1.0 1.0 0.0 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFAAAA
+> button DANGER 1.0 1.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 1.0 1.0 0.5 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFAAAA
+> button DANGER 1.0 1.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button DANGER 1.0 1.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFAAAA
+> button DANGER 1.0 1.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.0 0.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button GHOST 0.0 0.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.0 0.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button GHOST 0.0 0.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.0 0.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button GHOST 0.0 0.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.0 0.5 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button GHOST 0.0 0.5 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.0 0.5 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button GHOST 0.0 0.5 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.0 0.5 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button GHOST 0.0 0.5 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.0 1.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button GHOST 0.0 1.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.0 1.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button GHOST 0.0 1.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.0 1.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button GHOST 0.0 1.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.5 0.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button GHOST 0.5 0.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.5 0.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button GHOST 0.5 0.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.5 0.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button GHOST 0.5 0.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.5 0.5 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button GHOST 0.5 0.5 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.5 0.5 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button GHOST 0.5 0.5 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.5 0.5 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button GHOST 0.5 0.5 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.5 1.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button GHOST 0.5 1.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.5 1.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button GHOST 0.5 1.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 0.5 1.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button GHOST 0.5 1.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 1.0 0.0 0.0 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button GHOST 1.0 0.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 1.0 0.0 0.5 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button GHOST 1.0 0.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 1.0 0.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button GHOST 1.0 0.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 1.0 0.5 0.0 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button GHOST 1.0 0.5 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 1.0 0.5 0.5 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button GHOST 1.0 0.5 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 1.0 0.5 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button GHOST 1.0 0.5 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 1.0 1.0 0.0 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button GHOST 1.0 1.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 1.0 1.0 0.5 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button GHOST 1.0 1.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button GHOST 1.0 1.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button GHOST 1.0 1.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.0 0.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button SEGMENT 0.0 0.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.0 0.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button SEGMENT 0.0 0.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.0 0.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button SEGMENT 0.0 0.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.0 0.5 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button SEGMENT 0.0 0.5 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.0 0.5 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button SEGMENT 0.0 0.5 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.0 0.5 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button SEGMENT 0.0 0.5 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.0 1.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button SEGMENT 0.0 1.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.0 1.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button SEGMENT 0.0 1.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.0 1.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button SEGMENT 0.0 1.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.5 0.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button SEGMENT 0.5 0.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.5 0.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button SEGMENT 0.5 0.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.5 0.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button SEGMENT 0.5 0.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.5 0.5 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button SEGMENT 0.5 0.5 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.5 0.5 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button SEGMENT 0.5 0.5 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.5 0.5 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button SEGMENT 0.5 0.5 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.5 1.0 0.0 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button SEGMENT 0.5 1.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.5 1.0 0.5 true
+sprite classic/button 10 10 60 20
+buttonText #FFE0E0E0
+> button SEGMENT 0.5 1.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 0.5 1.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button SEGMENT 0.5 1.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 1.0 0.0 0.0 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button SEGMENT 1.0 0.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 1.0 0.0 0.5 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button SEGMENT 1.0 0.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 1.0 0.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button SEGMENT 1.0 0.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 1.0 0.5 0.0 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button SEGMENT 1.0 0.5 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 1.0 0.5 0.5 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button SEGMENT 1.0 0.5 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 1.0 0.5 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button SEGMENT 1.0 0.5 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 1.0 1.0 0.0 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button SEGMENT 1.0 1.0 0.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 1.0 1.0 0.5 true
+sprite classic/button_hover 10 10 60 20
+buttonText #FFFFFFA0
+> button SEGMENT 1.0 1.0 0.5 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+> button SEGMENT 1.0 1.0 1.0 true
+sprite classic/button_selected 10 10 60 20
+buttonText #FFFFFFA0
+> button SEGMENT 1.0 1.0 1.0 false
+sprite classic/button_disabled 10 10 60 20
+buttonText #FFA0A0A0
+segmentText 0.0 0.0 #FFE0E0E0
+segmentText 0.0 0.5 #FFE0E0E0
+segmentText 0.0 1.0 #FFE0E0E0
+segmentText 0.5 0.0 #FFE0E0E0
+segmentText 0.5 0.5 #FFE0E0E0
+segmentText 0.5 1.0 #FFE0E0E0
+segmentText 1.0 0.0 #FFE0E0E0
+segmentText 1.0 0.5 #FFE0E0E0
+segmentText 1.0 1.0 #FFE0E0E0
+> toggle 0.0 0.0 true
+sprite classic/button 50 10 34 16
+text OFF 58 14 #FFFF5555 true
+> checkbox 0.0 0.0 true
+sprite classic/checkbox 4 4 11 11
+> toggle 0.0 0.0 false
+sprite classic/button_disabled 50 10 34 16
+text OFF 58 14 #FFFF5555 true
+> checkbox 0.0 0.0 false
+sprite classic/checkbox 4 4 11 11
+> toggle 0.0 0.5 true
+sprite classic/button 50 10 34 16
+text OFF 58 14 #FFFF5555 true
+> checkbox 0.0 0.5 true
+sprite classic/checkbox 4 4 11 11
+> toggle 0.0 0.5 false
+sprite classic/button_disabled 50 10 34 16
+text OFF 58 14 #FFFF5555 true
+> checkbox 0.0 0.5 false
+sprite classic/checkbox 4 4 11 11
+> toggle 0.0 1.0 true
+sprite classic/button_hover 50 10 34 16
+text OFF 58 14 #FFFF5555 true
+> checkbox 0.0 1.0 true
+sprite classic/checkbox_hover 4 4 11 11
+> toggle 0.0 1.0 false
+sprite classic/button_disabled 50 10 34 16
+text OFF 58 14 #FFFF5555 true
+> checkbox 0.0 1.0 false
+sprite classic/checkbox 4 4 11 11
+> toggle 0.5 0.0 true
+sprite classic/button 50 10 34 16
+text OFF 58 14 #FFFF5555 true
+> checkbox 0.5 0.0 true
+sprite classic/checkbox 4 4 11 11
+> toggle 0.5 0.0 false
+sprite classic/button_disabled 50 10 34 16
+text OFF 58 14 #FFFF5555 true
+> checkbox 0.5 0.0 false
+sprite classic/checkbox 4 4 11 11
+> toggle 0.5 0.5 true
+sprite classic/button 50 10 34 16
+text OFF 58 14 #FFFF5555 true
+> checkbox 0.5 0.5 true
+sprite classic/checkbox 4 4 11 11
+> toggle 0.5 0.5 false
+sprite classic/button_disabled 50 10 34 16
+text OFF 58 14 #FFFF5555 true
+> checkbox 0.5 0.5 false
+sprite classic/checkbox 4 4 11 11
+> toggle 0.5 1.0 true
+sprite classic/button_hover 50 10 34 16
+text OFF 58 14 #FFFF5555 true
+> checkbox 0.5 1.0 true
+sprite classic/checkbox_hover 4 4 11 11
+> toggle 0.5 1.0 false
+sprite classic/button_disabled 50 10 34 16
+text OFF 58 14 #FFFF5555 true
+> checkbox 0.5 1.0 false
+sprite classic/checkbox 4 4 11 11
+> toggle 1.0 0.0 true
+sprite classic/button 50 10 34 16
+text ON 61 14 #FF55FF55 true
+> checkbox 1.0 0.0 true
+sprite classic/checkbox_checked 4 4 11 11
+> toggle 1.0 0.0 false
+sprite classic/button_disabled 50 10 34 16
+text ON 61 14 #FF55FF55 true
+> checkbox 1.0 0.0 false
+sprite classic/checkbox_checked 4 4 11 11
+> toggle 1.0 0.5 true
+sprite classic/button 50 10 34 16
+text ON 61 14 #FF55FF55 true
+> checkbox 1.0 0.5 true
+sprite classic/checkbox_checked 4 4 11 11
+> toggle 1.0 0.5 false
+sprite classic/button_disabled 50 10 34 16
+text ON 61 14 #FF55FF55 true
+> checkbox 1.0 0.5 false
+sprite classic/checkbox_checked 4 4 11 11
+> toggle 1.0 1.0 true
+sprite classic/button_hover 50 10 34 16
+text ON 61 14 #FF55FF55 true
+> checkbox 1.0 1.0 true
+sprite classic/checkbox_checked_hover 4 4 11 11
+> toggle 1.0 1.0 false
+sprite classic/button_disabled 50 10 34 16
+text ON 61 14 #FF55FF55 true
+> checkbox 1.0 1.0 false
+sprite classic/checkbox_checked 4 4 11 11
+> field 0.0 0.0
+sprite classic/field 4 4 100 20
+> field 0.0 0.5
+sprite classic/field 4 4 100 20
+> field 0.0 1.0
+sprite classic/field 4 4 100 20
+> field 0.5 0.0
+sprite classic/field 4 4 100 20
+> field 0.5 0.5
+sprite classic/field 4 4 100 20
+> field 0.5 1.0
+sprite classic/field 4 4 100 20
+> field 1.0 0.0
+sprite classic/field_focused 4 4 100 20
+> field 1.0 0.5
+sprite classic/field_focused 4 4 100 20
+> field 1.0 1.0
+sprite classic/field_focused 4 4 100 20
+> row 0.0 true
+sprite classic/row_selected 4 4 100 20
+> row 0.0 false
+> scrollbar 0.0
+sprite classic/scroller_track 200 10 3 100
+sprite classic/scroller 200 30 3 20
+> row 0.5 true
+sprite classic/row_selected 4 4 100 20
+> row 0.5 false
+> scrollbar 0.5
+sprite classic/scroller_track 200 10 3 100
+sprite classic/scroller 200 30 3 20
+> row 1.0 true
+sprite classic/row_selected 4 4 100 20
+> row 1.0 false
+sprite classic/row_hover 4 4 100 20
+> scrollbar 1.0
+sprite classic/scroller_track 200 10 3 100
+sprite classic/scroller 200 30 3 20
+> progress -1.0 0.0
+sprite classic/progress 4 4 120 10
+> progress -1.0 0.37
+sprite classic/progress 4 4 120 10
+sprite classic/progress_fill 25 6 29 6
+> progress 0.0 0.0
+sprite classic/progress 4 4 120 10
+sprite classic/progress_fill 6 6 0 6
+> progress 0.0 0.37
+sprite classic/progress 4 4 120 10
+sprite classic/progress_fill 6 6 0 6
+> progress 0.4 0.0
+sprite classic/progress 4 4 120 10
+sprite classic/progress_fill 6 6 46 6
+> progress 0.4 0.37
+sprite classic/progress 4 4 120 10
+sprite classic/progress_fill 6 6 46 6
+> progress 1.0 0.0
+sprite classic/progress 4 4 120 10
+sprite classic/progress_fill 6 6 116 6
+> progress 1.0 0.37
+sprite classic/progress 4 4 120 10
+sprite classic/progress_fill 6 6 116 6
+> icon left
+sprite classic/icon/left 17 16 6 9
+> icon right
+sprite classic/icon/right 17 16 6 9
+> icon cross
+sprite classic/icon/cross 16 17 8 7
+> icon test:icon
+sprite test:classic/icon/icon 15 16 10 8
+> icon test:missing
+> swatch 0.0 0.0
+fill 10 10 20 20 #FF000000
+fill 11 11 18 18 #FF3B82F6
+> swatch 0.0 0.5
+fill 10 10 20 20 #FF000000
+fill 11 11 18 18 #FF3B82F6
+> swatch 0.0 1.0
+fill 10 10 20 20 #FFFFFFFF
+fill 11 11 18 18 #FF3B82F6
+> swatch 0.5 0.0
+fill 10 10 20 20 #FF000000
+fill 11 11 18 18 #FF3B82F6
+> swatch 0.5 0.5
+fill 10 10 20 20 #FF000000
+fill 11 11 18 18 #FF3B82F6
+> swatch 0.5 1.0
+fill 10 10 20 20 #FFFFFFFF
+fill 11 11 18 18 #FF3B82F6
+> swatch 1.0 0.0
+fill 10 10 20 20 #FF000000
+fill 11 11 18 18 #FF3B82F6
+> swatch 1.0 0.5
+fill 10 10 20 20 #FF000000
+fill 11 11 18 18 #FF3B82F6
+> swatch 1.0 1.0
+fill 10 10 20 20 #FFFFFFFF
+fill 11 11 18 18 #FF3B82F6

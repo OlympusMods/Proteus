@@ -34,6 +34,14 @@ sourceSets {
 			]
 		}
 	}
+	test {
+		java {
+			srcDirs = ['../common/src/test/java']
+		}
+		resources {
+			srcDirs = ['../common/src/test/resources']
+		}
+	}
 }
 
 dependencies {
@@ -42,6 +50,16 @@ dependencies {
 
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	compileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+	testImplementation "org.junit.jupiter:junit-jupiter-api:5.9.2"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.9.2"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.9.2"
+}
+
+test {
+	useJUnitPlatform()
+	systemProperty 'proteus.golden.write', System.getProperty('proteus.golden.write', '')
+	systemProperty 'proteus.golden.dir', file('../common/src/test/resources/golden').absolutePath
 }
 
 processResources {
