@@ -1,5 +1,8 @@
 package com.github.olympus.proteus.client.ui;
 
+import com.github.olympus.proteus.client.ui.theme.MotionSpec;
+import com.google.gson.JsonParser;
+
 public final class ClassicTheme implements Theme {
     private static final String BACKGROUND_NAMESPACE = "proteus";
     private static final String BACKGROUND_PATH = "textures/gui/classic/background.png";
@@ -8,9 +11,21 @@ public final class ClassicTheme implements Theme {
     public void accent(int argb) {
     }
 
+
     @Override
-    public boolean animated() {
-        return false;
+    public String name() {
+        return "Classic";
+    }
+
+    @Override
+    public int accentColor() {
+        return 0xFF55FF55;
+    }
+
+    @Override
+    public MotionSpec motion() {
+        return MotionSpec.parse(JsonParser.parseString("{\"enabled\": false}").getAsJsonObject(), message -> {
+        });
     }
 
     @Override

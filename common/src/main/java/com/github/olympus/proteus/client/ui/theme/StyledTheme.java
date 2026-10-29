@@ -31,38 +31,52 @@ public class StyledTheme implements Theme {
         return spec;
     }
 
+    @Override
     public String name() {
         return spec.name();
     }
 
+    @Override
     public String description() {
         return spec.description();
     }
 
+    @Override
     public Sizes sizes() {
         return spec.sizes();
     }
 
+    @Override
     public MotionSpec motion() {
         return spec.motion();
     }
 
+    @Override
     public int accentColor() {
         return accent;
     }
 
+    @Override
+    public int defaultAccent() {
+        return spec.accent();
+    }
+
+    @Override
     public boolean accentLocked() {
         return spec.accentLocked();
     }
 
+    @Override
     public int danger() {
         return color("danger", 0xFFE5484D);
     }
 
+    @Override
     public int toastTitle() {
         return color("toast_title", textSecondary());
     }
 
+    @Override
     public boolean vanillaBackdrop() {
         return spec.vanillaBlur();
     }
@@ -178,11 +192,6 @@ public class StyledTheme implements Theme {
         if (fallback != null) {
             fallback.accent = argb;
         }
-    }
-
-    @Override
-    public boolean animated() {
-        return spec.motion().enabled();
     }
 
     @Override

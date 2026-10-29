@@ -1,9 +1,48 @@
 package com.github.olympus.proteus.client.ui;
 
+import com.github.olympus.proteus.client.ui.theme.MotionSpec;
+import com.github.olympus.proteus.client.ui.theme.Sizes;
+import com.google.gson.JsonObject;
+
 public interface Theme {
+    String name();
+
+    default String description() {
+        return "";
+    }
+
     void accent(int argb);
 
-    boolean animated();
+    int accentColor();
+
+    default int defaultAccent() {
+        return accentColor();
+    }
+
+    default boolean accentLocked() {
+        return false;
+    }
+
+    default Sizes sizes() {
+        return Sizes.parse(new JsonObject());
+    }
+
+    default MotionSpec motion() {
+        return MotionSpec.parse(new JsonObject(), message -> {
+        });
+    }
+
+    default int danger() {
+        return 0xFFE5484D;
+    }
+
+    default int toastTitle() {
+        return textSecondary();
+    }
+
+    default boolean vanillaBackdrop() {
+        return true;
+    }
 
     boolean shadowText();
 
@@ -36,7 +75,9 @@ public interface Theme {
 
     int segmentText(float selected, float hover);
 
-    int toggleWidth();
+    default int toggleWidth() {
+        return sizes().toggleWidth();
+    }
 
     void toggle(Canvas c, int x, int y, int h, float on, float hover, boolean enabled, String onLabel,
             String offLabel);

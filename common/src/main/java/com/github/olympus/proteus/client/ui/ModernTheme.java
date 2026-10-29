@@ -9,9 +9,15 @@ public final class ModernTheme implements Theme {
         accent = argb;
     }
 
+
     @Override
-    public boolean animated() {
-        return true;
+    public String name() {
+        return "Modern";
+    }
+
+    @Override
+    public int accentColor() {
+        return accent;
     }
 
     @Override

@@ -96,7 +96,7 @@ public final class ToastOverlay {
         UiPrefs prefs = UiPrefs.get();
         Theme theme = prefs.classic() ? CLASSIC : MODERN;
         theme.accent(prefs.accentColor());
-        boolean animated = theme.animated() && prefs.animations();
+        boolean animated = theme.motion().enabled() && prefs.animations();
         float hold = prefs.toastSeconds();
         float enter = animated ? Motion.clamp((float) age / ENTER, 0f, 1f) : 1f;
         float exit = animated ? Motion.clamp((float) (age - hold) / EXIT, 0f, 1f) : age >= hold ? 1f : 0f;

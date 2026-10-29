@@ -108,7 +108,7 @@ final class HubApp implements UiApp {
 
         Theme theme = prefs.classic() ? classic : modern;
         theme.accent(prefs.accentColor());
-        boolean animated = theme.animated() && prefs.animations();
+        boolean animated = theme.motion().enabled() && prefs.animations();
         float shown = app.visibility();
         int shift = animated ? Math.round((1f - shown) * -6f) : 0;
         fade.bind(target, shown);

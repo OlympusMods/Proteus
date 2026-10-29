@@ -187,7 +187,7 @@ public abstract class UiShell implements UiApp {
 
         Theme theme = prefs.classic() ? classic : modern;
         theme.accent(prefs.accentColor());
-        boolean animated = theme.animated() && prefs.animations();
+        boolean animated = theme.motion().enabled() && prefs.animations();
         float openTarget = closing ? 0f : 1f;
         open = animated ? Motion.approach(open, openTarget, dt, 14f) : openTarget;
         contentFade = animated ? Motion.approach(contentFade, 1f, dt, 12f) : 1f;
