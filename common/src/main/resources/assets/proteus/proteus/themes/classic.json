@@ -1,5 +1,6 @@
 {
-  "name": "Classic",
+  "name": "proteus.theme.classic",
+  "description": "proteus.theme.classic.description",
   "parent": "proteus:modern",
   "accent": { "color": "#FF55FF55", "locked": true },
   "colors": {

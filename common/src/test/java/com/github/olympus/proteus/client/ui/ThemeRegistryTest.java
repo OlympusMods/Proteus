@@ -41,7 +41,7 @@ class ThemeRegistryTest {
     @Test
     void builtInsComeFirstWithoutPackFiles() {
         reload("z:alpha", "{\"name\": \"Alpha\"}");
-        assertEquals(List.of("Modern", "Classic", "Alpha"), names(registry.all()));
+        assertEquals(List.of("proteus.theme.modern", "proteus.theme.classic", "Alpha"), names(registry.all()));
         assertTrue(warnings.isEmpty(), warnings.toString());
     }
 
@@ -56,7 +56,7 @@ class ThemeRegistryTest {
 
     @Test
     void packOverridesBuiltIn() {
-        reload("proteus:modern", "{\"name\": \"Modern\", \"colors\": {\"text\": \"#FF000002\"}}");
+        reload("proteus:modern", "{\"colors\": {\"text\": \"#FF000002\"}}");
         assertEquals(0xFF000002, registry.get("proteus:modern").textPrimary());
     }
 

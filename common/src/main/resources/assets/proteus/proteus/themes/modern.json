@@ -1,5 +1,6 @@
 {
-  "name": "Modern",
+  "name": "proteus.theme.modern",
+  "description": "proteus.theme.modern.description",
   "accent": { "color": "#FF8B5CF6", "locked": false },
   "colors": {
     "text": "#FFECEFF4",

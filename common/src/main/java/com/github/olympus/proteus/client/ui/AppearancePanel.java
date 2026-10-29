@@ -11,6 +11,7 @@ public final class AppearancePanel {
     private final FadeCanvas fade;
     private final UiPrefs prefs = UiPrefs.get();
     private boolean customDirty;
+    private boolean themePicked;
 
     public AppearancePanel(Gui gui, FadeCanvas fade) {
         this.gui = gui;
@@ -26,41 +27,106 @@ public final class AppearancePanel {
         int y = top;
 
         y = heading(text("proteus.ui.style"), ix, y);
-        theme.card(fade, ix, y, lw, 36);
-        List<Theme> themes = Themes.all();
-        String[] styles = new String[themes.size()];
-        String[] styleTips = new String[themes.size()];
-        int current = 0;
-        for (int i = 0; i < themes.size(); i++) {
-            styles[i] = themes.get(i).name();
-            styleTips[i] = themes.get(i).description();
-            if (themes.get(i) == theme) {
-                current = i;
-            }
-        }
-        int picked = gui.segmented("style", ix + 8, y + 8, lw - 16, ROW, styles, current, styleTips, null);
-        if (picked >= 0) {
-            prefs.setTheme(Themes.id(themes.get(picked)));
+        y = themeSection(theme, ix, y, lw);
+        if (themePicked) {
+            themePicked = false;
             changed = true;
+            theme = Themes.current();
         }
-        y += 36 + GAP;
 
         if (theme.accentLocked()) {
-            for (String line : Draw.wrap(fade, text("proteus.ui.classic_note"), lw - 8)) {
+            for (String line : Draw.wrap(fade, text("proteus.ui.locked_accent_note"), lw - 8)) {
                 gui.text(line, ix + 4, y, theme.textSecondary());
                 y += 11;
             }
-            y = toastSection(ix, y + GAP, lw, preview);
-            gui.scrollEnd(y - top);
-            return changed;
+            y += GAP;
+        } else {
+            y = accentSection(theme, ix, y, lw);
         }
 
+        boolean blurs = theme.vanillaBackdrop();
+        boolean moves = theme.motion().enabled();
+        if (blurs || moves) {
+            y = heading(text("proteus.ui.effects"), ix, y);
+            int rows = (blurs ? 1 : 0) + (moves ? 1 : 0);
+            int effectsH = 6 + rows * (ROW + 6) + 4;
+            theme.card(fade, ix, y, lw, effectsH);
+            int ry = y + 6;
+            if (blurs) {
+                if (gui.switchRow("blur", ix + 10, ry, lw - 20, ROW, text("proteus.ui.blur"), prefs.blur(), true,
+                        text("proteus.ui.blur.tooltip"), text("proteus.state.on"), text("proteus.state.off"))) {
+                    prefs.setBlur(!prefs.blur());
+                }
+                ry += ROW + 6;
+            }
+            if (moves && gui.switchRow("animations", ix + 10, ry, lw - 20, ROW, text("proteus.ui.animations"),
+                    prefs.animations(), true, text("proteus.ui.animations.tooltip"), text("proteus.state.on"),
+                    text("proteus.state.off"))) {
+                prefs.setAnimations(!prefs.animations());
+            }
+            y += effectsH + GAP;
+        }
+        y = toastSection(ix, y, lw, preview);
+        gui.scrollEnd(y - top);
+        return changed;
+    }
+
+    private static String translated(String key) {
+        return key.isEmpty() ? key : Component.translatable(key).getString();
+    }
+
+    private int themeSection(Theme theme, int ix, int y, int lw) {
+        List<Theme> themes = Themes.all();
+        int picked = -1;
+        if (themes.size() <= 3) {
+            theme.card(fade, ix, y, lw, 36);
+            String[] names = new String[themes.size()];
+            String[] tips = new String[themes.size()];
+            int current = 0;
+            for (int i = 0; i < themes.size(); i++) {
+                names[i] = translated(themes.get(i).name());
+                tips[i] = translated(themes.get(i).description());
+                if (themes.get(i) == theme) {
+                    current = i;
+                }
+            }
+            picked = gui.segmented("style", ix + 8, y + 8, lw - 16, ROW, names, current, tips, null);
+            y += 36 + GAP;
+        } else {
+            int listH = themes.size() * ROW + 12;
+            theme.card(fade, ix, y, lw, listH);
+            int rx = ix + 6;
+            int rw = lw - 12;
+            for (int i = 0; i < themes.size(); i++) {
+                Theme option = themes.get(i);
+                int ry = y + 6 + i * ROW;
+                boolean selected = option == theme;
+                gui.rowBackground("theme" + i, rx, ry, rw, ROW, selected);
+                Draw.round(fade, rx + 6, ry + (ROW - 8) / 2, 8, 8, 4, option.defaultAccent());
+                gui.text(gui.fit(translated(option.name()), rw - 28), rx + 20, gui.textY(ry, ROW),
+                        selected ? theme.textPrimary() : theme.textSecondary());
+                String tip = translated(option.description());
+                if (gui.hit("theme-pick" + i, rx, ry, rw, ROW, !selected, tip.isEmpty() ? null : tip)) {
+                    picked = i;
+                }
+            }
+            y += listH + GAP;
+        }
+        if (picked >= 0 && themes.get(picked) != theme) {
+            prefs.setTheme(Themes.id(themes.get(picked)));
+            themePicked = true;
+        }
+        return y;
+    }
+
+    private int accentSection(Theme theme, int ix, int y, int lw) {
         y = heading(text("proteus.ui.accent"), ix, y);
         boolean custom = UiPrefs.CUSTOM.equals(prefs.accentChoice());
         int cardH = custom ? 38 + 3 * 22 + 4 : 38;
         theme.card(fade, ix, y, lw, cardH);
-        String[] choices = new String[UiPrefs.ACCENT_KEYS.length + 2];
-        System.arraycopy(UiPrefs.ACCENT_KEYS, 0, choices, 0, UiPrefs.ACCENT_KEYS.length);
+        String[] choices = new String[UiPrefs.ACCENT_KEYS.length + 3];
+        choices[0] = UiPrefs.THEME;
+        System.arraycopy(UiPrefs.ACCENT_KEYS, 0, choices, 1, UiPrefs.ACCENT_KEYS.length);
         choices[choices.length - 2] = UiPrefs.CUSTOM;
         choices[choices.length - 1] = UiPrefs.CHROMA;
         int count = choices.length;
@@ -71,7 +137,10 @@ public final class AppearancePanel {
             String key = choices[i];
             boolean isCustom = UiPrefs.CUSTOM.equals(key);
             boolean isChroma = UiPrefs.CHROMA.equals(key);
-            int color = isCustom ? prefs.customColor() : isChroma ? prefs.chromaColor() : UiPrefs.ACCENTS[i];
+            int color = isCustom ? prefs.customColor()
+                    : isChroma ? prefs.chromaColor()
+                    : i == 0 ? theme.defaultAccent()
+                    : UiPrefs.ACCENTS[i - 1];
             if (gui.swatch("accent" + i, sx, y + 9, size, color, key.equals(prefs.accentChoice()), isCustom,
                     text("proteus.ui.accent." + key))) {
                 prefs.setAccentChoice(key);
@@ -100,22 +169,7 @@ public final class AppearancePanel {
             customDirty = false;
         }
         y += cardH + GAP;
-
-        y = heading(text("proteus.ui.effects"), ix, y);
-        theme.card(fade, ix, y, lw, 62);
-        if (gui.switchRow("blur", ix + 10, y + 6, lw - 20, ROW, text("proteus.ui.blur"), prefs.blur(), true,
-                text("proteus.ui.blur.tooltip"), text("proteus.state.on"), text("proteus.state.off"))) {
-            prefs.setBlur(!prefs.blur());
-        }
-        if (gui.switchRow("animations", ix + 10, y + 6 + ROW + 6, lw - 20, ROW, text("proteus.ui.animations"),
-                prefs.animations(), true, text("proteus.ui.animations.tooltip"), text("proteus.state.on"),
-                text("proteus.state.off"))) {
-            prefs.setAnimations(!prefs.animations());
-        }
-        y += 62 + GAP;
-        y = toastSection(ix, y, lw, preview);
-        gui.scrollEnd(y - top);
-        return changed;
+        return y;
     }
 
     private int toastSection(int ix, int y, int lw, Runnable preview) {
