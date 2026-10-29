@@ -145,4 +145,54 @@ class MotionTest {
         assertTrue(moment.spring());
         assertEquals(1, warnings.size());
     }
+
+    @Test
+    void zeroOrNegativeSpeedAndRateAreClamped() {
+        MotionSpec spec = motion("""
+                {"speed": 0, "window": {"easing": "spring", "rate": 0},
+                 "hover": {"easing": "spring", "rate": -4}, "toast_in": {"easing": "linear", "duration": -1}}
+                """);
+        assertTrue(spec.speed() > 0f);
+        assertTrue(spec.get("window").rate() > 0f);
+        assertTrue(spec.get("hover").rate() > 0f);
+        assertTrue(spec.get("toast_in").duration() >= 0f);
+        float raw = 0f;
+        for (int i = 0; i < 2000 && raw < 1f; i++) {
+            raw = spec.get("window").advance(raw, 1f, 0.05f, spec.speed());
+        }
+        assertEquals(1f, raw);
+    }
+
+    @Test
+    void wrongTypesDoNotThrow() {
+        MotionSpec spec = motion("{\"speed\": \"fast\", \"enabled\": [], \"hover\": {\"rate\": \"x\"}}");
+        assertEquals(1f, spec.speed());
+        assertTrue(spec.enabled());
+        assertEquals(16f, spec.get("hover").rate());
+        assertFalse(warnings.isEmpty());
+    }
+
+    @Test
+    void exitWithoutFadeKeepsToastVisible() {
+        Moment out = motion("{\"toast_out\": {\"effects\": {\"fade\": false}}}").get("toast_out");
+        assertEquals(0f, out.effects().fadeOut(0.5f, 0.5f));
+        Moment fading = motion("{}").get("toast_out");
+        assertEquals(0.5f, fading.effects().fadeOut(0.5f, 0.5f), 1e-6f);
+    }
+
+    @Test
+    void tooltipFadeWithOwnEasingBecomesVisible() {
+        Moment tooltip = motion("{\"tooltip\": {\"effects\": {\"fade\": {\"easing\": \"ease_out\"}}}}").get("tooltip");
+        assertEquals(1f, tooltip.alphaAfter(0.47f, 1f), 1e-5f);
+        assertEquals(0f, motion("{}").get("tooltip").alphaAfter(0.2f, 1f), 1e-6f);
+    }
+
+    @Test
+    void slowEffectStillEndsAtRest() {
+        Moment content = motion("""
+                {"content": {"effects": {"spin": {"degrees": 20, "easing": "linear", "speed": 0.5}}}}
+                """).get("content");
+        assertEquals(0f, content.effects().degrees(1f, 1f), 1e-6f);
+        assertEquals(15f, content.effects().degrees(0.5f, 0.5f), 1e-5f);
+    }
 }

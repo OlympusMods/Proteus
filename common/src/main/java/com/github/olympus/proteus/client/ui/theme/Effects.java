@@ -12,12 +12,19 @@ public record Effects(Effect fade, Effect slide, Effect scale, Effect spin) {
             if (easing == null) {
                 return eased;
             }
+            if (raw >= 1f) {
+                return easing.apply(1f);
+            }
             return easing.apply(Math.max(0f, Math.min(1f, raw * speed)));
         }
     }
 
     public float alpha(float raw, float eased) {
         return fade == null ? 1f : Math.max(0f, Math.min(1f, fade.progress(raw, eased)));
+    }
+
+    public float fadeOut(float raw, float eased) {
+        return fade == null ? 0f : alpha(raw, eased);
     }
 
     public float dx(float raw, float eased, float size) {

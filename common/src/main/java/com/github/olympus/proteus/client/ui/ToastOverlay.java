@@ -164,7 +164,7 @@ public final class ToastOverlay {
         int dx = Math.round(right ? slideX : -slideX);
         int dy = Math.round(bottom ? slideY : -slideY);
         float alpha = animated
-                ? Motion.clamp(Math.min(in.effects().alpha(enter, entered), 1f - out.effects().alpha(exit, leave)), 0f, 1f)
+                ? Motion.clamp(Math.min(in.effects().alpha(enter, entered), 1f - out.effects().fadeOut(exit, leave)), 0f, 1f)
                 : 1f;
 
         FADE.bind(target, alpha);

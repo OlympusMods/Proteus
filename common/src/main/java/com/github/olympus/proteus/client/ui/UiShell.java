@@ -19,6 +19,7 @@ public abstract class UiShell implements UiApp {
     private boolean closing;
     private boolean closeReady;
     private boolean closed;
+    private boolean animated;
     private long lastNanos = System.nanoTime();
     private double clock;
 
@@ -91,6 +92,10 @@ public abstract class UiShell implements UiApp {
 
     protected final float beginContent() {
         float before = fade.alpha();
+        if (!animated) {
+            fade.push();
+            return before;
+        }
         Moment content = gui.motion().get("content");
         Effects effects = content.effects();
         float shown = content.value(contentFade);
@@ -207,7 +212,7 @@ public abstract class UiShell implements UiApp {
         MotionSpec motion = theme.motion();
         Moment window = motion.get("window");
         Moment content = motion.get("content");
-        boolean animated = motion.enabled() && prefs.animations();
+        animated = motion.enabled() && prefs.animations();
         float openTarget = closing ? 0f : 1f;
         openRaw = animated ? window.advance(openRaw, openTarget, dt, motion.speed()) : openTarget;
         float eased = window.value(openRaw);

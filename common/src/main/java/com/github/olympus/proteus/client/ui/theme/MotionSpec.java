@@ -31,6 +31,7 @@ public final class MotionSpec {
               "tooltip": {"easing": "linear", "duration": 0.12, "delay": 0.35, "effects": {"fade": true}}
             }
             """;
+    private static final float MIN_SPEED = 0.1f;
     private static final Map<String, Moment> BUILT_IN = new HashMap<>();
 
     static {
@@ -52,8 +53,25 @@ public final class MotionSpec {
     }
 
     public static MotionSpec parse(JsonObject json, Consumer<String> warn) {
-        boolean enabled = !json.has("enabled") || json.get("enabled").getAsBoolean();
-        float speed = json.has("speed") ? json.get("speed").getAsFloat() : 1f;
+        boolean enabled = true;
+        if (json.has("enabled")) {
+            JsonElement value = json.get("enabled");
+            if (value.isJsonPrimitive() && value.getAsJsonPrimitive().isBoolean()) {
+                enabled = value.getAsBoolean();
+            } else {
+                warn.accept("motion.enabled: expected true or false");
+            }
+        }
+        float speed = 1f;
+        try {
+            speed = Moment.number(json, "speed", 1f);
+        } catch (RuntimeException exception) {
+            warn.accept("motion." + exception.getMessage());
+        }
+        if (speed < MIN_SPEED) {
+            warn.accept("motion.speed must be at least " + MIN_SPEED);
+            speed = MIN_SPEED;
+        }
         Map<String, Moment> moments = new HashMap<>();
         for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
             if (!entry.getValue().isJsonObject()) {

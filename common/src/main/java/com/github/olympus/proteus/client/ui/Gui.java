@@ -943,10 +943,7 @@ public final class Gui {
         if (y + h > canvas.height() - 4) {
             y = Math.max(4, canvas.height() - 4 - h);
         }
-        Moment appear = motion().get("tooltip");
-        float total = appear.duration() + appear.delay();
-        float fade = snap || total <= 0f ? 1f
-                : appear.effects().alpha(0f, appear.value(Motion.clamp(tipTime * motion().speed() / total, 0f, 1f)));
+        float fade = snap ? 1f : motion().get("tooltip").alphaAfter(tipTime, motion().speed());
         float previous = 1f;
         if (canvas instanceof FadeCanvas fadeCanvas) {
             previous = fadeCanvas.alpha();
