@@ -1,5 +1,5 @@
 def windows = System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')
-def modVersion = findProperty('mod_version') ?: '1.0.0'
+def modVersion = findProperty('mod_version') ?: '1.1.0'
 def useDaemon = Boolean.parseBoolean(String.valueOf(findProperty('useDaemon') ?: 'false'))
 def extraArgs = String.valueOf(findProperty('childArgs') ?: '').trim()
 def dist = layout.buildDirectory.dir('dist')
