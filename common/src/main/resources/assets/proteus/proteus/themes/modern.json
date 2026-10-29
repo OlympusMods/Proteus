@@ -1,0 +1,178 @@
+{
+  "name": "Modern",
+  "accent": { "color": "#FF8B5CF6", "locked": false },
+  "colors": {
+    "text": "#FFECEFF4",
+    "text_secondary": "#FF9AA3B2",
+    "text_disabled": "#FF5C6370",
+    "title": "#FFFFFFFF",
+    "danger": "#FFE5484D",
+    "toast_title": "text_secondary"
+  },
+  "text": { "shadow": false, "title_align": "left" },
+  "segments": { "sliding": true },
+  "backdrop": { "vanilla_blur": true },
+  "icons": { "draw": "painter" },
+  "sizes": {
+    "toggle": { "width": 30, "height": 16 },
+    "segment": { "pad": 2, "gap": 0 }
+  },
+  "motion": { "enabled": true, "speed": 1.0 },
+  "widgets": {
+    "backdrop": {
+      "vars": { "top": "#8C05060A", "bottom": "#C005060A" },
+      "layers": [ { "type": "gradient", "top": "top", "bottom": "bottom" } ]
+    },
+    "window": {
+      "vars": { "radius": 6, "fill": "#EB111218", "border": "#2EFFFFFF", "shadow_spread": 9, "shadow_alpha": 150 },
+      "layers": [
+        { "type": "shadow", "radius": "radius", "spread": "shadow_spread", "alpha": "shadow_alpha" },
+        { "type": "panel", "radius": "radius", "color": "fill", "border": "border" }
+      ]
+    },
+    "card": {
+      "vars": { "radius": 4, "fill": "#12FFFFFF", "border": "#14FFFFFF" },
+      "layers": [ { "type": "panel", "radius": "radius", "color": "fill", "border": "border" } ]
+    },
+    "button": {
+      "vars": {
+        "radius": 3,
+        "shrink": "if(press > 0.5, 1, 0)",
+        "dim": "if(enabled, 1, 0.45)",
+        "fill": "alpha(mix(#1CFFFFFF, #38FFFFFF, hover), dim)",
+        "border": "mix(#22FFFFFF, alpha(accent, 0.75), hover * dim)"
+      },
+      "layers": [ { "type": "panel", "inset": "shrink", "radius": "radius", "color": "fill", "border": "border" } ],
+      "text_color": "if(enabled, text, text_disabled)"
+    },
+    "button.primary": {
+      "vars": {
+        "fill": "alpha(lighten(accent, 0.18 * hover), dim)",
+        "glow": "alpha(accent, 0.28 * hover)"
+      },
+      "layers": [
+        { "type": "round", "x": -1, "y": -1, "w": "w + 2", "h": "h + 2", "radius": "radius + 1", "color": "glow",
+          "when": "hover > 0.02" },
+        { "type": "round", "inset": "shrink", "radius": "radius", "color": "fill" }
+      ],
+      "text_color": "if(enabled, #FFFFFFFF, text_disabled)"
+    },
+    "button.danger": {
+      "vars": { "fill": "alpha(lighten(danger, 0.18 * hover), dim)" },
+      "layers": [ { "type": "round", "inset": "shrink", "radius": "radius", "color": "fill" } ],
+      "text_color": "if(enabled, #FFFFFFFF, text_disabled)"
+    },
+    "button.ghost": {
+      "vars": { "fill": "alpha(#30FFFFFF, hover * dim)" },
+      "layers": [ { "type": "round", "inset": "shrink", "radius": "radius", "color": "fill" } ],
+      "text_color": "if(enabled, mix(text_secondary, text, hover), text_disabled)"
+    },
+    "button.segment": {
+      "layers": []
+    },
+    "segment_track": {
+      "vars": { "radius": 4, "fill": "#2E000000", "border": "#16FFFFFF" },
+      "layers": [ { "type": "panel", "radius": "radius", "color": "fill", "border": "border" } ],
+      "text_color": "mix(mix(text_secondary, text, hover), #FFFFFFFF, selected)"
+    },
+    "segment_thumb": {
+      "vars": { "radius": 3, "fill": "alpha(accent, 0.95)", "shine": "#22FFFFFF" },
+      "layers": [
+        { "type": "round", "radius": "radius", "color": "fill" },
+        { "type": "gradient", "x": 1, "y": 1, "w": "w - 2", "h": "max(1, floor(h / 2))", "top": "shine",
+          "bottom": "#00FFFFFF" }
+      ]
+    },
+    "toggle": {
+      "vars": {
+        "track": "alpha(mix(mix(#3AFFFFFF, #55FFFFFF, hover), accent, on), if(enabled, 1, 0.4))",
+        "knob": "h - 4",
+        "knob_color": "#FFFFFFFF"
+      },
+      "layers": [
+        { "type": "round", "radius": "floor(h / 2)", "color": "track" },
+        { "type": "round", "x": "2 + round((w - knob - 4) * on)", "y": 2, "w": "knob", "h": "knob",
+          "radius": "floor(knob / 2)", "color": "knob_color" }
+      ]
+    },
+    "checkbox": {
+      "vars": {
+        "radius": 3,
+        "dim": "if(enabled, 1, 0.4)",
+        "fill": "alpha(mix(mix(#22FFFFFF, #38FFFFFF, hover), accent, on), dim)"
+      },
+      "layers": [
+        { "type": "round", "radius": "radius", "color": "fill" },
+        { "type": "ring", "radius": "radius", "color": "alpha(#55FFFFFF, (1 - on) * dim)", "when": "on < 0.98" },
+        { "type": "check", "x": "floor((w - 8) / 2)", "y": "floor((h - 7) / 2) + 1",
+          "color": "alpha(#FFFFFFFF, on * dim)", "when": "on > 0.15" }
+      ]
+    },
+    "inset": {
+      "vars": { "radius": 3, "fill": "#2E000000", "border": "#16FFFFFF" },
+      "layers": [ { "type": "panel", "radius": "radius", "color": "fill", "border": "border" } ]
+    },
+    "field": {
+      "vars": {
+        "radius": 3,
+        "fill": "#38000000",
+        "border": "mix(mix(#1CFFFFFF, #38FFFFFF, hover), alpha(accent, 0.95), focus)"
+      },
+      "layers": [ { "type": "panel", "radius": "radius", "color": "fill", "border": "border" } ]
+    },
+    "row": {
+      "vars": { "radius": 3 },
+      "layers": [
+        { "type": "round", "radius": "radius", "color": "alpha(accent, 0.14)", "when": "highlighted" },
+        { "type": "round", "radius": "radius", "color": "alpha(#16FFFFFF, hover)", "when": "hover > 0.02" }
+      ]
+    },
+    "progress": {
+      "vars": {
+        "radius": 3,
+        "fill": "alpha(accent, 0.95)",
+        "inner_w": "w - 4",
+        "band": "max(12, floor(inner_w / 4))",
+        "start": "floor(((time * 0.9) % 1) * (inner_w + band)) - band",
+        "from": "max(0, start)",
+        "to": "min(inner_w, start + band)"
+      },
+      "layers": [
+        { "type": "panel", "radius": "radius", "color": "#38000000", "border": "#16FFFFFF" },
+        { "type": "round", "x": 2, "y": 2, "w": "round(inner_w * min(1, value))", "h": "h - 4", "radius": 2,
+          "color": "fill", "when": "value >= 0" },
+        { "type": "round", "x": "2 + from", "y": 2, "w": "to - from", "h": "h - 4", "radius": 2, "color": "fill",
+          "when": "value < 0 && to > from" }
+      ]
+    },
+    "scrollbar": {
+      "layers": [
+        { "type": "round", "radius": 1, "color": "#18FFFFFF" },
+        { "type": "round", "y": "thumb_y", "h": "thumb_h", "radius": 1, "color": "alpha(accent, 0.55 + 0.4 * hover)" }
+      ]
+    },
+    "tooltip": {
+      "vars": { "radius": 4, "fill": "#F2101116", "border": "alpha(accent, 0.7)" },
+      "layers": [
+        { "type": "shadow", "radius": "radius", "spread": 4, "alpha": 90 },
+        { "type": "panel", "radius": "radius", "color": "fill", "border": "border" }
+      ]
+    },
+    "toast": {
+      "vars": { "radius": 6, "fill": "#F2111218", "border": "#2EFFFFFF" },
+      "layers": [
+        { "type": "shadow", "radius": "radius", "spread": 7, "alpha": 120 },
+        { "type": "panel", "radius": "radius", "color": "fill", "border": "border" }
+      ]
+    },
+    "swatch": {
+      "vars": { "grow": "round(hover)" },
+      "layers": [
+        { "type": "round", "x": "-grow", "y": "-grow", "w": "w + 2 * grow", "h": "h + 2 * grow", "radius": 4,
+          "color": "color" },
+        { "type": "ring", "x": -3, "y": -3, "w": "w + 6", "h": "h + 6", "radius": 5,
+          "color": "alpha(#FFFFFFFF, selected)", "when": "selected > 0.05" }
+      ]
+    }
+  }
+}

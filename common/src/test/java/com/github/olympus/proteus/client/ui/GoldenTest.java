@@ -7,7 +7,17 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import com.github.olympus.proteus.client.ui.theme.StyledTheme;
+import com.github.olympus.proteus.client.ui.theme.ThemeSources;
+import com.github.olympus.proteus.client.ui.theme.ThemeSpec;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class GoldenTest {
@@ -41,5 +51,28 @@ class GoldenTest {
         }
         compare("modern", modern);
         compare("classic", classic);
+    }
+
+    static JsonObject bundled(String name) throws IOException {
+        try (Reader reader = new InputStreamReader(
+                GoldenTest.class.getResourceAsStream("/assets/proteus/proteus/themes/" + name + ".json"),
+                StandardCharsets.UTF_8)) {
+            return JsonParser.parseReader(reader).getAsJsonObject();
+        }
+    }
+
+    @Test
+    void jsonThemesMatchGolden() throws IOException {
+        List<String> warnings = new ArrayList<>();
+        Map<String, JsonObject> raw = new HashMap<>();
+        raw.put("proteus:modern", bundled("modern"));
+        raw.put("proteus:classic", bundled("classic"));
+        ThemeSources sources = new ThemeSources(raw, warnings::add);
+        ThemeSpec modern = ThemeSpec.parse("proteus:modern", sources.resolve("proteus:modern"), null, warnings::add);
+        ThemeSpec classic = ThemeSpec.parse("proteus:classic", sources.resolve("proteus:classic"), modern,
+                warnings::add);
+        compare("modern", record(new StyledTheme(modern)));
+        compare("classic", record(new StyledTheme(classic)));
+        assertEquals(List.of(), warnings);
     }
 }

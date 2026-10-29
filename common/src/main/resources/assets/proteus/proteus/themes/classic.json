@@ -1,0 +1,101 @@
+{
+  "name": "Classic",
+  "parent": "proteus:modern",
+  "accent": { "color": "#FF55FF55", "locked": true },
+  "colors": {
+    "text": "#FFE0E0E0",
+    "text_secondary": "#FFA0A0A0",
+    "text_disabled": "#FF707070",
+    "title": "#FFFFFFFF",
+    "danger": "#FFFF5555",
+    "toast_title": "#FFFFFF55"
+  },
+  "text": { "shadow": true, "title_align": "center" },
+  "segments": { "sliding": false },
+  "backdrop": { "vanilla_blur": false },
+  "icons": {
+    "draw": "sprite",
+    "sprite": "classic/icon/{name}",
+    "custom_sprite": "{namespace}:classic/icon/{path}",
+    "sizes": { "left": [6, 9], "right": [6, 9], "cross": [8, 7] }
+  },
+  "sizes": {
+    "toggle": { "width": 34, "height": 20 },
+    "segment": { "pad": 0, "gap": 2 }
+  },
+  "motion": { "enabled": false },
+  "widgets": {
+    "backdrop": {
+      "vars": { "texture": "\"proteus:textures/gui/classic/background.png\"" },
+      "layers": [
+        { "type": "gradient", "top": "#C0101010", "bottom": "#D0101010", "when": "in_world" },
+        { "type": "group", "when": "!in_world", "layers": [
+          { "type": "tiled", "texture": "=texture", "fallback": [
+            { "type": "tiled", "texture": "minecraft:textures/block/dirt.png" },
+            { "type": "fill", "color": "#B0000000" }
+          ] }
+        ] }
+      ]
+    },
+    "window": { "layers": [] },
+    "card": { "layers": [ { "type": "sprite", "sprite": "classic/panel" } ] },
+    "button": {
+      "vars": {
+        "sprite": "\"classic/\" + if(!enabled, \"button_disabled\", if(selected > 0.5, \"button_selected\", if(hover > 0.5, \"button_hover\", \"button\")))"
+      },
+      "layers": [ { "type": "sprite", "sprite": "=sprite" } ],
+      "text_color": "if(!enabled, #FFA0A0A0, if(hover > 0.5 || selected > 0.5, #FFFFFFA0, #FFE0E0E0))"
+    },
+    "button.danger": {
+      "text_color": "if(!enabled, #FFA0A0A0, if(hover > 0.5, #FFFFAAAA, #FFFF7777))"
+    },
+    "segment_track": { "layers": [], "text_color": "#FFE0E0E0" },
+    "segment_thumb": { "layers": [] },
+    "toggle": {
+      "vars": { "value": "on > 0.5" },
+      "layers": [
+        { "type": "widget", "widget": "button", "vars": { "press": 0, "selected": 0 } },
+        { "type": "text", "text": "=if(value, on_label, off_label)", "color": "if(value, #FF55FF55, #FFFF5555)",
+          "shadow": true }
+      ]
+    },
+    "checkbox": {
+      "vars": {
+        "lit": "hover > 0.5 && enabled",
+        "sprite": "\"classic/\" + if(on > 0.5, if(lit, \"checkbox_checked_hover\", \"checkbox_checked\"), if(lit, \"checkbox_hover\", \"checkbox\"))"
+      },
+      "layers": [ { "type": "sprite", "sprite": "=sprite" } ]
+    },
+    "inset": { "layers": [ { "type": "sprite", "sprite": "classic/inset" } ] },
+    "field": { "layers": [ { "type": "sprite", "sprite": "=if(focus > 0.5, \"classic/field_focused\", \"classic/field\")" } ] },
+    "row": {
+      "layers": [
+        { "type": "sprite", "sprite": "classic/row_selected", "when": "highlighted" },
+        { "type": "sprite", "sprite": "classic/row_hover", "when": "!highlighted && hover > 0.5" }
+      ]
+    },
+    "progress": {
+      "layers": [
+        { "type": "sprite", "sprite": "classic/progress" },
+        { "type": "sprite", "sprite": "classic/progress_fill", "x": 2, "y": 2, "w": "round(inner_w * min(1, value))",
+          "h": "h - 4", "when": "value >= 0" },
+        { "type": "sprite", "sprite": "classic/progress_fill", "x": "2 + from", "y": 2, "w": "to - from",
+          "h": "h - 4", "when": "value < 0 && to > from" }
+      ]
+    },
+    "scrollbar": {
+      "layers": [
+        { "type": "sprite", "sprite": "classic/scroller_track" },
+        { "type": "sprite", "sprite": "classic/scroller", "y": "thumb_y", "h": "thumb_h" }
+      ]
+    },
+    "tooltip": { "layers": [ { "type": "sprite", "sprite": "classic/tooltip" } ] },
+    "toast": { "layers": [ { "type": "sprite", "sprite": "classic/tooltip" } ] },
+    "swatch": {
+      "layers": [
+        { "type": "fill", "color": "if(selected > 0.5, #FFFFFFFF, #FF000000)" },
+        { "type": "fill", "inset": 1, "color": "color" }
+      ]
+    }
+  }
+}
