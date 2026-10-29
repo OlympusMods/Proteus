@@ -43,7 +43,7 @@ public final class ThemeSpec {
             }
         }
         this.accent = accentColor;
-        this.accentLocked = accentJson.has("locked") && accentJson.get("locked").getAsBoolean();
+        this.accentLocked = bool(accentJson, "locked", false, "accent", warn);
         this.colors = new HashMap<>();
         for (Map.Entry<String, JsonElement> entry : object(json, "colors").entrySet()) {
             try {
@@ -56,12 +56,12 @@ public final class ThemeSpec {
             }
         }
         JsonObject text = object(json, "text");
-        this.textShadow = text.has("shadow") && text.get("shadow").getAsBoolean();
+        this.textShadow = bool(text, "shadow", false, "text", warn);
         this.titleAlign = string(text, "title_align", "left");
         JsonObject segments = object(json, "segments");
-        this.slidingSegments = !segments.has("sliding") || segments.get("sliding").getAsBoolean();
+        this.slidingSegments = bool(segments, "sliding", true, "segments", warn);
         JsonObject backdrop = object(json, "backdrop");
-        this.vanillaBlur = !backdrop.has("vanilla_blur") || backdrop.get("vanilla_blur").getAsBoolean();
+        this.vanillaBlur = bool(backdrop, "vanilla_blur", true, "backdrop", warn);
         this.widgets = new HashMap<>();
         this.broken = new HashSet<>();
         for (Map.Entry<String, JsonElement> entry : object(json, "widgets").entrySet()) {
@@ -89,6 +89,18 @@ public final class ThemeSpec {
 
     public static ThemeSpec parse(String id, JsonObject resolved, ThemeSpec fallback, Consumer<String> warn) {
         return new ThemeSpec(id, resolved, fallback, warn);
+    }
+
+    private boolean bool(JsonObject json, String key, boolean fallback, String section, Consumer<String> warn) {
+        JsonElement element = json.get(key);
+        if (element == null) {
+            return fallback;
+        }
+        if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isBoolean()) {
+            return element.getAsBoolean();
+        }
+        warn.accept(id + ": " + section + "." + key + ": expected true or false");
+        return fallback;
     }
 
     private static JsonObject object(JsonObject json, String key) {

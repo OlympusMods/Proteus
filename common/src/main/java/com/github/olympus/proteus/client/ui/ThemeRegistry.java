@@ -96,7 +96,13 @@ public final class ThemeRegistry {
         Map<String, ThemeSpec> specs = new HashMap<>();
         Map<String, Theme> themes = new LinkedHashMap<>();
         for (String id : raw.keySet()) {
-            ThemeSpec spec = spec(id, raw, sources, specs, new HashSet<>());
+            ThemeSpec spec;
+            try {
+                spec = spec(id, raw, sources, specs, new HashSet<>());
+            } catch (RuntimeException exception) {
+                warn.accept(id + ": " + exception.getMessage());
+                continue;
+            }
             Styled mod = styled.get(id);
             Theme theme;
             try {

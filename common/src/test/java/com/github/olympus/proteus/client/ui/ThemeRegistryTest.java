@@ -129,4 +129,15 @@ class ThemeRegistryTest {
         assertEquals(0xFF8B5CF6, registry.current("proteus:modern", "theme", 0xFF123456).accentColor());
         assertEquals(0xFF55FF55, registry.current("proteus:classic", "blue", 0xFF123456).accentColor());
     }
+
+    @Test
+    void wrongTypesDoNotFailReload() {
+        reload("a:typo", """
+                {"name": "Typo", "accent": {"locked": "yes"}, "text": {"shadow": {}}, "segments": {"sliding": []},
+                 "backdrop": {"vanilla_blur": "no"}, "motion": {"speed": "fast", "enabled": []}}
+                """);
+        Theme theme = registry.get("a:typo");
+        assertEquals("Typo", theme.name());
+        assertTrue(!warnings.isEmpty());
+    }
 }
