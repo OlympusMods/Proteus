@@ -1,5 +1,8 @@
 package com.github.olympus.proteus.client.ui;
 
+import com.github.olympus.proteus.client.ui.theme.Effects;
+import com.github.olympus.proteus.client.ui.theme.Moment;
+import com.github.olympus.proteus.client.ui.theme.MotionSpec;
 import org.lwjgl.glfw.GLFW;
 
 public abstract class UiShell implements UiApp {
@@ -7,11 +10,10 @@ public abstract class UiShell implements UiApp {
     private final Gui gui;
     private final FadeCanvas fade = new FadeCanvas();
     private final UiPrefs prefs = UiPrefs.get();
-    private final Theme modern = new ModernTheme();
-    private final Theme classic = new ClassicTheme();
 
     private int width;
     private int height;
+    private float openRaw;
     private float open;
     private float contentFade;
     private boolean closing;
@@ -89,10 +91,25 @@ public abstract class UiShell implements UiApp {
 
     protected final float beginContent() {
         float before = fade.alpha();
+        Moment content = gui.motion().get("content");
+        Effects effects = content.effects();
+        float shown = content.value(contentFade);
         fade.push();
-        fade.translate(0f, Math.round((1f - Motion.easeOutCubic(contentFade)) * 8f));
-        fade.alpha(before * Motion.easeOutCubic(contentFade));
+        fade.translate(Math.round(effects.dx(contentFade, shown, 0f)), Math.round(effects.dy(contentFade, shown, 0f)));
+        if (effects.transforms()) {
+            transform(effects.degrees(contentFade, shown), effects.scale(contentFade, shown));
+        }
+        fade.alpha(before * effects.alpha(contentFade, shown));
         return before;
+    }
+
+    private void transform(float degrees, float scale) {
+        float cx = width / 2f;
+        float cy = height / 2f;
+        fade.translate(cx, cy);
+        fade.rotate(degrees);
+        fade.scale(scale, scale);
+        fade.translate(-cx, -cy);
     }
 
     protected final void endContent(float before) {
@@ -113,7 +130,7 @@ public abstract class UiShell implements UiApp {
 
     @Override
     public boolean vanillaBackdrop(boolean inWorld) {
-        if (prefs.classic()) {
+        if (!Themes.current().vanillaBackdrop()) {
             return false;
         }
         return prefs.blur() || !inWorld;
@@ -126,6 +143,7 @@ public abstract class UiShell implements UiApp {
 
     @Override
     public void skipOpening() {
+        openRaw = 1f;
         open = 1f;
     }
 
@@ -185,26 +203,39 @@ public abstract class UiShell implements UiApp {
         lastNanos = now;
         clock += dt;
 
-        Theme theme = prefs.classic() ? classic : modern;
-        theme.accent(prefs.accentColor());
-        boolean animated = theme.motion().enabled() && prefs.animations();
+        Theme theme = Themes.current();
+        MotionSpec motion = theme.motion();
+        Moment window = motion.get("window");
+        Moment content = motion.get("content");
+        boolean animated = motion.enabled() && prefs.animations();
         float openTarget = closing ? 0f : 1f;
-        open = animated ? Motion.approach(open, openTarget, dt, 14f) : openTarget;
-        contentFade = animated ? Motion.approach(contentFade, 1f, dt, 12f) : 1f;
-        if (closing && open <= 0.02f) {
+        openRaw = animated ? window.advance(openRaw, openTarget, dt, motion.speed()) : openTarget;
+        float eased = window.value(openRaw);
+        open = Motion.clamp(eased, 0f, 1f);
+        contentFade = animated ? content.advance(contentFade, 1f, dt, motion.speed()) : 1f;
+        if (closing && openRaw <= 0.02f) {
             closeReady = true;
         }
-        int shift = animated ? Math.round((1f - open) * 10f) : 0;
+        Effects effects = window.effects();
+        int shift = animated ? Math.round(effects.dy(openRaw, eased, 0f)) : 0;
+        boolean transformed = animated && effects.transforms();
 
-        fade.bind(target, open);
+        fade.bind(target, animated ? effects.alpha(openRaw, eased) : 1f);
         theme.backdrop(fade, width, height, host.inWorld());
         fade.shift(shift);
+        if (transformed) {
+            fade.push();
+            transform(effects.degrees(openRaw, eased), effects.scale(openRaw, eased));
+        }
         gui.begin(fade, theme, mouseX, mouseY - shift, dt, clock, !animated);
         gui.lock(closing);
 
         renderContent(theme);
 
         gui.end();
+        if (transformed) {
+            fade.pop();
+        }
         fade.unshift();
         fade.unbind();
     }

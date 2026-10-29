@@ -1,22 +1,14 @@
 package com.github.olympus.proteus.client.ui;
 
+import com.github.olympus.proteus.client.ui.theme.Moment;
+import com.github.olympus.proteus.client.ui.theme.MotionSpec;
+import com.github.olympus.proteus.client.ui.theme.Sizes;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 import net.minecraft.network.chat.Component;
 
 public final class ToastOverlay {
-    private static final float ENTER = 0.42f;
-    private static final float EXIT = 0.3f;
-    private static final int MARGIN = 8;
-    private static final int PAD = 8;
-    private static final int ICON = 24;
-    private static final int MIN_WIDTH = 120;
-    private static final int MAX_WIDTH = 320;
-    private static final int MAX_LINES = 4;
-
-    private static final Theme MODERN = new ModernTheme();
-    private static final Theme CLASSIC = new ClassicTheme();
     private static final FadeCanvas FADE = new FadeCanvas();
 
     private record Pending(String title, String body, String icon) {
@@ -30,6 +22,8 @@ public final class ToastOverlay {
     private static String icon = "";
     private static boolean active;
     private static double age;
+    private static float enter;
+    private static float exit;
     private static float width;
     private static float height;
     private static long last;
@@ -45,10 +39,12 @@ public final class ToastOverlay {
             width = 0f;
             height = 0f;
             age = 0;
+            enter = 0f;
             last = System.nanoTime();
         } else {
-            age = Math.min(age, ENTER);
+            age = Math.min(age, Themes.current().motion().get("toast_in").duration());
         }
+        exit = 0f;
         active = true;
     }
 
@@ -94,12 +90,23 @@ public final class ToastOverlay {
         age += dt;
 
         UiPrefs prefs = UiPrefs.get();
-        Theme theme = prefs.classic() ? CLASSIC : MODERN;
-        theme.accent(prefs.accentColor());
-        boolean animated = theme.motion().enabled() && prefs.animations();
+        Theme theme = Themes.current();
+        Sizes sizes = theme.sizes();
+        MotionSpec motion = theme.motion();
+        Moment in = motion.get("toast_in");
+        Moment out = motion.get("toast_out");
+        Moment resize = motion.get("toast_resize");
+        boolean animated = motion.enabled() && prefs.animations();
         float hold = prefs.toastSeconds();
-        float enter = animated ? Motion.clamp((float) age / ENTER, 0f, 1f) : 1f;
-        float exit = animated ? Motion.clamp((float) (age - hold) / EXIT, 0f, 1f) : age >= hold ? 1f : 0f;
+        if (animated) {
+            enter = in.advance(enter, 1f, dt, motion.speed());
+            if (age >= hold) {
+                exit = out.advance(exit, 1f, dt, motion.speed());
+            }
+        } else {
+            enter = 1f;
+            exit = age >= hold ? 1f : 0f;
+        }
         if (exit >= 1f) {
             active = false;
             Pending next = QUEUE.poll();
@@ -109,34 +116,36 @@ public final class ToastOverlay {
             return;
         }
 
+        int margin = sizes.toastMargin();
+        int pad = sizes.toastPad();
+        int iconSize = sizes.toastIcon();
+        int minWidth = sizes.toastMinWidth();
+        int maxLines = sizes.toastMaxLines();
         boolean hasIcon = !icon.isEmpty() && target.hasItem(icon);
-        int textX = PAD + (hasIcon ? ICON + PAD : 0);
-        int maxWidth = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, target.width() - 2 * MARGIN));
-        int textMax = maxWidth - textX - PAD;
+        int textX = pad + (hasIcon ? iconSize + pad : 0);
+        int maxWidth = Math.max(minWidth, Math.min(sizes.toastMaxWidth(), target.width() - 2 * margin));
+        int textMax = maxWidth - textX - pad;
         List<String> lines = Draw.wrap(target, body, textMax);
-        if (lines.size() > MAX_LINES) {
-            lines = lines.subList(0, MAX_LINES);
-            lines.set(MAX_LINES - 1, Draw.fit(target, lines.get(MAX_LINES - 1) + "...", textMax));
+        if (lines.size() > maxLines) {
+            lines = lines.subList(0, maxLines);
+            lines.set(maxLines - 1, Draw.fit(target, lines.get(maxLines - 1) + "...", textMax));
         }
         int textWidth = target.textWidth(title);
         for (String line : lines) {
             textWidth = Math.max(textWidth, target.textWidth(line));
         }
         int lineHeight = target.lineHeight() + 1;
-        float wantedWidth = Math.max(MIN_WIDTH, Math.min(maxWidth, textX + textWidth + PAD));
-        float wantedHeight = PAD + lineHeight + 2 + lines.size() * lineHeight + PAD - 1;
+        float wantedWidth = Math.max(minWidth, Math.min(maxWidth, textX + textWidth + pad));
+        float wantedHeight = pad + lineHeight + 2 + lines.size() * lineHeight + pad - 1;
         if (hasIcon) {
-            wantedHeight = Math.max(ICON + 2 * PAD, wantedHeight);
+            wantedHeight = Math.max(iconSize + 2 * pad, wantedHeight);
         }
-        if (width == 0f) {
+        if (width == 0f || !animated || !resize.spring()) {
             width = wantedWidth;
             height = wantedHeight;
-        } else if (animated) {
-            width = Motion.approach(width, wantedWidth, dt, 14f);
-            height = Motion.approach(height, wantedHeight, dt, 14f);
         } else {
-            width = wantedWidth;
-            height = wantedHeight;
+            width = resize.advance(width, wantedWidth, dt, motion.speed());
+            height = resize.advance(height, wantedHeight, dt, motion.speed());
         }
         int w = Math.round(width);
         int h = Math.round(height);
@@ -144,43 +153,49 @@ public final class ToastOverlay {
         int corner = prefs.toastCorner();
         boolean right = corner == 1 || corner == 3;
         boolean bottom = corner == 2 || corner == 3;
-        int x = right ? target.width() - MARGIN - w : MARGIN;
-        int y = bottom ? target.height() - MARGIN - h : MARGIN;
+        int x = right ? target.width() - margin - w : margin;
+        int y = bottom ? target.height() - margin - h : margin;
 
-        float eased = animated ? easeOutBack(enter) : 1f;
-        float leave = exit * exit * exit;
-        float shown = eased * (1f - leave);
-        float slide = (1f - shown) * (w + MARGIN);
-        int dx = Math.round(right ? slide : -slide);
-        float alpha = animated ? Motion.clamp(Math.min(enter * 1.8f, 1f - exit), 0f, 1f) : 1f;
+        float entered = animated ? in.value(enter) : 1f;
+        float leave = animated ? out.value(exit) : 0f;
+        float shown = entered * (1f - leave);
+        float slideX = animated ? in.effects().dx(enter, shown, w + margin) : 0f;
+        float slideY = animated ? in.effects().dy(enter, shown, h + margin) : 0f;
+        int dx = Math.round(right ? slideX : -slideX);
+        int dy = Math.round(bottom ? slideY : -slideY);
+        float alpha = animated
+                ? Motion.clamp(Math.min(in.effects().alpha(enter, entered), 1f - out.effects().alpha(exit, leave)), 0f, 1f)
+                : 1f;
 
         FADE.bind(target, alpha);
         FADE.push();
-        FADE.translate(dx, 0f);
+        FADE.translate(dx, dy);
+        if (animated && in.effects().transforms()) {
+            float cx = x + w / 2f;
+            float cy = y + h / 2f;
+            FADE.translate(cx, cy);
+            FADE.rotate(in.effects().degrees(enter, shown));
+            float scale = in.effects().scale(enter, shown);
+            FADE.scale(scale, scale);
+            FADE.translate(-cx, -cy);
+        }
         theme.toast(FADE, x, y, w, h);
         if (hasIcon) {
-            int boxY = y + (h - ICON) / 2;
-            theme.inset(FADE, x + PAD, boxY, ICON, ICON);
+            int boxY = y + (h - iconSize) / 2;
+            theme.inset(FADE, x + pad, boxY, iconSize, iconSize);
             FADE.push();
-            FADE.translate(x + PAD + 2, boxY + 2);
-            FADE.scale(1.25f, 1.25f);
+            FADE.translate(x + pad + 2, boxY + 2);
+            FADE.scale((iconSize - 4) / 16f, (iconSize - 4) / 16f);
             FADE.item(icon, 0, 0);
             FADE.pop();
         }
         boolean shadow = theme.shadowText();
         int top = y + (h - (lineHeight + 2 + lines.size() * lineHeight - 1)) / 2;
-        FADE.text(Draw.fit(FADE, title, w - textX - PAD), x + textX, top,
-                prefs.classic() ? 0xFFFFFF55 : theme.textSecondary(), shadow);
+        FADE.text(Draw.fit(FADE, title, w - textX - pad), x + textX, top, theme.toastTitle(), shadow);
         for (int i = 0; i < lines.size(); i++) {
             FADE.text(lines.get(i), x + textX, top + lineHeight + 2 + i * lineHeight, theme.titleColor(), shadow);
         }
         FADE.pop();
         FADE.unbind();
-    }
-
-    private static float easeOutBack(float t) {
-        float k = 1.4f;
-        float u = t - 1f;
-        return 1f + (k + 1f) * u * u * u + k * u * u;
     }
 }

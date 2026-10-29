@@ -48,6 +48,6 @@ public final class Themes {
 
     public static Theme current() {
         UiPrefs prefs = UiPrefs.get();
-        return REGISTRY.current(prefs.classic() ? CLASSIC : MODERN, "preset", prefs.accentColor());
+        return REGISTRY.current(prefs.theme(), prefs.accentChoice(), prefs.accentColor());
     }
 }

@@ -1,5 +1,6 @@
 package com.github.olympus.proteus.client.ui;
 
+import com.github.olympus.proteus.client.ui.theme.Effects;
 import java.util.List;
 import net.minecraft.network.chat.Component;
 
@@ -17,8 +18,6 @@ final class HubApp implements UiApp {
     private final Gui gui;
     private final FadeCanvas fade = new FadeCanvas();
     private final UiPrefs prefs = UiPrefs.get();
-    private final Theme modern = new ModernTheme();
-    private final Theme classic = new ClassicTheme();
     private final List<Hub.Tab> tabs;
 
     private int current;
@@ -106,12 +105,12 @@ final class HubApp implements UiApp {
         boolean onBar = overBar(mouseX, mouseY);
         app.render(target, onBar ? -1 : mouseX, onBar ? -1 : mouseY);
 
-        Theme theme = prefs.classic() ? classic : modern;
-        theme.accent(prefs.accentColor());
+        Theme theme = Themes.current();
         boolean animated = theme.motion().enabled() && prefs.animations();
         float shown = app.visibility();
-        int shift = animated ? Math.round((1f - shown) * -6f) : 0;
-        fade.bind(target, shown);
+        Effects bar = theme.motion().get("card_bar").effects();
+        int shift = animated ? Math.round(bar.dy(shown, shown, 0f)) : 0;
+        fade.bind(target, animated ? bar.alpha(shown, shown) : shown);
         fade.shift(shift);
         gui.begin(fade, theme, mouseX, mouseY - shift, dt, clock, !animated);
         gui.lock(closing || shown < 0.5f);

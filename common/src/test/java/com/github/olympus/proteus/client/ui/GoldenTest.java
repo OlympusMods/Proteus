@@ -41,18 +41,6 @@ class GoldenTest {
         assertEquals(expected.size(), actual.size(), name + " line count");
     }
 
-    @Test
-    void recordsCurrentThemes() throws IOException {
-        List<String> modern = record(new ModernTheme());
-        List<String> classic = record(new ClassicTheme());
-        if (!System.getProperty("proteus.golden.write", "").isEmpty()) {
-            Files.write(golden("modern"), modern, StandardCharsets.UTF_8);
-            Files.write(golden("classic"), classic, StandardCharsets.UTF_8);
-        }
-        compare("modern", modern);
-        compare("classic", classic);
-    }
-
     static JsonObject bundled(String name) throws IOException {
         try (Reader reader = new InputStreamReader(
                 GoldenTest.class.getResourceAsStream("/assets/proteus/proteus/themes/" + name + ".json"),

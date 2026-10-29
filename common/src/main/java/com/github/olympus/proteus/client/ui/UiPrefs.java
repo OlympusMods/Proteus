@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
@@ -20,15 +21,16 @@ public final class UiPrefs {
     };
     public static final String[] ACCENT_KEYS = {"violet", "blue", "teal", "green", "amber", "rose"};
 
+    public static final String THEME = "theme";
+    public static final String CUSTOM = "custom";
+    public static final String CHROMA = "chroma";
+
     private static final String FILE = "ui.json";
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static UiPrefs instance;
 
-    public static final int CUSTOM = ACCENTS.length;
-    public static final int CHROMA = ACCENTS.length + 1;
-
-    private boolean classic;
-    private int accent;
+    private String theme = Themes.MODERN;
+    private String accent = THEME;
     private float hue = 0.72f;
     private float saturation = 0.75f;
     private float lightness = 0.5f;
@@ -48,24 +50,49 @@ public final class UiPrefs {
         return instance;
     }
 
-    public boolean classic() {
-        return classic;
+    public String theme() {
+        return theme;
     }
 
-    public void setClassic(boolean value) {
-        classic = value;
+    public void setTheme(String id) {
+        theme = id;
         save();
     }
 
-    public int accentIndex() {
+    public String accentChoice() {
         return accent;
     }
 
+    public void setAccentChoice(String choice) {
+        accent = validAccent(choice);
+        save();
+    }
+
+    private static String validAccent(String choice) {
+        if (THEME.equals(choice) || CUSTOM.equals(choice) || CHROMA.equals(choice)) {
+            return choice;
+        }
+        for (String key : ACCENT_KEYS) {
+            if (key.equals(choice)) {
+                return choice;
+            }
+        }
+        return THEME;
+    }
+
     public int accentColor() {
-        if (accent == CHROMA) {
+        if (CHROMA.equals(accent)) {
             return chromaColor();
         }
-        return accent == CUSTOM ? customColor() : ACCENTS[accent];
+        if (CUSTOM.equals(accent)) {
+            return customColor();
+        }
+        for (int i = 0; i < ACCENT_KEYS.length; i++) {
+            if (ACCENT_KEYS[i].equals(accent)) {
+                return ACCENTS[i];
+            }
+        }
+        return ACCENTS[0];
     }
 
     public int chromaColor() {
@@ -92,11 +119,6 @@ public final class UiPrefs {
         this.hue = hue;
         this.saturation = saturation;
         this.lightness = lightness;
-    }
-
-    public void setAccent(int index) {
-        accent = Math.max(0, Math.min(CHROMA, index));
-        save();
     }
 
     public int toastCorner() {
@@ -153,52 +175,68 @@ public final class UiPrefs {
     }
 
     private static UiPrefs load() {
-        UiPrefs prefs = new UiPrefs();
         Path path = file();
         if (!Files.isRegularFile(path)) {
-            return prefs;
+            return new UiPrefs();
         }
         try (Reader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-            JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
-            prefs.classic = object.has("style") && "classic".equals(object.get("style").getAsString());
-            if (object.has("accent")) {
-                prefs.accent = Math.max(0, Math.min(CHROMA, object.get("accent").getAsInt()));
-            }
-            if (object.has("hue")) {
-                prefs.hue = object.get("hue").getAsFloat();
-                prefs.saturation = object.get("saturation").getAsFloat();
-                prefs.lightness = object.get("lightness").getAsFloat();
-            }
-            if (object.has("toastCorner")) {
-                prefs.toastCorner = Math.max(0, Math.min(3, object.get("toastCorner").getAsInt()));
-            }
-            if (object.has("toastSeconds")) {
-                prefs.toastSeconds = Math.max(2, Math.min(15, object.get("toastSeconds").getAsInt()));
-            }
-            if (object.has("blur")) {
-                prefs.blur = object.get("blur").getAsBoolean();
-            }
-            if (object.has("animations")) {
-                prefs.animations = object.get("animations").getAsBoolean();
-            }
-            if (object.has("toasts")) {
-                JsonObject toasts = object.getAsJsonObject("toasts");
-                for (ToastKind kind : ToastKind.values()) {
-                    if (toasts.has(kind.key()) && "vanilla".equals(toasts.get(kind.key()).getAsString())) {
-                        prefs.vanillaToasts.add(kind);
-                    }
-                }
-            }
+            return fromJson(JsonParser.parseReader(reader).getAsJsonObject());
         } catch (IOException | RuntimeException exception) {
             ProteusClient.LOGGER.warn("Could not read {}: {}", path, exception.getMessage());
+            return new UiPrefs();
+        }
+    }
+
+    static UiPrefs fromJson(JsonObject object) {
+        UiPrefs prefs = new UiPrefs();
+        if (object.has("theme")) {
+            prefs.theme = object.get("theme").getAsString();
+        } else if (object.has("style") && "classic".equals(object.get("style").getAsString())) {
+            prefs.theme = Themes.CLASSIC;
+        }
+        if (object.has("accent")) {
+            JsonPrimitive accent = object.getAsJsonPrimitive("accent");
+            if (accent.isNumber()) {
+                int index = accent.getAsInt();
+                prefs.accent = index >= 0 && index < ACCENT_KEYS.length ? ACCENT_KEYS[index]
+                        : index == ACCENT_KEYS.length ? CUSTOM
+                        : index == ACCENT_KEYS.length + 1 ? CHROMA
+                        : THEME;
+            } else {
+                prefs.accent = validAccent(accent.getAsString());
+            }
+        }
+        if (object.has("hue")) {
+            prefs.hue = object.get("hue").getAsFloat();
+            prefs.saturation = object.get("saturation").getAsFloat();
+            prefs.lightness = object.get("lightness").getAsFloat();
+        }
+        if (object.has("toastCorner")) {
+            prefs.toastCorner = Math.max(0, Math.min(3, object.get("toastCorner").getAsInt()));
+        }
+        if (object.has("toastSeconds")) {
+            prefs.toastSeconds = Math.max(2, Math.min(15, object.get("toastSeconds").getAsInt()));
+        }
+        if (object.has("blur")) {
+            prefs.blur = object.get("blur").getAsBoolean();
+        }
+        if (object.has("animations")) {
+            prefs.animations = object.get("animations").getAsBoolean();
+        }
+        if (object.has("toasts")) {
+            JsonObject toasts = object.getAsJsonObject("toasts");
+            for (ToastKind kind : ToastKind.values()) {
+                if (toasts.has(kind.key()) && "vanilla".equals(toasts.get(kind.key()).getAsString())) {
+                    prefs.vanillaToasts.add(kind);
+                }
+            }
         }
         return prefs;
     }
 
-    public void save() {
-        Path path = file();
+    JsonObject toJson() {
         JsonObject object = new JsonObject();
-        object.addProperty("style", classic ? "classic" : "modern");
+        object.addProperty("theme", theme);
         object.addProperty("accent", accent);
         object.addProperty("hue", hue);
         object.addProperty("saturation", saturation);
@@ -212,6 +250,12 @@ public final class UiPrefs {
             toasts.addProperty(kind.key(), vanillaToasts.contains(kind) ? "vanilla" : "proteus");
         }
         object.add("toasts", toasts);
+        return object;
+    }
+
+    public void save() {
+        Path path = file();
+        JsonObject object = toJson();
         try {
             Files.createDirectories(path.getParent());
             try (Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {

@@ -1,5 +1,8 @@
 package com.github.olympus.proteus.client.ui;
 
+import com.github.olympus.proteus.client.ui.theme.Moment;
+import com.github.olympus.proteus.client.ui.theme.MotionSpec;
+import com.github.olympus.proteus.client.ui.theme.Sizes;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -10,12 +13,12 @@ import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 
 public final class Gui {
-    private static final float TOOLTIP_DELAY = 0.35f;
     private static final float REPEAT_DELAY = 0.4f;
     private static final float REPEAT_INTERVAL = 0.07f;
 
     private final UiHost host;
     private final Map<String, Float> values = new HashMap<>();
+    private final Map<String, float[]> tweens = new HashMap<>();
     private final Map<String, Field> fields = new HashMap<>();
     private final Map<String, Scroll> scrolls = new HashMap<>();
     private final Map<String, Area> areas = new HashMap<>();
@@ -126,7 +129,7 @@ public final class Gui {
             shownTip = tip;
             tipTime = 0f;
         }
-        if (tip != null && (snap || tipTime > TOOLTIP_DELAY)) {
+        if (tip != null && (snap || tipTime * motion().speed() > motion().get("tooltip").delay())) {
             drawTooltip(tip);
         }
     }
@@ -143,15 +146,57 @@ public final class Gui {
         return time;
     }
 
+    public Sizes sizes() {
+        return theme.sizes();
+    }
+
+    public MotionSpec motion() {
+        return theme.motion();
+    }
+
     public float anim(String key, float target, float rate) {
+        return anim(key, target, Moment.spring(rate));
+    }
+
+    public float anim(String key, float target, Moment moment) {
         float current = values.getOrDefault(key, target);
-        float next = snap ? target : Motion.approach(current, target, dt, rate);
+        if (snap) {
+            values.put(key, target);
+            tweens.remove(key);
+            return target;
+        }
+        if (moment.spring()) {
+            tweens.remove(key);
+            float next = moment.advance(current, target, dt, motion().speed());
+            values.put(key, next);
+            return next;
+        }
+        float[] tween = tweens.get(key);
+        if (tween == null || tween[1] != target) {
+            if (current == target) {
+                values.put(key, target);
+                return target;
+            }
+            tween = new float[] {current, target, 0f};
+            tweens.put(key, tween);
+        }
+        tween[2] = moment.advance(tween[2], 1f, dt, motion().speed());
+        float next = tween[0] + (tween[1] - tween[0]) * moment.value(tween[2]);
+        if (tween[2] >= 1f) {
+            tweens.remove(key);
+            next = target;
+        }
         values.put(key, next);
         return next;
     }
 
+    private float anim(String key, float target, String moment) {
+        return anim(key, target, motion().get(moment));
+    }
+
     public void setAnim(String key, float value) {
         values.put(key, value);
+        tweens.remove(key);
     }
 
     public boolean over(int x, int y, int w, int h) {
@@ -212,9 +257,9 @@ public final class Gui {
     public boolean button(String id, int x, int y, int w, int h, String label, ButtonKind kind, boolean selected,
             boolean enabled, String tip) {
         boolean hot = hot(id, x, y, w, h);
-        float hover = anim(id + "#h", hot && enabled ? 1f : 0f, 16f);
-        float press = anim(id + "#p", hot && enabled && mouseDown ? 1f : 0f, 30f);
-        float chosen = anim(id + "#s", selected ? 1f : 0f, 14f);
+        float hover = anim(id + "#h", hot && enabled ? 1f : 0f, "hover");
+        float press = anim(id + "#p", hot && enabled && mouseDown ? 1f : 0f, "press");
+        float chosen = anim(id + "#s", selected ? 1f : 0f, "select");
         theme.button(canvas, x, y, w, h, kind, hover, press, chosen, enabled);
         int color = theme.buttonText(kind, hover, chosen, enabled);
         String shown = fit(label, w - 6);
@@ -228,8 +273,8 @@ public final class Gui {
     public boolean iconButton(String id, int x, int y, int w, int h, String icon, ButtonKind kind, boolean enabled,
             String tip) {
         boolean hot = hot(id, x, y, w, h);
-        float hover = anim(id + "#h", hot && enabled ? 1f : 0f, 16f);
-        float press = anim(id + "#p", hot && enabled && mouseDown ? 1f : 0f, 30f);
+        float hover = anim(id + "#h", hot && enabled ? 1f : 0f, "hover");
+        float press = anim(id + "#p", hot && enabled && mouseDown ? 1f : 0f, "press");
         theme.button(canvas, x, y, w, h, kind, hover, press, 0f, enabled);
         int color = theme.buttonText(kind, hover, 0f, enabled);
         int shift = press > 0.5f ? 1 : 0;
@@ -243,8 +288,8 @@ public final class Gui {
     public boolean tabCard(String id, int x, int y, int w, int h, String label, String icon, boolean selected,
             String tip) {
         boolean hot = hot(id, x, y, w, h);
-        float hover = anim(id + "#h", hot ? 1f : 0f, 16f);
-        float press = anim(id + "#p", hot && mouseDown ? 1f : 0f, 30f);
+        float hover = anim(id + "#h", hot ? 1f : 0f, "hover");
+        float press = anim(id + "#p", hot && mouseDown ? 1f : 0f, "press");
         ButtonKind kind = selected && theme.slidingSegments() ? ButtonKind.PRIMARY : ButtonKind.NORMAL;
         theme.button(canvas, x, y, w, h, kind, hover, press, selected ? 1f : 0f, true);
         int color = theme.buttonText(kind, hover, selected ? 1f : 0f, true);
@@ -264,8 +309,8 @@ public final class Gui {
 
     public int repeatButton(String id, int x, int y, int w, int h, String label, boolean enabled, String tip) {
         boolean hot = hot(id, x, y, w, h);
-        float hover = anim(id + "#h", hot && enabled ? 1f : 0f, 16f);
-        float press = anim(id + "#p", hot && enabled && mouseDown ? 1f : 0f, 30f);
+        float hover = anim(id + "#h", hot && enabled ? 1f : 0f, "hover");
+        float press = anim(id + "#p", hot && enabled && mouseDown ? 1f : 0f, "press");
         theme.button(canvas, x, y, w, h, ButtonKind.NORMAL, hover, press, 0f, enabled);
         int color = theme.buttonText(ButtonKind.NORMAL, hover, 0f, enabled);
         canvas.text(label, x + (w - canvas.textWidth(label)) / 2, textY(y, h), color, theme.shadowText());
@@ -312,12 +357,12 @@ public final class Gui {
             boolean[] enabled) {
         int count = labels.length;
         boolean sliding = theme.slidingSegments();
-        int pad = sliding ? 2 : 0;
-        int gap = sliding ? 0 : 2;
+        int pad = sizes().segmentPad();
+        int gap = sizes().segmentGap();
         float inner = w - 2 * pad - gap * (count - 1);
         float each = inner / count;
         int result = -1;
-        float thumb = anim(id + "#t", selected, 16f);
+        float thumb = anim(id + "#t", selected, "segment");
         if (sliding) {
             theme.segmentTrack(canvas, x, y, w, h);
             int left = x + pad + Math.round(thumb * each);
@@ -331,14 +376,14 @@ public final class Gui {
             boolean on = enabled == null || enabled[i];
             String key = id + i;
             boolean hot = hot(key, sx, y, segW, h);
-            float hover = anim(key + "#h", hot && on ? 1f : 0f, 16f);
+            float hover = anim(key + "#h", hot && on ? 1f : 0f, "hover");
             float chosen = Motion.clamp(1f - Math.abs(thumb - i), 0f, 1f);
             if (sliding) {
                 int color = on ? theme.segmentText(chosen, hover) : theme.textDisabled();
                 String shown = fit(labels[i], segW - 6);
                 canvas.text(shown, sx + (segW - canvas.textWidth(shown)) / 2, textY(y, h), color, false);
             } else {
-                float press = anim(key + "#p", hot && on && mouseDown ? 1f : 0f, 30f);
+                float press = anim(key + "#p", hot && on && mouseDown ? 1f : 0f, "press");
                 theme.button(canvas, sx, y, segW, h, ButtonKind.SEGMENT, hover, press, i == selected ? 1f : 0f, on);
                 int color = theme.buttonText(ButtonKind.SEGMENT, hover, i == selected ? 1f : 0f, on);
                 String shown = fit(labels[i], segW - 6);
@@ -370,7 +415,7 @@ public final class Gui {
         if (dragging && mouseDown) {
             value = Motion.clamp((mouseX - x) / (float) (w - 1), 0f, 1f);
         }
-        float grow = anim(id + "#k", hot || dragging ? 1f : 0f, 16f);
+        float grow = anim(id + "#k", hot || dragging ? 1f : 0f, "knob");
         int knobX = x + Math.round(value * (w - 1));
         int extra = Math.round(grow);
         Draw.round(canvas, knobX - 3, y - 3 - extra, 7, h + 6 + 2 * extra, 3, 0xFFFFFFFF);
@@ -404,8 +449,8 @@ public final class Gui {
 
     public boolean pad(String id, int x, int y, int w, int h, boolean selected, String tip) {
         boolean hot = hot(id, x, y, w, h);
-        float hover = anim(id + "#h", hot ? 1f : 0f, 16f);
-        float chosen = anim(id + "#s", selected ? 1f : 0f, 14f);
+        float hover = anim(id + "#h", hot ? 1f : 0f, "hover");
+        float chosen = anim(id + "#s", selected ? 1f : 0f, "select");
         if (theme.slidingSegments() && chosen > 0.5f) {
             theme.segmentThumb(canvas, x, y, w, h);
         } else {
@@ -424,12 +469,12 @@ public final class Gui {
     public boolean switchRow(String id, int x, int y, int w, int h, String label, boolean value, boolean enabled,
             String tip, String onLabel, String offLabel) {
         boolean hot = hot(id, x, y, w, h);
-        float hover = anim(id + "#h", hot && enabled ? 1f : 0f, 16f);
-        float on = anim(id + "#o", value ? 1f : 0f, 16f);
+        float hover = anim(id + "#h", hot && enabled ? 1f : 0f, "hover");
+        float on = anim(id + "#o", value ? 1f : 0f, "toggle");
         int toggleW = theme.toggleWidth();
         canvas.text(fit(label, w - toggleW - 8), x, textY(y, h), enabled ? theme.textPrimary() : theme.textDisabled(),
                 theme.shadowText());
-        int toggleH = Math.min(h, theme.slidingSegments() ? 16 : 20);
+        int toggleH = Math.min(h, sizes().toggleHeight());
         theme.toggle(canvas, x + w - toggleW, y + (h - toggleH) / 2, toggleH, on, hover, enabled, onLabel, offLabel);
         if (hot) {
             tooltip(tip);
@@ -438,13 +483,13 @@ public final class Gui {
     }
 
     public void checkbox(String id, int x, int y, int size, boolean value, boolean enabled) {
-        float hover = anim(id + "#h", over(x, y, size, size) && enabled ? 1f : 0f, 16f);
-        float on = anim(id + "#o", value ? 1f : 0f, 18f);
+        float hover = anim(id + "#h", over(x, y, size, size) && enabled ? 1f : 0f, "hover");
+        float on = anim(id + "#o", value ? 1f : 0f, "checkbox");
         theme.checkbox(canvas, x, y, size, on, hover, enabled);
     }
 
     public void rowBackground(String id, int x, int y, int w, int h, boolean highlighted) {
-        float hover = anim(id + "#r", over(x, y, w, h) ? 1f : 0f, 18f);
+        float hover = anim(id + "#r", over(x, y, w, h) ? 1f : 0f, "row");
         theme.row(canvas, x, y, w, h, hover, highlighted);
     }
 
@@ -458,8 +503,8 @@ public final class Gui {
 
     public int chip(String id, int x, int y, int w, int h, String label, boolean enabled, String tip) {
         boolean hot = hot(id, x, y, w, h);
-        float hover = anim(id + "#h", hot && enabled ? 1f : 0f, 16f);
-        float press = anim(id + "#p", hot && enabled && mouseDown ? 1f : 0f, 30f);
+        float hover = anim(id + "#h", hot && enabled ? 1f : 0f, "hover");
+        float press = anim(id + "#p", hot && enabled && mouseDown ? 1f : 0f, "press");
         theme.button(canvas, x, y, w, h, ButtonKind.NORMAL, hover, press, 0f, enabled);
         int color = theme.buttonText(ButtonKind.NORMAL, hover, 0f, enabled);
         canvas.text(label, x + (w - canvas.textWidth(label)) / 2, textY(y, h), color, theme.shadowText());
@@ -485,8 +530,8 @@ public final class Gui {
     public boolean swatch(String id, int x, int y, int size, int color, boolean selected, boolean rainbow,
             String tip) {
         boolean hot = hot(id, x, y, size, size);
-        float hover = anim(id + "#h", hot ? 1f : 0f, 16f);
-        float chosen = anim(id + "#s", selected ? 1f : 0f, 14f);
+        float hover = anim(id + "#h", hot ? 1f : 0f, "hover");
+        float chosen = anim(id + "#s", selected ? 1f : 0f, "select");
         if (rainbow) {
             drawWheel(x, y, size, hover, chosen);
         } else {
@@ -507,18 +552,18 @@ public final class Gui {
         field.max = maxLength;
         boolean hot = hot(id, x, y, w, h);
         boolean focus = id.equals(focused);
-        float hover = anim(id + "#h", hot ? 1f : 0f, 16f);
-        float glow = anim(id + "#f", focus ? 1f : 0f, 16f);
+        float hover = anim(id + "#h", hot ? 1f : 0f, "hover");
+        float glow = anim(id + "#f", focus ? 1f : 0f, "focus");
         theme.field(canvas, x, y, w, h, glow, hover);
         if (hot && pressed) {
             consumed = true;
             focused = id;
             focus = true;
             field.all = false;
-            field.cursor = indexAt(field.text, mouseX - (x + 4));
+            field.cursor = indexAt(field.text, mouseX - (x + sizes().fieldPad()));
         }
-        int textX = x + 4;
-        int available = w - 8;
+        int textX = x + sizes().fieldPad();
+        int available = w - 2 * sizes().fieldPad();
         int start = 0;
         while (start < field.cursor && canvas.textWidth(field.text.substring(start, field.cursor)) > available - 2) {
             start++;
@@ -559,8 +604,8 @@ public final class Gui {
         area.max = maxLength;
         boolean hot = hot(id, x, y, w, h);
         boolean focus = id.equals(focused);
-        float hover = anim(id + "#h", hot ? 1f : 0f, 16f);
-        float glow = anim(id + "#f", focus ? 1f : 0f, 16f);
+        float hover = anim(id + "#h", hot ? 1f : 0f, "hover");
+        float glow = anim(id + "#f", focus ? 1f : 0f, "focus");
         theme.field(canvas, x, y, w, h, glow, hover);
         int textW = w - 14;
         area.wrap(canvas, textW);
@@ -575,7 +620,7 @@ public final class Gui {
             area.all = false;
             int row = (int) Math.floor((mouseY - (y + 4) + area.scroll) / (double) line);
             row = Math.max(0, Math.min(area.lines.size() - 1, row));
-            area.cursor = area.indexAt(canvas, row, mouseX - (x + 5));
+            area.cursor = area.indexAt(canvas, row, mouseX - (x + sizes().areaPad()));
             area.wantX = -1;
         }
         if (over(x, y, w, h) && wheel != 0f) {
@@ -598,7 +643,7 @@ public final class Gui {
         if (area.text.isEmpty() && !focus) {
             String[] hintLines = hint.split("\n");
             for (int i = 0; i < hintLines.length; i++) {
-                canvas.text(fit(hintLines[i], textW), x + 5, y + 5 + i * line, theme.textDisabled(), false);
+                canvas.text(fit(hintLines[i], textW), x + sizes().areaPad(), y + 5 + i * line, theme.textDisabled(), false);
             }
         }
         for (int i = 0; i < area.lines.size(); i++) {
@@ -609,21 +654,21 @@ public final class Gui {
             int[] seg = area.lines.get(i);
             String shown = area.text.substring(seg[0], seg[1]);
             if (area.all && focus && !shown.isEmpty()) {
-                canvas.fill(x + 4, ly - 1, canvas.textWidth(shown) + 2, line, 0x663B82F6);
+                canvas.fill(x + sizes().areaPad() - 1, ly - 1, canvas.textWidth(shown) + 2, line, 0x663B82F6);
             }
-            canvas.text(shown, x + 5, ly, theme.textPrimary(), theme.shadowText());
+            canvas.text(shown, x + sizes().areaPad(), ly, theme.textPrimary(), theme.shadowText());
         }
         if (focus && !area.all && (int) (time * 2) % 2 == 0) {
             int caretLine = area.lineOf(area.cursor);
             int[] seg = area.lines.get(caretLine);
-            int caretX = x + 5 + canvas.textWidth(area.text.substring(seg[0], Math.min(area.cursor, seg[1])));
+            int caretX = x + sizes().areaPad() + canvas.textWidth(area.text.substring(seg[0], Math.min(area.cursor, seg[1])));
             canvas.fill(caretX, y + 3 + caretLine * line - scroll, 1, line, theme.textPrimary());
         }
         canvas.unclip();
         if (total > h) {
             int thumbH = Math.max(12, Math.round(h * (h / (float) total)));
             int thumbY = y + Math.round((h - thumbH) * (area.scroll / maxScroll));
-            theme.scrollbar(canvas, x + w - 6, y + 1, 3, h - 2, thumbY, thumbH, 0f);
+            theme.scrollbar(canvas, x + w - 6, y + 1, sizes().scrollbarWidth(), h - 2, thumbY, thumbH, 0f);
         }
         area.cursor = Math.min(area.cursor, area.text.length());
         return area.text;
@@ -820,7 +865,10 @@ public final class Gui {
             scroll.current = scroll.target;
         }
         scroll.target = Motion.clamp(scroll.target, 0f, max);
-        scroll.current = snap ? scroll.target : Motion.approach(scroll.current, scroll.target, dt, 18f);
+        Moment glide = motion().get("scroll");
+        float rate = glide.spring() ? glide.rate() : 18f;
+        scroll.current = snap ? scroll.target
+                : Motion.approach(scroll.current, scroll.target, dt, rate * motion().speed());
         scroll.current = Motion.clamp(scroll.current, 0f, max);
         int[] parent = clips.peek();
         int cx = x;
@@ -857,8 +905,8 @@ public final class Gui {
         int trackX = scrollX + scrollW - 4;
         String barId = "sb:" + scrollId;
         boolean hot = (active == null || barId.equals(active)) && over(trackX - 2, scrollY, 6, scrollH);
-        float hover = anim(barId + "#h", hot || barId.equals(active) ? 1f : 0f, 16f);
-        theme.scrollbar(canvas, trackX, scrollY, 3, scrollH, thumbY, thumbH, hover);
+        float hover = anim(barId + "#h", hot || barId.equals(active) ? 1f : 0f, "hover");
+        theme.scrollbar(canvas, trackX, scrollY, sizes().scrollbarWidth(), scrollH, thumbY, thumbH, hover);
         if (hot && pressed && !consumed) {
             consumed = true;
             active = barId;
@@ -884,17 +932,21 @@ public final class Gui {
             width = Math.max(width, canvas.textWidth(line));
         }
         int lineHeight = canvas.lineHeight() + 1;
-        int w = width + 10;
-        int h = lines.size() * lineHeight + 8;
-        int x = mouseX + 10;
-        int y = mouseY + 12;
+        int pad = sizes().tooltipPad();
+        int w = width + 2 * pad;
+        int h = lines.size() * lineHeight + 2 * pad - 2;
+        int x = mouseX + sizes().tooltipOffsetX();
+        int y = mouseY + sizes().tooltipOffsetY();
         if (x + w > canvas.width() - 4) {
             x = Math.max(4, mouseX - w - 8);
         }
         if (y + h > canvas.height() - 4) {
             y = Math.max(4, canvas.height() - 4 - h);
         }
-        float fade = snap ? 1f : Motion.clamp((tipTime - TOOLTIP_DELAY) / 0.12f, 0f, 1f);
+        Moment appear = motion().get("tooltip");
+        float total = appear.duration() + appear.delay();
+        float fade = snap || total <= 0f ? 1f
+                : appear.effects().alpha(0f, appear.value(Motion.clamp(tipTime * motion().speed() / total, 0f, 1f)));
         float previous = 1f;
         if (canvas instanceof FadeCanvas fadeCanvas) {
             previous = fadeCanvas.alpha();
@@ -902,7 +954,7 @@ public final class Gui {
         }
         theme.tooltip(canvas, x, y, w, h);
         for (int i = 0; i < lines.size(); i++) {
-            canvas.text(lines.get(i), x + 5, y + 5 + i * lineHeight, theme.textPrimary(), theme.shadowText());
+            canvas.text(lines.get(i), x + pad, y + pad + i * lineHeight, theme.textPrimary(), theme.shadowText());
         }
         if (canvas instanceof FadeCanvas fadeCanvas) {
             fadeCanvas.alpha(previous);

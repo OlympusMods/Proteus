@@ -1,5 +1,6 @@
 package com.github.olympus.proteus.client.ui;
 
+import java.util.List;
 import net.minecraft.network.chat.Component;
 
 public final class AppearancePanel {
@@ -26,17 +27,25 @@ public final class AppearancePanel {
 
         y = heading(text("proteus.ui.style"), ix, y);
         theme.card(fade, ix, y, lw, 36);
-        String[] styles = {text("proteus.ui.style.modern"), text("proteus.ui.style.classic")};
-        String[] styleTips = {text("proteus.ui.style.modern.tooltip"), text("proteus.ui.style.classic.tooltip")};
-        int picked = gui.segmented("style", ix + 8, y + 8, lw - 16, ROW, styles, prefs.classic() ? 1 : 0, styleTips,
-                null);
+        List<Theme> themes = Themes.all();
+        String[] styles = new String[themes.size()];
+        String[] styleTips = new String[themes.size()];
+        int current = 0;
+        for (int i = 0; i < themes.size(); i++) {
+            styles[i] = themes.get(i).name();
+            styleTips[i] = themes.get(i).description();
+            if (themes.get(i) == theme) {
+                current = i;
+            }
+        }
+        int picked = gui.segmented("style", ix + 8, y + 8, lw - 16, ROW, styles, current, styleTips, null);
         if (picked >= 0) {
-            prefs.setClassic(picked == 1);
+            prefs.setTheme(Themes.id(themes.get(picked)));
             changed = true;
         }
         y += 36 + GAP;
 
-        if (prefs.classic()) {
+        if (theme.accentLocked()) {
             for (String line : Draw.wrap(fade, text("proteus.ui.classic_note"), lw - 8)) {
                 gui.text(line, ix + 4, y, theme.textSecondary());
                 y += 11;
@@ -47,21 +56,25 @@ public final class AppearancePanel {
         }
 
         y = heading(text("proteus.ui.accent"), ix, y);
-        boolean custom = prefs.accentIndex() == UiPrefs.CUSTOM;
+        boolean custom = UiPrefs.CUSTOM.equals(prefs.accentChoice());
         int cardH = custom ? 38 + 3 * 22 + 4 : 38;
         theme.card(fade, ix, y, lw, cardH);
-        int count = UiPrefs.ACCENTS.length + 2;
+        String[] choices = new String[UiPrefs.ACCENT_KEYS.length + 2];
+        System.arraycopy(UiPrefs.ACCENT_KEYS, 0, choices, 0, UiPrefs.ACCENT_KEYS.length);
+        choices[choices.length - 2] = UiPrefs.CUSTOM;
+        choices[choices.length - 1] = UiPrefs.CHROMA;
+        int count = choices.length;
         int size = 20;
         int gap = Math.min(14, (lw - 24 - count * size) / (count - 1));
         for (int i = 0; i < count; i++) {
             int sx = ix + 12 + i * (size + gap);
-            boolean isCustom = i == UiPrefs.CUSTOM;
-            boolean isChroma = i == UiPrefs.CHROMA;
+            String key = choices[i];
+            boolean isCustom = UiPrefs.CUSTOM.equals(key);
+            boolean isChroma = UiPrefs.CHROMA.equals(key);
             int color = isCustom ? prefs.customColor() : isChroma ? prefs.chromaColor() : UiPrefs.ACCENTS[i];
-            String key = isCustom ? "custom" : isChroma ? "chroma" : UiPrefs.ACCENT_KEYS[i];
-            if (gui.swatch("accent" + i, sx, y + 9, size, color, prefs.accentIndex() == i, isCustom,
+            if (gui.swatch("accent" + i, sx, y + 9, size, color, key.equals(prefs.accentChoice()), isCustom,
                     text("proteus.ui.accent." + key))) {
-                prefs.setAccent(i);
+                prefs.setAccentChoice(key);
             }
         }
         if (custom) {
