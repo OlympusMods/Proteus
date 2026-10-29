@@ -84,6 +84,11 @@ public final class RecordingCanvas implements Canvas {
     }
 
     @Override
+    public void rotate(float degrees) {
+        calls.add("rotate " + degrees);
+    }
+
+    @Override
     public void clip(int x, int y, int w, int h) {
         calls.add("clip " + x + " " + y + " " + w + " " + h);
     }

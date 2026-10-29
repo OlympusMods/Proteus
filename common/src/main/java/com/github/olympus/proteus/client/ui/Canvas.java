@@ -23,6 +23,8 @@ public interface Canvas {
 
     void scale(float x, float y);
 
+    void rotate(float degrees);
+
     void clip(int x, int y, int w, int h);
 
     void unclip();

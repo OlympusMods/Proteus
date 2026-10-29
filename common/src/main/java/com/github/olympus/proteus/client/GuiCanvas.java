@@ -1,6 +1,8 @@
 package com.github.olympus.proteus.client;
 
 import com.github.olympus.proteus.client.ui.Canvas;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.math.Axis;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -84,6 +86,11 @@ final class GuiCanvas implements Canvas {
     @Override
     public void scale(float x, float y) {
         graphics.pose().scale(x, y);
+    }
+
+    @Override
+    public void rotate(float degrees) {
+        graphics.pose().mulPose(Axis.ZP.rotationDegrees(degrees));
     }
 
     @Override

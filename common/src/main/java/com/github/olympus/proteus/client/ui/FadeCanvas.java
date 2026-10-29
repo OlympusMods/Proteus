@@ -111,6 +111,11 @@ public final class FadeCanvas implements Canvas {
     }
 
     @Override
+    public void rotate(float degrees) {
+        target.rotate(degrees);
+    }
+
+    @Override
     public void clip(int x, int y, int w, int h) {
         target.clip(x, y + shift, w, h);
     }
