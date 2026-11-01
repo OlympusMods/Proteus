@@ -2,6 +2,7 @@ package com.github.olympus.proteus.client.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -62,5 +63,21 @@ class GoldenTest {
         compare("modern", record(new StyledTheme(modern)));
         compare("classic", record(new StyledTheme(classic)));
         assertEquals(List.of(), warnings);
+    }
+
+    @Test
+    void liquidGlassDrawsGlassWithoutWarnings() throws IOException {
+        List<String> warnings = new ArrayList<>();
+        Map<String, JsonObject> raw = new HashMap<>();
+        raw.put("proteus:modern", bundled("modern"));
+        raw.put("proteus:liquid_glass", bundled("liquid_glass"));
+        ThemeSources sources = new ThemeSources(raw, warnings::add);
+        ThemeSpec modern = ThemeSpec.parse("proteus:modern", sources.resolve("proteus:modern"), null, warnings::add);
+        ThemeSpec glass = ThemeSpec.parse("proteus:liquid_glass", sources.resolve("proteus:liquid_glass"), modern,
+                warnings::add);
+        List<String> calls = record(new StyledTheme(glass));
+        assertEquals(List.of(), warnings);
+        assertTrue(calls.stream().anyMatch(line -> line.startsWith("glass 10 20 300 200 r14")));
+        assertTrue(calls.stream().anyMatch(line -> line.startsWith("glass 8 8 160 40 r12")));
     }
 }

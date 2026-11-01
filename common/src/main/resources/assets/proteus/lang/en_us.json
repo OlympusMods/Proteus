@@ -4,6 +4,8 @@
   "proteus.theme.modern.description": "Rounded widgets, blur and smooth animations.",
   "proteus.theme.classic": "Classic",
   "proteus.theme.classic.description": "The plain old Minecraft look: dirt background, square gray buttons, no animations.",
+  "proteus.theme.liquid_glass": "Liquid Glass",
+  "proteus.theme.liquid_glass.description": "Clear glass that bends and tints what is behind it, with bright edges and springy motion.",
   "proteus.ui.locked_accent_note": "This theme sets its own colors.",
   "proteus.ui.accent": "Accent color",
   "proteus.ui.accent.theme": "Theme color",

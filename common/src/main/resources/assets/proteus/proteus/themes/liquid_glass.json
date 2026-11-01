@@ -1,0 +1,217 @@
+{
+  "name": "proteus.theme.liquid_glass",
+  "description": "proteus.theme.liquid_glass.description",
+  "parent": "proteus:modern",
+  "accent": { "color": "#FF0A84FF", "locked": false },
+  "colors": {
+    "text": "#FFF5F7FA",
+    "text_secondary": "#FFC2C8D2",
+    "text_disabled": "#FF7C8490",
+    "title": "#FFFFFFFF",
+    "danger": "#FFFF453A",
+    "toast_title": "text_secondary",
+    "glass_dark": "#38101318",
+    "glass_light": "#14FFFFFF"
+  },
+  "text": { "shadow": false, "title_align": "left" },
+  "segments": { "sliding": true },
+  "backdrop": { "vanilla_blur": true },
+  "sizes": {
+    "toggle": { "width": 32, "height": 16 },
+    "segment": { "pad": 2, "gap": 0 },
+    "toast": { "margin": 8, "pad": 8 }
+  },
+  "motion": {
+    "enabled": true,
+    "speed": 1.0,
+    "window": { "easing": "back", "overshoot": 1.5, "duration": 0.45,
+                "effects": { "fade": { "easing": "ease_out", "speed": 1.6 }, "scale": { "from": 0.9 } } },
+    "content": { "easing": "spring", "rate": 12,
+                 "effects": { "fade": { "easing": "ease_out" }, "scale": { "from": 0.97, "easing": "ease_out" } } },
+    "card_bar": { "easing": "back", "overshoot": 1.3, "duration": 0.4,
+                  "effects": { "fade": true, "scale": { "from": 0.92 } } },
+    "toast_in": { "easing": "back", "overshoot": 1.7, "duration": 0.5,
+                  "effects": { "fade": { "easing": "linear", "speed": 2.0 }, "scale": { "from": 0.7 },
+                               "slide": { "y": -0.4, "relative": true } } },
+    "toast_out": { "easing": "ease_in", "duration": 0.28,
+                   "effects": { "fade": { "easing": "linear" }, "scale": { "from": 0.85 } } },
+    "tooltip": { "easing": "back", "overshoot": 1.4, "duration": 0.22, "delay": 0.3,
+                 "effects": { "fade": { "easing": "linear", "speed": 1.6 }, "scale": { "from": 0.85 } } },
+    "hover": { "easing": "spring", "rate": 14 },
+    "press": { "easing": "back", "overshoot": 2.2, "duration": 0.28 },
+    "toggle": { "easing": "back", "overshoot": 1.3, "duration": 0.42 },
+    "checkbox": { "easing": "back", "overshoot": 1.6, "duration": 0.3 },
+    "segment": { "easing": "back", "overshoot": 1.25, "duration": 0.4 },
+    "select": { "easing": "spring", "rate": 14 }
+  },
+  "widgets": {
+    "backdrop": {
+      "vars": { "top": "#30000000", "bottom": "#70000000" },
+      "layers": [ { "type": "gradient", "top": "top", "bottom": "bottom" } ]
+    },
+    "window": {
+      "vars": { "radius": 14, "tint": "glass_dark" },
+      "layers": [
+        { "type": "shadow", "radius": "radius", "spread": 12, "alpha": 110 },
+        { "type": "glass", "radius": "radius", "color": "tint", "blur": 3, "refraction": 14, "depth": 20,
+          "dispersion": 0.35, "zoom": 10, "smear": 5, "highlight": 0.85, "saturation": 1.6 }
+      ]
+    },
+    "card": {
+      "vars": { "radius": 10 },
+      "layers": [
+        { "type": "glass", "radius": "radius", "color": "glass_light", "blur": 1.5, "refraction": 7, "depth": 10, "zoom": 5, "smear": 3,
+          "highlight": 0.6 }
+      ]
+    },
+    "button": {
+      "vars": {
+        "radius": "floor(h / 2)",
+        "dim": "if(enabled, 1, 0.45)",
+        "grow": "1 + 0.06 * press",
+        "tint": "alpha(mix(#12FFFFFF, #2AFFFFFF, hover), dim)"
+      },
+      "layers": [
+        { "type": "glass", "radius": "radius", "color": "tint", "blur": 0.5, "refraction": 6, "depth": 8,
+          "zoom": 4, "smear": 3, "highlight": "0.55 + 0.35 * hover", "glow": "(0.5 * hover + press) * dim", "opacity": "0.6 + 0.4 * dim",
+          "scale": "grow" }
+      ],
+      "text_color": "if(enabled, text, text_disabled)"
+    },
+    "button.primary": {
+      "vars": { "tint": "alpha(alpha(lighten(accent, 0.15 * hover), 0.62), dim)" },
+      "text_color": "if(enabled, #FFFFFFFF, text_disabled)"
+    },
+    "button.danger": {
+      "vars": { "tint": "alpha(alpha(lighten(danger, 0.15 * hover), 0.62), dim)" },
+      "text_color": "if(enabled, #FFFFFFFF, text_disabled)"
+    },
+    "button.ghost": {
+      "vars": { "tint": "#1AFFFFFF" },
+      "layers": [
+        { "type": "glass", "radius": "radius", "color": "tint", "blur": 0.5, "refraction": 6, "depth": 8,
+          "zoom": 4, "smear": 3, "highlight": 0.7, "glow": "0.5 * hover + press", "opacity": "hover * dim", "scale": "grow",
+          "when": "hover > 0.02" }
+      ],
+      "text_color": "if(enabled, mix(text_secondary, text, hover), text_disabled)"
+    },
+    "button.segment": {
+      "layers": []
+    },
+    "segment_track": {
+      "vars": { "radius": "floor(h / 2)" },
+      "layers": [
+        { "type": "glass", "radius": "radius", "color": "#28000000", "blur": 2, "refraction": 3, "depth": 5,
+          "highlight": 0.45 }
+      ],
+      "text_color": "mix(mix(text_secondary, text, hover), #FFFFFFFF, selected)"
+    },
+    "segment_thumb": {
+      "vars": { "radius": "floor(h / 2)" },
+      "layers": [
+        { "type": "glass", "radius": "radius", "color": "alpha(accent, 0.55)", "blur": 0, "refraction": 8,
+          "depth": 8, "zoom": 5, "smear": 3, "dispersion": 0.5, "highlight": 1.0, "saturation": 1.8 }
+      ]
+    },
+    "toggle": {
+      "vars": {
+        "track": "alpha(mix(mix(#30FFFFFF, #44FFFFFF, hover), alpha(accent, 0.85), on), if(enabled, 1, 0.4))",
+        "moving": "2 * min(on, 1 - on)",
+        "knob_h": "h - 4",
+        "knob_w": "h - 4 + round(8 * moving)",
+        "knob_x": "2 + round((w - knob_w - 4) * on)"
+      },
+      "layers": [
+        { "type": "glass", "radius": "floor(h / 2)", "color": "track", "blur": 1, "refraction": 3, "depth": 5,
+          "highlight": 0.5 },
+        { "type": "shadow", "x": "knob_x", "y": 2, "w": "knob_w", "h": "knob_h", "radius": "floor(knob_h / 2)",
+          "spread": 2, "alpha": "round(60 * (1 - moving))" },
+        { "type": "glass", "x": "knob_x", "y": 2, "w": "knob_w", "h": "knob_h", "radius": "floor(knob_h / 2)",
+          "color": "alpha(#FFFFFFFF, 0.92 - 0.8 * moving)", "blur": 0, "refraction": "4 + 6 * moving", "depth": 6,
+          "zoom": "2 + 4 * moving", "smear": "1 + 4 * moving",
+          "dispersion": 0.6, "highlight": "0.6 + 0.6 * moving", "scale": "1 + 0.25 * moving" }
+      ]
+    },
+    "checkbox": {
+      "vars": {
+        "radius": 4,
+        "dim": "if(enabled, 1, 0.4)",
+        "tint": "alpha(mix(mix(#18FFFFFF, #30FFFFFF, hover), alpha(accent, 0.7), on), dim)"
+      },
+      "layers": [
+        { "type": "glass", "radius": "radius", "color": "tint", "blur": 0.5, "refraction": 3, "depth": 4,
+          "highlight": 0.7, "glow": "0.5 * hover", "scale": "1 + 0.24 * on * (1 - on)" },
+        { "type": "check", "x": "floor((w - 8) / 2)", "y": "floor((h - 7) / 2) + 1",
+          "color": "alpha(#FFFFFFFF, on * dim)", "when": "on > 0.15" }
+      ]
+    },
+    "inset": {
+      "vars": { "radius": 8 },
+      "layers": [
+        { "type": "glass", "radius": "radius", "color": "#30000000", "blur": 3, "refraction": -3, "depth": 5, "zoom": 0, "smear": 0,
+          "highlight": 0.35, "light": 135 }
+      ]
+    },
+    "field": {
+      "vars": { "radius": 8 },
+      "layers": [
+        { "type": "glass", "radius": "radius", "color": "mix(#34000000, #24000000, hover)", "blur": 2,
+          "refraction": -3, "depth": 5, "zoom": 0, "smear": 0, "highlight": "0.35 + 0.5 * focus", "light": 135 },
+        { "type": "ring", "radius": "radius", "color": "alpha(accent, 0.9 * focus)", "when": "focus > 0.02" }
+      ]
+    },
+    "row": {
+      "vars": { "radius": 8 },
+      "layers": [
+        { "type": "round", "radius": "radius", "color": "alpha(accent, 0.18)", "when": "highlighted" },
+        { "type": "glass", "radius": "radius", "color": "#10FFFFFF", "blur": 0.5, "refraction": 3, "depth": 5,
+          "highlight": 0.6, "glow": 0.4, "opacity": "hover", "when": "hover > 0.02" }
+      ]
+    },
+    "progress": {
+      "vars": {
+        "radius": "floor(h / 2)",
+        "inner_w": "w - 4",
+        "band": "max(12, floor(inner_w / 4))",
+        "start": "floor(((time * 0.9) % 1) * (inner_w + band)) - band",
+        "from": "max(0, start)",
+        "to": "min(inner_w, start + band)",
+        "fill": "alpha(accent, 0.7)"
+      },
+      "layers": [
+        { "type": "glass", "radius": "radius", "color": "#30000000", "blur": 2, "refraction": -2, "depth": 4, "zoom": 0, "smear": 0,
+          "highlight": 0.35, "light": 135 },
+        { "type": "glass", "x": 2, "y": 2, "w": "round(inner_w * min(1, value))", "h": "h - 4",
+          "radius": "floor((h - 4) / 2)", "color": "fill", "blur": 0, "refraction": 3, "depth": 4, "highlight": 0.9,
+          "when": "value >= 0" },
+        { "type": "glass", "x": "2 + from", "y": 2, "w": "to - from", "h": "h - 4", "radius": "floor((h - 4) / 2)",
+          "color": "fill", "blur": 0, "refraction": 3, "depth": 4, "highlight": 0.9, "when": "value < 0 && to > from" }
+      ]
+    },
+    "scrollbar": {
+      "layers": [
+        { "type": "round", "radius": "floor(w / 2)", "color": "#14FFFFFF" },
+        { "type": "glass", "y": "thumb_y", "h": "thumb_h", "radius": "floor(w / 2)",
+          "color": "alpha(#40FFFFFF, 0.6 + 0.4 * hover)", "blur": 0, "refraction": 2, "depth": 3, "highlight": 0.8 }
+      ]
+    },
+    "tooltip": {
+      "vars": { "radius": 8 },
+      "layers": [
+        { "type": "shadow", "radius": "radius", "spread": 5, "alpha": 80 },
+        { "type": "glass", "radius": "radius", "color": "#60101318", "blur": 5, "refraction": 7, "depth": 9,
+          "zoom": 5, "smear": 3,
+          "highlight": 0.7 }
+      ]
+    },
+    "toast": {
+      "vars": { "radius": 12 },
+      "layers": [
+        { "type": "shadow", "radius": "radius", "spread": 8, "alpha": 100 },
+        { "type": "glass", "radius": "radius", "color": "#44101318", "blur": 3, "refraction": 12, "depth": 16,
+          "zoom": 8, "smear": 4,
+          "dispersion": 0.4, "highlight": 0.85, "saturation": 1.7 }
+      ]
+    }
+  }
+}
