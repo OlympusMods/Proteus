@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -20,13 +21,10 @@ public final class ThemeReloader implements ResourceManagerReloadListener {
     public void onResourceManagerReload(ResourceManager manager) {
         Consumer<String> warn = message -> ProteusClient.LOGGER.warn("Theme {}", message);
         Map<String, String> sources = new HashMap<>();
-        Map<Identifier, Resource> found = manager.listResources(FOLDER,
-                location -> location.getPath().endsWith(".json"));
-        for (Map.Entry<Identifier, Resource> entry : found.entrySet()) {
+        FileToIdConverter files = FileToIdConverter.json(FOLDER);
+        for (Map.Entry<Identifier, Resource> entry : files.listMatchingResources(manager).entrySet()) {
             Identifier location = entry.getKey();
-            String path = location.getPath();
-            String name = path.substring(FOLDER.length() + 1, path.length() - ".json".length());
-            String id = location.getNamespace() + ":" + name;
+            String id = files.fileToId(location).toString();
             try (BufferedReader reader = entry.getValue().openAsReader()) {
                 sources.put(id, reader.lines().collect(Collectors.joining("\n")));
             } catch (IOException exception) {
