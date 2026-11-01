@@ -23,6 +23,7 @@ public final class ProteusScreen extends Screen implements UiHost {
     private final Screen parent;
     private final UiApp ui;
     private final GuiCanvas canvas = new GuiCanvas();
+    private final TextInput textInput = new TextInput(this);
 
     public ProteusScreen(Component title, Screen parent, Function<UiHost, UiApp> app) {
         super(title);
@@ -64,6 +65,7 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public void removed() {
+        textInput.release();
         ui.removed();
     }
 
@@ -94,6 +96,7 @@ public final class ProteusScreen extends Screen implements UiHost {
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         canvas.bind(graphics, font, width, height);
         ui.render(canvas, mouseX, mouseY);
+        textInput.sync(ui.typing());
     }
 
     @Override

@@ -211,6 +211,11 @@ final class HubApp implements UiApp {
     }
 
     @Override
+    public boolean typing() {
+        return app.typing();
+    }
+
+    @Override
     public boolean vanillaBackdrop(boolean inWorld) {
         return app.vanillaBackdrop(inWorld);
     }

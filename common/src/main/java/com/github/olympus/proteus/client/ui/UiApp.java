@@ -21,6 +21,10 @@ public interface UiApp {
 
     boolean vanillaBackdrop(boolean inWorld);
 
+    default boolean typing() {
+        return false;
+    }
+
     default void removed() {
     }
 
