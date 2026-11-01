@@ -32,7 +32,8 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     private static Map<String, Integer> codes() {
         Map<String, Integer> codes = new HashMap<>();
-        for (String name : new String[] {"KEY_BACKSPACE", "KEY_DELETE", "KEY_HOME", "KEY_END"}) {
+        for (String name : new String[] {"KEY_BACKSPACE", "KEY_DELETE", "KEY_HOME", "KEY_END", "MOUSE_BUTTON_LEFT",
+                "MOUSE_BUTTON_RIGHT"}) {
             try {
                 codes.put(name, InputConstants.class.getField(name).getInt(null));
             } catch (ReflectiveOperationException exception) {
@@ -97,13 +98,13 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        ui.mousePressed(event.button());
+        ui.mousePressed(button(event.button()));
         return true;
     }
 
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
-        ui.mouseReleased(event.button());
+        ui.mouseReleased(button(event.button()));
         return true;
     }
 
@@ -123,6 +124,16 @@ public final class ProteusScreen extends Screen implements UiHost {
     @Override
     public boolean charTyped(CharacterEvent event) {
         return ui.charTyped(event.codepoint());
+    }
+
+    private static int button(int button) {
+        if (button == CODES.get("MOUSE_BUTTON_LEFT")) {
+            return 0;
+        }
+        if (button == CODES.get("MOUSE_BUTTON_RIGHT")) {
+            return 1;
+        }
+        return -1;
     }
 
     private static boolean shortcut(KeyEvent event) {
