@@ -80,4 +80,19 @@ class GoldenTest {
         assertTrue(calls.stream().anyMatch(line -> line.startsWith("glass 10 20 300 200 r14")));
         assertTrue(calls.stream().anyMatch(line -> line.startsWith("glass 8 8 160 40 r12")));
     }
+
+    @Test
+    void aeroDrawsGlassFramesWithoutWarnings() throws IOException {
+        List<String> warnings = new ArrayList<>();
+        Map<String, JsonObject> raw = new HashMap<>();
+        raw.put("proteus:modern", bundled("modern"));
+        raw.put("proteus:aero", bundled("aero"));
+        ThemeSources sources = new ThemeSources(raw, warnings::add);
+        ThemeSpec modern = ThemeSpec.parse("proteus:modern", sources.resolve("proteus:modern"), null, warnings::add);
+        ThemeSpec aero = ThemeSpec.parse("proteus:aero", sources.resolve("proteus:aero"), modern, warnings::add);
+        List<String> calls = record(new StyledTheme(aero));
+        assertEquals(List.of(), warnings);
+        assertTrue(calls.stream().anyMatch(line -> line.startsWith("glass 10 20 300 200 r6")));
+        assertTrue(calls.stream().anyMatch(line -> line.startsWith("glass 8 8 160 40 r6")));
+    }
 }

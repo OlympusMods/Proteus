@@ -1,0 +1,269 @@
+{
+  "name": "proteus.theme.aero",
+  "description": "proteus.theme.aero.description",
+  "parent": "proteus:modern",
+  "accent": { "color": "#FF74B8FC", "locked": false },
+  "colors": {
+    "text": "#FF1E1E1E",
+    "text_secondary": "#FF6D6D6D",
+    "text_disabled": "#FF8D8D8D",
+    "title": "#FF000000",
+    "danger": "#FFD9342B",
+    "toast_title": "text_secondary",
+    "client": "#FFF0F0F0",
+    "client_edge": "#B04A6280",
+    "selection": "#FF3399FF"
+  },
+  "text": { "shadow": false, "title_align": "left" },
+  "segments": { "sliding": true },
+  "backdrop": { "vanilla_blur": true },
+  "sizes": {
+    "toggle": { "width": 30, "height": 14 },
+    "segment": { "pad": 2, "gap": 0 },
+    "scrollbar": { "width": 5 },
+    "toast": { "margin": 8, "pad": 9 }
+  },
+  "motion": {
+    "enabled": true,
+    "speed": 1.0,
+    "window": { "easing": "ease_out", "duration": 0.22,
+                "effects": { "fade": true, "scale": { "from": 0.92 } } },
+    "content": { "easing": "ease_out", "duration": 0.15, "effects": { "fade": true } },
+    "card_bar": { "easing": "ease_out", "duration": 0.22, "effects": { "fade": true } },
+    "toast_in": { "easing": "ease_out", "duration": 0.3,
+                  "effects": { "fade": true, "slide": { "y": 0.25, "relative": true } } },
+    "toast_move": { "easing": "ease_out", "duration": 0.25 },
+    "toast_out": { "easing": "ease_in", "duration": 0.3, "effects": { "fade": true } },
+    "tooltip": { "easing": "linear", "duration": 0.12, "delay": 0.4, "effects": { "fade": true } },
+    "hover": { "easing": "spring", "rate": 16 },
+    "press": { "easing": "ease_out", "duration": 0.06 },
+    "select": { "easing": "spring", "rate": 16 },
+    "row": { "easing": "spring", "rate": 16 },
+    "toggle": { "easing": "ease_out", "duration": 0.15 },
+    "checkbox": { "easing": "ease_out", "duration": 0.12 },
+    "segment": { "easing": "ease_out", "duration": 0.15 },
+    "focus": { "easing": "ease_out", "duration": 0.2 }
+  },
+  "widgets": {
+    "backdrop": {
+      "vars": { "top": "#30081830", "bottom": "#70081830" },
+      "layers": [ { "type": "gradient", "top": "top", "bottom": "bottom" } ]
+    },
+    "window": {
+      "vars": { "radius": 6, "band": 31, "frame": 6, "tint": "alpha(accent, 0.45)" },
+      "layers": [
+        { "type": "shadow", "radius": "radius", "spread": 12, "alpha": 130 },
+        { "type": "glass", "radius": "radius", "color": "tint", "blur": 6, "refraction": 1, "depth": 4,
+          "dispersion": 0, "zoom": 0, "smear": 0, "highlight": 0.45, "saturation": 1.15 },
+        { "type": "round", "radius": "radius", "color": "#2AFFFFFF" },
+        { "type": "round", "x": 3, "y": 6, "w": "min(w - 6, 124)", "h": 22, "radius": 11, "color": "#0EFFFFFF" },
+        { "type": "round", "x": 5, "y": 8, "w": "min(w - 10, 118)", "h": 18, "radius": 9, "color": "#0EFFFFFF" },
+        { "type": "round", "x": 7, "y": 10, "w": "min(w - 14, 112)", "h": 14, "radius": 7, "color": "#0EFFFFFF" },
+        { "type": "ring", "radius": "radius", "color": "#C0101820" },
+        { "type": "ring", "inset": 1, "radius": "radius - 1", "color": "#70FFFFFF" },
+        { "type": "fill", "x": "frame - 1", "y": "band - 1", "w": "w - 2 * frame + 2", "h": "h - band - frame + 2",
+          "color": "#60FFFFFF" },
+        { "type": "panel", "x": "frame", "y": "band", "w": "w - 2 * frame", "h": "h - band - frame",
+          "color": "client", "border": "client_edge" }
+      ]
+    },
+    "card": {
+      "vars": { "radius": 3 },
+      "layers": [ { "type": "panel", "radius": "radius", "color": "#FFFFFFFF", "border": "#FFD5DFE5" } ]
+    },
+    "button": {
+      "vars": {
+        "radius": 3,
+        "half": "floor(h / 2)",
+        "hv": "if(enabled, hover, 0)",
+        "pr": "if(enabled, press, 0)",
+        "edge": "if(enabled, mix(mix(#FF707070, #FF3C7FB1, hv), #FF2C628B, pr), #FFADB2B5)",
+        "t1": "if(enabled, mix(mix(#FFF2F2F2, #FFEAF6FD, hv), #FFE5F4FC, pr), #FFF4F4F4)",
+        "t2": "if(enabled, mix(mix(#FFEBEBEB, #FFD9F0FC, hv), #FFC4E5F6, pr), #FFF4F4F4)",
+        "b1": "if(enabled, mix(mix(#FFDDDDDD, #FFBEE6FD, hv), #FF98D1EF, pr), #FFF4F4F4)",
+        "b2": "if(enabled, mix(mix(#FFCFCFCF, #FFA7D9F5, hv), #FF68B3DB, pr), #FFF4F4F4)",
+        "inner": "mix(#D0FFFFFF, #30FFFFFF, pr)"
+      },
+      "layers": [
+        { "type": "round", "radius": "radius", "color": "b2" },
+        { "type": "gradient", "x": 1, "y": 1, "w": "w - 2", "h": "half - 1", "top": "t1", "bottom": "t2" },
+        { "type": "gradient", "x": 1, "y": "half", "w": "w - 2", "h": "h - half - 1", "top": "b1", "bottom": "b2" },
+        { "type": "ring", "inset": 1, "radius": "radius - 1", "color": "inner" },
+        { "type": "ring", "radius": "radius", "color": "edge" }
+      ],
+      "text_color": "if(enabled, #FF000000, text_disabled)"
+    },
+    "button.primary": {
+      "vars": {
+        "pr": "if(enabled, max(press, selected), 0)",
+        "edge": "if(enabled, mix(#FF3C7FB1, #FF2C628B, pr), #FFADB2B5)",
+        "inner": "mix(#E098D6F8, #30FFFFFF, pr)"
+      },
+      "text_color": "if(enabled, #FF000000, text_disabled)"
+    },
+    "button.danger": {
+      "vars": {
+        "edge": "if(enabled, #FF6E1F14, #FFADB2B5)",
+        "t1": "if(enabled, mix(mix(#FFE8A493, #FFF5BCAD, hv), #FFC27A6B, pr), #FFF4F4F4)",
+        "t2": "if(enabled, mix(mix(#FFDA7A66, #FFEC917C, hv), #FFB04E3B, pr), #FFF4F4F4)",
+        "b1": "if(enabled, mix(mix(#FFC8452F, #FFE0553D, hv), #FF96270F, pr), #FFF4F4F4)",
+        "b2": "if(enabled, mix(mix(#FFD8553C, #FFF06C50, hv), #FFAA3A22, pr), #FFF4F4F4)",
+        "inner": "mix(#70FFFFFF, #20FFFFFF, pr)"
+      },
+      "text_color": "if(enabled, #FFFFFFFF, text_disabled)"
+    },
+    "button.ghost": {
+      "vars": { "show": "hv * (1 - 0.3 * pr)" },
+      "layers": [
+        { "type": "round", "radius": "radius", "color": "alpha(mix(#FFEBF3FD, #FFC1DBFC, pr), show)",
+          "when": "hv > 0.02" },
+        { "type": "gradient", "x": 1, "y": 1, "w": "w - 2", "h": "h - 2",
+          "top": "alpha(mix(#FFFAFBFD, #FFDCEBFC, pr), show)", "bottom": "alpha(mix(#FFEBF3FD, #FFC1DBFC, pr), show)",
+          "when": "hv > 0.02" },
+        { "type": "ring", "radius": "radius", "color": "alpha(mix(#FFB8D6FB, #FF7DA2CE, pr), show)",
+          "when": "hv > 0.02" }
+      ],
+      "text_color": "if(enabled, mix(text_secondary, #FF000000, hover), text_disabled)"
+    },
+    "button.segment": {
+      "layers": []
+    },
+    "segment_track": {
+      "vars": { "radius": 3, "half": "floor(h / 2)" },
+      "layers": [
+        { "type": "round", "radius": "radius", "color": "#FFCFCFCF" },
+        { "type": "gradient", "x": 1, "y": 1, "w": "w - 2", "h": "half - 1", "top": "#FFF2F2F2", "bottom": "#FFEBEBEB" },
+        { "type": "gradient", "x": 1, "y": "half", "w": "w - 2", "h": "h - half - 1", "top": "#FFDDDDDD",
+          "bottom": "#FFCFCFCF" },
+        { "type": "ring", "inset": 1, "radius": 2, "color": "#D0FFFFFF" },
+        { "type": "ring", "radius": "radius", "color": "#FF707070" }
+      ],
+      "text_color": "mix(mix(#FF333333, #FF000000, hover), #FF000000, selected)"
+    },
+    "segment_thumb": {
+      "vars": { "radius": 2, "half": "floor(h / 2)" },
+      "layers": [
+        { "type": "round", "radius": "radius", "color": "#FF90CBEB" },
+        { "type": "gradient", "x": 1, "y": 1, "w": "w - 2", "h": "half - 1", "top": "#FFE5F4FC", "bottom": "#FFC4E5F6" },
+        { "type": "gradient", "x": 1, "y": "half", "w": "w - 2", "h": "h - half - 1", "top": "#FFA9DBF6",
+          "bottom": "#FF8CCAEB" },
+        { "type": "ring", "radius": "radius", "color": "#FF2C628B" }
+      ]
+    },
+    "toggle": {
+      "vars": {
+        "dim": "if(enabled, 1, 0.5)",
+        "knob_w": 11,
+        "knob_x": "round((w - knob_w) * on)",
+        "groove_y": "floor(h / 2) - 2"
+      },
+      "layers": [
+        { "type": "panel", "y": "groove_y", "h": 5, "radius": 1, "color": "#FFE7EAEA", "border": "alpha(#FF8E8F8F, dim)" },
+        { "type": "fill", "x": 1, "y": "groove_y + 1", "w": "max(0, knob_x + floor(knob_w / 2) - 1)", "h": 3,
+          "color": "alpha(mix(#FF3399FF, #FF4CA8E8, hover), dim)", "when": "on > 0.02" },
+        { "type": "widget", "widget": "button", "x": "knob_x", "w": "knob_w",
+          "vars": { "press": 0, "selected": 0 } }
+      ]
+    },
+    "checkbox": {
+      "vars": {
+        "dim": "if(enabled, 1, 0.5)",
+        "edge": "if(enabled, mix(#FF8E8F8F, #FF3C7FB1, hover), #FFBCBCBC)",
+        "top": "if(enabled, mix(#FFD3D7DC, #FFB9DDF5, hover), #FFF4F4F4)",
+        "bottom": "if(enabled, mix(#FFF8F8F8, #FFEAF7FE, hover), #FFF4F4F4)"
+      },
+      "layers": [
+        { "type": "panel", "radius": 0, "color": "#FFFDFDFD", "border": "edge" },
+        { "type": "gradient", "inset": 2, "top": "top", "bottom": "bottom" },
+        { "type": "check", "x": "floor((w - 8) / 2)", "y": "floor((h - 7) / 2) + 1",
+          "color": "alpha(#FF2B3F66, on * dim)", "when": "on > 0.15" }
+      ]
+    },
+    "inset": {
+      "vars": { "radius": 0 },
+      "layers": [ { "type": "panel", "radius": 0, "color": "#FFFFFFFF", "border": "#FF828790" } ]
+    },
+    "field": {
+      "vars": { "radius": 0 },
+      "layers": [
+        { "type": "panel", "radius": 0, "color": "#FFFFFFFF",
+          "border": "mix(mix(#FFABADB3, #FF7EB4EA, hover), #FF569DE5, focus)" }
+      ]
+    },
+    "row": {
+      "vars": { "radius": 2 },
+      "layers": [
+        { "type": "round", "radius": "radius", "color": "#FFC1DBFC", "when": "highlighted" },
+        { "type": "gradient", "x": 1, "y": 1, "w": "w - 2", "h": "h - 2", "top": "#FFDCEBFC", "bottom": "#FFC1DBFC",
+          "when": "highlighted" },
+        { "type": "ring", "radius": "radius", "color": "#FF7DA2CE", "when": "highlighted" },
+        { "type": "round", "radius": "radius", "color": "alpha(#FFEBF3FD, hover)", "when": "hover > 0.02 && !highlighted" },
+        { "type": "gradient", "x": 1, "y": 1, "w": "w - 2", "h": "h - 2", "top": "alpha(#FFFAFBFD, hover)",
+          "bottom": "alpha(#FFEBF3FD, hover)", "when": "hover > 0.02 && !highlighted" },
+        { "type": "ring", "radius": "radius", "color": "alpha(#FFB8D6FB, hover)", "when": "hover > 0.02 && !highlighted" }
+      ]
+    },
+    "progress": {
+      "vars": {
+        "radius": 2,
+        "inner_w": "w - 2",
+        "inner_h": "h - 2",
+        "band": "max(16, floor(inner_w / 4))",
+        "start": "floor(((time * 0.7) % 1) * (inner_w + band)) - band",
+        "from": "max(0, start)",
+        "to": "min(inner_w, start + band)",
+        "gloss": "max(1, floor(inner_h / 2))"
+      },
+      "layers": [
+        { "type": "panel", "radius": "radius", "color": "#FFE6E6E6", "border": "#FFBCBCBC" },
+        { "type": "gradient", "x": 1, "y": 1, "w": "inner_w", "h": "inner_h", "top": "#FFDADADA", "bottom": "#FFF3F3F3" },
+        { "type": "group", "x": 1, "y": 1, "w": "round(inner_w * min(1, value))", "h": "inner_h", "when": "value >= 0",
+          "layers": [
+            { "type": "gradient", "top": "#FF3CD25A", "bottom": "#FF06B025" },
+            { "type": "gradient", "h": "gloss", "top": "#90FFFFFF", "bottom": "#20FFFFFF" }
+          ] },
+        { "type": "group", "x": "1 + from", "y": 1, "w": "to - from", "h": "inner_h", "when": "value < 0 && to > from",
+          "layers": [
+            { "type": "gradient", "top": "#FF3CD25A", "bottom": "#FF06B025" },
+            { "type": "gradient", "h": "gloss", "top": "#90FFFFFF", "bottom": "#20FFFFFF" }
+          ] }
+      ]
+    },
+    "scrollbar": {
+      "layers": [
+        { "type": "round", "radius": 2, "color": "#FFE8E8E8" },
+        { "type": "panel", "y": "thumb_y", "h": "thumb_h", "radius": 2, "color": "mix(#FFE3E3E3, #FFD3ECFB, hover)",
+          "border": "mix(#FF9B9B9B, #FF3C7FB1, hover)" }
+      ]
+    },
+    "tooltip": {
+      "vars": { "radius": 2 },
+      "layers": [
+        { "type": "shadow", "radius": "radius", "spread": 3, "alpha": 60 },
+        { "type": "panel", "radius": "radius", "color": "#FFF2F2F7", "border": "#FF767676" },
+        { "type": "gradient", "x": 1, "y": 1, "w": "w - 2", "h": "h - 2", "top": "#FFFFFFFF", "bottom": "#FFE4E5F0" }
+      ]
+    },
+    "toast": {
+      "vars": { "radius": 6, "frame": 4, "tint": "alpha(accent, 0.45)" },
+      "layers": [
+        { "type": "shadow", "radius": "radius", "spread": 9, "alpha": 110 },
+        { "type": "glass", "radius": "radius", "color": "tint", "blur": 6, "refraction": 1, "depth": 4,
+          "dispersion": 0, "zoom": 0, "smear": 0, "highlight": 0.45, "saturation": 1.15 },
+        { "type": "round", "radius": "radius", "color": "#2AFFFFFF" },
+        { "type": "ring", "radius": "radius", "color": "#C0101820" },
+        { "type": "ring", "inset": 1, "radius": "radius - 1", "color": "#70FFFFFF" },
+        { "type": "panel", "inset": "frame", "radius": 0, "color": "client", "border": "client_edge" }
+      ]
+    },
+    "swatch": {
+      "vars": { "grow": "round(hover)" },
+      "layers": [
+        { "type": "panel", "x": "-grow", "y": "-grow", "w": "w + 2 * grow", "h": "h + 2 * grow", "radius": 2,
+          "color": "color", "border": "darken(color, 0.35)" },
+        { "type": "ring", "x": -3, "y": -3, "w": "w + 6", "h": "h + 6", "radius": 3,
+          "color": "alpha(selection, selected)", "when": "selected > 0.05" }
+      ]
+    }
+  }
+}

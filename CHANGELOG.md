@@ -6,6 +6,7 @@
 - Themes set colors, borders, corner radius, shadows, textures, icons, widget sizes and paddings, and every animation: spring or curve easing (back, bounce, elastic and more), speed, delay, and fade, slide, scale and spin effects
 - Toasts stack: a new toast takes the corner and pushes the ones already showing away from it, up to five at a time, with a `toast_move` animation
 - Liquid Glass theme: refracting glass that stretches and smears the background along its edges, with frost, color splitting at the edges, rim highlights, a glow that follows the mouse and springy motion
+- Aero theme: Windows 7 glass frames in the accent color around a light client area, with glossy buttons, trackbar switches, Explorer style rows and green progress bars
 - `glass` layer type, and `Canvas.glass` with a flat fallback for canvases that don't implement it
 - Mods can ship theme files or register themes in code with `Themes.register` and `Themes.registerStyled`
 - The Style setting lists every theme, and the accent picker has a "Theme color" choice that is the new default
