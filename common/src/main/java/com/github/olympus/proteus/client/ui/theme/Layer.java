@@ -3,6 +3,7 @@ package com.github.olympus.proteus.client.ui.theme;
 import com.github.olympus.proteus.client.ui.Canvas;
 import com.github.olympus.proteus.client.ui.Colors;
 import com.github.olympus.proteus.client.ui.Draw;
+import com.github.olympus.proteus.client.ui.Glass;
 import com.github.olympus.proteus.client.ui.Icons;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 public final class Layer {
     enum Type {
-        FILL, ROUND, RING, PANEL, GRADIENT, SHADOW, SPRITE, TILED, ICON, CHECK, TEXT, GROUP, WIDGET
+        FILL, ROUND, RING, PANEL, GRADIENT, SHADOW, SPRITE, TILED, ICON, CHECK, TEXT, GROUP, WIDGET, GLASS
     }
 
     private final Type type;
@@ -38,6 +39,16 @@ public final class Layer {
     private final Expr shadow;
     private final Expr resource;
     private final Expr align;
+    private final Expr blur;
+    private final Expr refraction;
+    private final Expr depth;
+    private final Expr dispersion;
+    private final Expr zoom;
+    private final Expr smear;
+    private final Expr highlight;
+    private final Expr light;
+    private final Expr saturation;
+    private final Expr glow;
     private final String widget;
     private final Map<String, Expr> vars;
     private final List<Layer> children;
@@ -67,6 +78,16 @@ public final class Layer {
         opacity = value(json, "opacity");
         shadow = value(json, "shadow");
         align = text(json.get("align"));
+        blur = value(json, "blur");
+        refraction = value(json, "refraction");
+        depth = value(json, "depth");
+        dispersion = value(json, "dispersion");
+        zoom = value(json, "zoom");
+        smear = value(json, "smear");
+        highlight = value(json, "highlight");
+        light = value(json, "light");
+        saturation = value(json, "saturation");
+        glow = value(json, "glow");
         resource = text(json.has("sprite") ? json.get("sprite")
                 : json.has("texture") ? json.get("texture")
                 : json.has("text") ? json.get("text")
@@ -177,6 +198,7 @@ public final class Layer {
                 case CHECK -> Icons.check(c, lx, ly, color(color, scope));
                 case TEXT -> text(scope, lx, ly, lw, lh);
                 case GROUP -> nested(scope, children, lx, ly, lw, lh);
+                case GLASS -> c.glass(lx, ly, lw, lh, glass(scope, r));
                 case WIDGET -> {
                     Map<String, Object> state = new LinkedHashMap<>(scope.values);
                     for (Map.Entry<String, Expr> entry : vars.entrySet()) {
@@ -190,6 +212,26 @@ public final class Layer {
                 c.pop();
             }
         }
+    }
+
+    private static float number(Expr expr, Scope scope, float fallback) {
+        return expr == null ? fallback : expr.number(scope);
+    }
+
+    private Glass glass(DrawScope scope, int r) {
+        int tint = color == null ? 0 : color.color(scope);
+        return new Glass(r, tint,
+                number(blur, scope, Glass.BLUR),
+                number(refraction, scope, Glass.REFRACTION),
+                number(depth, scope, Glass.DEPTH),
+                number(dispersion, scope, Glass.DISPERSION),
+                number(zoom, scope, Glass.ZOOM),
+                number(smear, scope, Glass.SMEAR),
+                number(highlight, scope, Glass.HIGHLIGHT),
+                number(light, scope, Glass.LIGHT),
+                number(saturation, scope, Glass.SATURATION),
+                number(glow, scope, 0f),
+                number(opacity, scope, 1f));
     }
 
     private void tiled(DrawScope scope, int lx, int ly, int lw, int lh) {

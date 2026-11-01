@@ -34,6 +34,7 @@ public final class ThemeReloader implements ResourceManagerReloadListener {
             }
         }
         Themes.reload(ThemeRegistry.parseAll(sources, warn), warn);
+        GlassRenderer.reload();
         ProteusClient.LOGGER.info("Loaded {} themes", Themes.all().size());
     }
 }

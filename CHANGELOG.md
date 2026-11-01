@@ -4,6 +4,7 @@
 
 - Themes from resource packs at `assets/<namespace>/proteus/themes/<name>.json`, reloaded with F3+T. Modern and Classic are themes too and packs can change them
 - Themes set colors, borders, corner radius, shadows, textures, icons, widget sizes and paddings, and every animation: spring or curve easing (back, bounce, elastic and more), speed, delay, and fade, slide, scale and spin effects
+- `glass` layer type, and `Canvas.glass` with a flat fallback for canvases that don't implement it
 - Mods can ship theme files or register themes in code with `Themes.register` and `Themes.registerStyled`
 - The Style setting lists every theme, and the accent picker has a "Theme color" choice that is the new default
 - Removed `ModernTheme`, `ClassicTheme`, `UiPrefs.classic()` and `Theme.animated()`. Use `Themes.current()`, `Theme.motion().enabled()` and `Theme.accentColor()`

@@ -1,6 +1,8 @@
 package com.github.olympus.proteus.client;
 
 import com.github.olympus.proteus.client.ui.Canvas;
+import com.github.olympus.proteus.client.ui.Draw;
+import com.github.olympus.proteus.client.ui.Glass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -176,5 +178,15 @@ final class GuiCanvas implements Canvas {
             }
         }
         throw new IllegalStateException("GuiGraphicsExtractor." + name + " was not found");
+    }
+
+    @Override
+    public void glass(int x, int y, int w, int h, Glass glass) {
+        if (w <= 0 || h <= 0 || glass.opacity() <= 0f) {
+            return;
+        }
+        if (!GlassRenderer.submit(graphics, x, y, w, h, glass, width, height)) {
+            Draw.round(this, x, y, w, h, glass.radius(), glass.fallbackColor());
+        }
     }
 }

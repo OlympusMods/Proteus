@@ -156,4 +156,13 @@ public final class FadeCanvas implements Canvas {
         }
         target.tiled(namespace, path, x, y, w, h);
     }
+
+    @Override
+    public void glass(int x, int y, int w, int h, Glass glass) {
+        float opacity = glass.opacity() * alpha;
+        if (opacity <= 0.01f || w <= 0 || h <= 0) {
+            return;
+        }
+        target.glass(x, y, w, h, glass.opacity(opacity));
+    }
 }

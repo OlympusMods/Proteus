@@ -122,4 +122,12 @@ public final class RecordingCanvas implements Canvas {
     public void tiled(String namespace, String path, int x, int y, int w, int h) {
         calls.add("tiled " + namespace + ":" + path + " " + x + " " + y + " " + w + " " + h);
     }
+
+    @Override
+    public void glass(int x, int y, int w, int h, Glass glass) {
+        calls.add(String.format(Locale.ROOT, "glass %d %d %d %d r%d %s blur %.2f refract %.2f depth %.2f disp %.2f"
+                + " zoom %.2f smear %.2f light %.2f@%.1f sat %.2f glow %.2f op %.2f", x, y, w, h, glass.radius(),
+                hex(glass.tint()), glass.blur(), glass.refraction(), glass.depth(), glass.dispersion(), glass.zoom(),
+                glass.smear(), glass.highlight(), glass.light(), glass.saturation(), glass.glow(), glass.opacity()));
+    }
 }

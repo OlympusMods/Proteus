@@ -48,13 +48,28 @@ Each entry in `widgets` draws one part of the UI: `backdrop`, `window`, `card`, 
 
 A widget has `vars`, a list of `layers` drawn in order, and for buttons and `segment_track` a `text_color`. Every value is an expression, so `"radius": 6`, `"color": "#FF101010"` and `"color": "mix(text, accent, hover)"` all work. Vars are worked out first and in order, so layers and later vars can use them.
 
-Layer types are `fill`, `round`, `ring`, `panel` (a fill with a one pixel border), `gradient` (`top` and `bottom`), `shadow` (`spread`, `alpha`), `sprite`, `tiled` (`texture`, with an optional `fallback` list of layers when it is missing), `icon`, `check`, `text`, `group` (its own `layers`) and `widget` (draws another widget, with `vars` to override). Every layer takes:
+Layer types are `fill`, `round`, `ring`, `panel` (a fill with a one pixel border), `gradient` (`top` and `bottom`), `shadow` (`spread`, `alpha`), `sprite`, `tiled` (`texture`, with an optional `fallback` list of layers when it is missing), `icon`, `check`, `text`, `group` (its own `layers`), `widget` (draws another widget, with `vars` to override) and `glass`. Every layer takes:
 
 - `x`, `y`, `w`, `h`: relative to the widget, defaulting to all of it
 - `inset`: shrink every side
 - `radius`, `color`, `border`, `opacity`
 - `when`: skip the layer when this is false
 - `rotate` (degrees) and `scale`, around the layer's center
+
+`glass` is a piece of glass that bends what is under it. It copies the screen behind the layer and runs it through a shader, so it shows the world, the panorama and any widget drawn before it. It takes `radius`, `opacity` and `color` (the tint, where the alpha is how strong it is), plus:
+
+- `blur`: how frosted it is, in GUI pixels (0 is clear glass)
+- `refraction`: how far the edge bends the background, in GUI pixels. Negative values make it look sunken, which is what the Liquid Glass theme uses for fields
+- `depth`: how wide the curved edge is
+- `dispersion`: how much the colors split at the edge (0 to 1)
+- `zoom`: how much the edge stretches the background along itself, in GUI pixels, so text and lines under the top and bottom edges widen and curve
+- `smear`: how far the background is streaked along the edge, in GUI pixels
+- `highlight`: how bright the rim and the shine are
+- `light`: where the light comes from, in degrees clockwise from the top (`-45` is the top left)
+- `saturation`: 1 keeps the colors behind it, higher makes them stronger
+- `glow`: a soft light that follows the mouse, for hover and press
+
+If the shader can't load, glass is drawn as a flat rounded fill in its tint color.
 
 `sprite`, `texture`, `text`, `name` (icons) and `align` are plain text, unless they start with `=`, which makes the rest an expression: `"sprite": "=if(focus > 0.5, \"mypack:field_on\", \"mypack:field\")"`. Sprites are GUI sprites under `textures/gui/sprites/`, so a `.mcmeta` next to the png can nine-slice or tile it.
 
