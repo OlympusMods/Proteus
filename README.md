@@ -8,7 +8,7 @@ Proteus is the UI library behind Olympus mods, and it also works on its own. The
 - **Liquid Glass style** where windows, buttons, toggles, toasts and tooltips are glass: the background bends at the edges with a bit of color splitting, a bright rim catches the light, buttons light up where the mouse is and everything moves with a bit of bounce
 - **Classic style** that brings back the old Minecraft look: dirt background, bevelled gray buttons, no animation. It is drawn from GUI sprites under `proteus:classic`, so resource packs can restyle it
 - **Themes** from resource packs and mods. Modern and Classic are themes themselves, and a theme can change colors, borders, corner radius, shadows, textures, widget sizes and every animation (easing, speed, fade, slide, scale, spin). See [Themes](#themes)
-- **Toasts** drawn by Proteus: they ease in and out, show an item icon, grow to fit their text, appear over menus and in game, and can sit in any corner
+- **Toasts** drawn by Proteus: they stack, with a new one pushing the others out of the corner, ease in and out, show an item icon, grow to fit their text, appear over menus and in game, and can sit in any corner
 - **One menu for every mod**: each mod built on Proteus gets a card at the top of its menu, so you can go from Orpheus to Mneme to the Proteus settings without closing anything. When there are more cards than fit, the arrows page through them
 - **Game toasts** for advancements, recipes, tutorial hints and system notices can be drawn by Proteus. Each kind can be set back to the vanilla toast
 - One toolkit across every supported version: widgets are drawn through a small `Canvas` interface, and each Minecraft range only implements that interface
@@ -82,7 +82,7 @@ Expressions have numbers, colors (`#RRGGBB` or `#AARRGGBB`), `"text"`, `+ - * / 
 
 ### Motion
 
-`motion` has `enabled`, `speed` (multiplies every animation) and one entry per moment: `window`, `content`, `card_bar`, `toast_in`, `toast_out`, `toast_resize`, `tooltip`, `hover`, `press`, `select`, `toggle`, `checkbox`, `row`, `segment`, `focus`, `knob` and `scroll`.
+`motion` has `enabled`, `speed` (multiplies every animation) and one entry per moment: `window`, `content`, `card_bar`, `toast_in`, `toast_out`, `toast_resize`, `toast_move` (toasts making room for a new one), `tooltip`, `hover`, `press`, `select`, `toggle`, `checkbox`, `row`, `segment`, `focus`, `knob` and `scroll`.
 
 ```json
 "motion": {

@@ -33,6 +33,7 @@
     "toast_in": { "easing": "back", "overshoot": 1.7, "duration": 0.5,
                   "effects": { "fade": { "easing": "linear", "speed": 2.0 }, "scale": { "from": 0.7 },
                                "slide": { "y": -0.4, "relative": true } } },
+    "toast_move": { "easing": "back", "overshoot": 1.4, "duration": 0.38 },
     "toast_out": { "easing": "ease_in", "duration": 0.28,
                    "effects": { "fade": { "easing": "linear" }, "scale": { "from": 0.85 } } },
     "tooltip": { "easing": "back", "overshoot": 1.4, "duration": 0.22, "delay": 0.3,

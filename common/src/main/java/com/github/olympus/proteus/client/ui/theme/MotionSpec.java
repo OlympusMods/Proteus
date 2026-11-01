@@ -18,6 +18,7 @@ public final class MotionSpec {
                            "effects": {"fade": {"easing": "linear", "speed": 1.8}, "slide": {"x": 1, "relative": true}}},
               "toast_out": {"easing": "ease_in", "duration": 0.3, "effects": {"fade": {"easing": "linear"}}},
               "toast_resize": {"easing": "spring", "rate": 14},
+              "toast_move": {"easing": "spring", "rate": 14},
               "hover": {"easing": "spring", "rate": 16},
               "press": {"easing": "spring", "rate": 30},
               "select": {"easing": "spring", "rate": 14},
