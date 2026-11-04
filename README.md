@@ -11,6 +11,7 @@ Proteus is the UI library behind Olympus mods, and it also works on its own. The
 - **Themes** from resource packs and mods. Modern and Classic are themes themselves, and a theme can change colors, borders, corner radius, shadows, textures, widget sizes and every animation (easing, speed, fade, slide, scale, spin). See [Themes](#themes)
 - **Toasts** drawn by Proteus: they stack, with a new one pushing the others out of the corner, ease in and out, show an item icon, grow to fit their text, appear over menus and in game, and can sit in any corner
 - **One menu for every mod**: each mod built on Proteus gets a card at the top of its menu, so you can go from Orpheus to Mneme to the Proteus settings without closing anything. When there are more cards than fit, the arrows page through them
+- **Mods tab** that lists the mods Proteus can draw menus for, with a switch for each. Turn one off and its own menus come back
 - **Game toasts** for advancements, recipes, tutorial hints and system notices can be drawn by Proteus. Each kind can be set back to the vanilla toast
 - One toolkit across every supported version: widgets are drawn through a small `Canvas` interface, and each Minecraft range only implements that interface
 
@@ -94,6 +95,14 @@ Expressions have numbers, colors (`#RRGGBB` or `#AARRGGBB`), `"text"`, `+ - * / 
 ```
 
 `easing` is `spring` (with `rate`), or a curve with a `duration` in seconds: `linear`, `ease_in`, `ease_out`, `ease_in_out`, `back` (`overshoot`), `bounce` or `elastic` (`period`). `delay` waits before a curve starts. `effects` apply to windows, content, the card bar, toasts and tooltips: `fade`, `slide` (`x`, `y`, and `"relative": true` to move by the element's size), `scale` (`from`) and `spin` (`degrees`). Each effect can take its own `easing` and `speed`. The Animations switch in Appearance turns all of it off.
+
+## Supported mods
+
+When a supported mod is installed it shows up in the Mods tab. Its menus are drawn with Proteus widgets and follow your theme and accent color.
+
+- **Simple Voice Chat** (2.6): the voice chat menu, settings, groups, player volumes, microphone and speaker pickers and the setup screens. It is available on every version Simple Voice Chat has a client build for: 1.20.1, 1.21 to 1.21.1, 1.21.4 to 1.21.5, 1.21.8, 1.21.10, 1.21.11, 26.1 and 26.2 to 26.3
+
+Nothing in the other mod is patched. When it opens one of its screens, Proteus puts its own in the same place and reads and writes the other mod's own settings, so the config files stay the same. A mod is supported by adding an entry in `Mods` and a `ScreenTakeover` that turns its screens into Proteus ones.
 
 ## For mod authors
 

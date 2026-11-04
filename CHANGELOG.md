@@ -11,6 +11,10 @@
 - Mods can ship theme files or register themes in code with `Themes.register` and `Themes.registerStyled`
 - The Style setting lists every theme, and the accent picker has a "Theme color" choice that is the new default
 - Removed `ModernTheme`, `ClassicTheme`, `UiPrefs.classic()` and `Theme.animated()`. Use `Themes.current()`, `Theme.motion().enabled()` and `Theme.accentColor()`
+- Mods tab with a switch for every supported mod you have installed. Turning one off gives you its own menus back
+- Simple Voice Chat support: its voice chat menu, settings, group screens, player volumes, microphone and speaker pickers and setup screens are drawn with Proteus
+- New widgets: icon toggle, and a slider that shows a label and a live level
+- `Canvas.head` draws a player's face, and `Draw.wrap` keeps line breaks
 - `ui.json` stores the theme id; the old `style` setting is read once and moved over
 
 ## 1.0.0
