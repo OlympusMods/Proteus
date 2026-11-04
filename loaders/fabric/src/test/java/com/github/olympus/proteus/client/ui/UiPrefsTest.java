@@ -1,6 +1,8 @@
 package com.github.olympus.proteus.client.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -49,5 +51,14 @@ class UiPrefsTest {
     @Test
     void unknownAccentKeyMeansTheme() {
         assertEquals("theme", prefs("{\"accent\": \"plaid\"}").accentChoice());
+    }
+
+    @Test
+    void modsDefaultToEnabledAndRoundTrip() {
+        assertTrue(prefs("{}").modEnabled("voicechat"));
+        UiPrefs prefs = prefs("{\"mods\": {\"voicechat\": false}}");
+        assertFalse(prefs.modEnabled("voicechat"));
+        assertFalse(UiPrefs.fromJson(prefs.toJson()).modEnabled("voicechat"));
+        assertTrue(UiPrefs.fromJson(prefs.toJson()).modEnabled("other"));
     }
 }

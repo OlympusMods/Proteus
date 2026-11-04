@@ -1,5 +1,6 @@
 package com.github.olympus.proteus.client.ui;
 
+import java.util.List;
 import net.minecraft.network.chat.Component;
 
 public final class ProteusUi extends UiShell {
@@ -9,7 +10,8 @@ public final class ProteusUi extends UiShell {
 
     private enum Tab {
         APPEARANCE,
-        TOASTS
+        TOASTS,
+        MODS
     }
 
     private final AppearancePanel appearance;
@@ -44,8 +46,9 @@ public final class ProteusUi extends UiShell {
         }
         y += 26;
 
-        String[] tabs = {text("proteus.tab.appearance"), text("proteus.tab.toasts")};
-        String[] tips = {text("proteus.tab.appearance.tooltip"), text("proteus.tab.toasts.tooltip")};
+        String[] tabs = {text("proteus.tab.appearance"), text("proteus.tab.toasts"), text("proteus.tab.mods")};
+        String[] tips = {text("proteus.tab.appearance.tooltip"), text("proteus.tab.toasts.tooltip"),
+            text("proteus.tab.mods.tooltip")};
         int chosen = gui().segmented("tabs", ix, y, iw, 20, tabs, tab.ordinal(), tips, null);
         if (chosen >= 0) {
             tab = Tab.values()[chosen];
@@ -64,6 +67,7 @@ public final class ProteusUi extends UiShell {
                 }
             }
             case TOASTS -> renderToasts(theme, ix, y, iw, contentHeight);
+            case MODS -> renderMods(theme, ix, y, iw, contentHeight);
         }
         endContent(before);
 
@@ -108,6 +112,41 @@ public final class ProteusUi extends UiShell {
             rowY += ROW + 6;
         }
         y += cardH + GAP;
+
+        gui().scrollEnd(y - top);
+    }
+
+    private void renderMods(Theme theme, int ix, int cy, int iw, int ch) {
+        float scroll = gui().scrollBegin("mods", ix, cy, iw, ch);
+        int lw = iw - 8;
+        int top = cy - Math.round(scroll);
+        int y = top;
+
+        y = heading(text("proteus.mods.heading"), ix, y);
+        for (String line : Draw.wrap(fade(), text("proteus.mods.note"), lw - 8)) {
+            gui().text(line, ix + 4, y, theme.textSecondary());
+            y += 11;
+        }
+        y += 4;
+
+        List<Mods.Entry> entries = Mods.installed();
+        if (entries.isEmpty()) {
+            gui().text(text("proteus.mods.none"), ix + 4, y, theme.textDisabled());
+            y += 11 + GAP;
+        } else {
+            int cardH = 8 + entries.size() * (ROW + 6) - 6 + 8;
+            theme.card(fade(), ix, y, lw, cardH);
+            int rowY = y + 8;
+            for (Mods.Entry entry : entries) {
+                boolean enabled = prefs().modEnabled(entry.id());
+                if (gui().switchRow("mod-" + entry.id(), ix + 12, rowY, lw - 24, ROW, text(entry.nameKey()), enabled,
+                        true, text(entry.tooltipKey()), text("proteus.state.on"), text("proteus.state.off"))) {
+                    prefs().setModEnabled(entry.id(), !enabled);
+                }
+                rowY += ROW + 6;
+            }
+            y += cardH + GAP;
+        }
 
         gui().scrollEnd(y - top);
     }

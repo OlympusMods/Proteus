@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Set;
 
 public final class UiPrefs {
@@ -39,6 +40,7 @@ public final class UiPrefs {
     private boolean blur = true;
     private boolean animations = true;
     private final Set<ToastKind> vanillaToasts = EnumSet.noneOf(ToastKind.class);
+    private final Set<String> disabledMods = new HashSet<>();
 
     private UiPrefs() {
     }
@@ -170,6 +172,19 @@ public final class UiPrefs {
         save();
     }
 
+    public boolean modEnabled(String id) {
+        return !disabledMods.contains(id);
+    }
+
+    public void setModEnabled(String id, boolean value) {
+        if (value) {
+            disabledMods.remove(id);
+        } else {
+            disabledMods.add(id);
+        }
+        save();
+    }
+
     private static Path file() {
         return ProteusClient.configDirectory().resolve(ProteusClient.MOD_ID).resolve(FILE);
     }
@@ -231,6 +246,14 @@ public final class UiPrefs {
                 }
             }
         }
+        if (object.has("mods")) {
+            JsonObject mods = object.getAsJsonObject("mods");
+            for (String id : mods.keySet()) {
+                if (!mods.get(id).getAsBoolean()) {
+                    prefs.disabledMods.add(id);
+                }
+            }
+        }
         return prefs;
     }
 
@@ -250,6 +273,11 @@ public final class UiPrefs {
             toasts.addProperty(kind.key(), vanillaToasts.contains(kind) ? "vanilla" : "proteus");
         }
         object.add("toasts", toasts);
+        JsonObject mods = new JsonObject();
+        for (String id : disabledMods) {
+            mods.addProperty(id, false);
+        }
+        object.add("mods", mods);
         return object;
     }
 
