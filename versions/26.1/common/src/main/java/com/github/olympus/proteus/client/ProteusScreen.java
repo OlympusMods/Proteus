@@ -1,12 +1,15 @@
 package com.github.olympus.proteus.client;
 
 import com.github.olympus.proteus.client.ui.Hub;
+import com.github.olympus.proteus.client.ui.RawInput;
+import com.github.olympus.proteus.client.ui.RawKey;
+import com.github.olympus.proteus.client.ui.RawMouse;
 import com.github.olympus.proteus.client.ui.UiApp;
 import com.github.olympus.proteus.client.ui.UiHost;
-import java.util.function.Function;
 import com.mojang.blaze3d.platform.InputConstants;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.CharacterEvent;
@@ -40,6 +43,14 @@ public final class ProteusScreen extends Screen implements UiHost {
             }
         }
         return codes;
+    }
+
+    public UiApp app() {
+        return ui;
+    }
+
+    public Screen parent() {
+        return parent;
     }
 
     public static Screen open(Screen parent, String tab) {
@@ -97,6 +108,9 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (ui instanceof RawInput raw && raw.rawMouse(new RawMouse(event.button()))) {
+            return true;
+        }
         ui.mousePressed(event.button());
         return true;
     }
@@ -115,6 +129,10 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
+        if (ui instanceof RawInput raw
+                && raw.rawKey(new RawKey(event.key(), InputConstants.getKey(event), event.isEscape()))) {
+            return true;
+        }
         int key = translate(event);
         int modifiers = shortcut(event) ? GLFW.GLFW_MOD_CONTROL : 0;
         return key != 0 && ui.keyPressed(key, modifiers) || super.keyPressed(event);

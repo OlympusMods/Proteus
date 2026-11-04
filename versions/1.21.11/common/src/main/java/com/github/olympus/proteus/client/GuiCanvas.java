@@ -6,12 +6,18 @@ import com.github.olympus.proteus.client.ui.Glass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.PlayerFaceRenderer;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -135,6 +141,14 @@ final class GuiCanvas implements Canvas {
                 ? Identifier.fromNamespaceAndPath("proteus", path)
                 : Identifier.fromNamespaceAndPath(path.substring(0, colon), path.substring(colon + 1));
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, location, x, y, w, h);
+    }
+
+    @Override
+    public void head(UUID player, int x, int y, int size) {
+        ClientPacketListener connection = Minecraft.getInstance().getConnection();
+        PlayerInfo info = connection == null ? null : connection.getPlayerInfo(player);
+        PlayerSkin skin = info == null ? DefaultPlayerSkin.get(player) : info.getSkin();
+        PlayerFaceRenderer.draw(graphics, skin, x, y, size);
     }
 
     @Override

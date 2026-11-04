@@ -1,8 +1,12 @@
 package com.github.olympus.proteus.client;
 
 import com.github.olympus.proteus.client.ui.Hub;
+import com.github.olympus.proteus.client.ui.RawInput;
+import com.github.olympus.proteus.client.ui.RawKey;
+import com.github.olympus.proteus.client.ui.RawMouse;
 import com.github.olympus.proteus.client.ui.UiApp;
 import com.github.olympus.proteus.client.ui.UiHost;
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.function.Function;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -22,6 +26,14 @@ public final class ProteusScreen extends Screen implements UiHost {
         super(title);
         this.parent = parent;
         this.ui = app.apply(this);
+    }
+
+    public UiApp app() {
+        return ui;
+    }
+
+    public Screen parent() {
+        return parent;
     }
 
     public static Screen open(Screen parent, String tab) {
@@ -79,6 +91,9 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (ui instanceof RawInput raw && raw.rawMouse(new RawMouse(event.button()))) {
+            return true;
+        }
         ui.mousePressed(event.button());
         return true;
     }
@@ -97,6 +112,10 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
+        if (ui instanceof RawInput raw
+                && raw.rawKey(new RawKey(event.key(), InputConstants.getKey(event), event.isEscape()))) {
+            return true;
+        }
         return ui.keyPressed(event.key(), event.modifiers()) || super.keyPressed(event);
     }
 

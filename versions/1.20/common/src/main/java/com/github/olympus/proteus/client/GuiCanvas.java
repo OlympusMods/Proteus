@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -221,6 +222,11 @@ final class GuiCanvas implements Canvas {
         } catch (IOException exception) {
             return null;
         }
+    }
+
+    @Override
+    public void head(UUID player, int x, int y, int size) {
+        PlayerHeads.draw(graphics, player, x, y, size);
     }
 
     @Override
