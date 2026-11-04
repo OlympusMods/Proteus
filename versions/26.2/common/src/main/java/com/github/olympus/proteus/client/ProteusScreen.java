@@ -31,6 +31,10 @@ public final class ProteusScreen extends Screen implements UiHost {
         this.ui = app.apply(this);
     }
 
+    public UiApp app() {
+        return ui;
+    }
+
     public Screen parent() {
         return parent;
     }
