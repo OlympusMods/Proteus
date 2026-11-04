@@ -29,3 +29,6 @@ if (svcVersion) {
         }
     }
 }
+if (!svcVersion) {
+    sourceSets.main.java.exclude('**/client/svc/**')
+}

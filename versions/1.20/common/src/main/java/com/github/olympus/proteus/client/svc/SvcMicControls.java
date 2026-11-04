@@ -3,6 +3,8 @@ package com.github.olympus.proteus.client.svc;
 import com.github.olympus.proteus.client.ui.ButtonKind;
 import com.github.olympus.proteus.client.ui.Gui;
 import com.github.olympus.proteus.client.ui.Motion;
+import com.github.olympus.proteus.client.ui.RawKey;
+import com.github.olympus.proteus.client.ui.RawMouse;
 import com.github.olympus.proteus.client.ui.VoiceIcons;
 import com.mojang.blaze3d.platform.InputConstants;
 import de.maxhenkel.voicechat.VoicechatClient;
@@ -15,8 +17,6 @@ import de.maxhenkel.voicechat.voice.client.VolumeManager;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 final class SvcMicControls implements MicTestButton.MicListener {
@@ -117,7 +117,7 @@ final class SvcMicControls implements MicTestButton.MicListener {
         String tip = Svc.text(!ready ? "message.voicechat.mic_test_unavailable"
                 : on ? "message.voicechat.mic_test.enabled" : "message.voicechat.mic_test.disabled");
         if (gui.iconToggle("svc-test", x, y, ROW, ROW, on ? VoiceIcons.MIC : VoiceIcons.MIC_OFF, on, ready, tip)) {
-            test.onPress(null);
+            Svc.press(test);
         }
     }
 
@@ -181,23 +181,23 @@ final class SvcMicControls implements MicTestButton.MicListener {
         return y + ROW + GAP;
     }
 
-    boolean key(KeyEvent event) {
+    boolean key(RawKey key) {
         if (!listening) {
             return false;
         }
-        KeyEvents.KEY_PTT.setKey(event.isEscape() ? InputConstants.UNKNOWN : InputConstants.getKey(event));
+        KeyEvents.KEY_PTT.setKey(key.escape() ? InputConstants.UNKNOWN : key.key());
         KeyMapping.resetMapping();
         Minecraft.getInstance().options.save();
         listening = false;
         return true;
     }
 
-    boolean mouse(MouseButtonEvent event) {
+    boolean mouse(RawMouse mouse) {
         if (!listening) {
             return false;
         }
-        if (event.button() != 0) {
-            KeyEvents.KEY_PTT.setKey(InputConstants.Type.MOUSE.getOrCreate(event.button()));
+        if (!mouse.left()) {
+            KeyEvents.KEY_PTT.setKey(InputConstants.Type.MOUSE.getOrCreate(mouse.button()));
             KeyMapping.resetMapping();
             Minecraft.getInstance().options.save();
         }

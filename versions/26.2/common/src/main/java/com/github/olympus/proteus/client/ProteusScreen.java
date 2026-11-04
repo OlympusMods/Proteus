@@ -1,6 +1,9 @@
 package com.github.olympus.proteus.client;
 
 import com.github.olympus.proteus.client.ui.Hub;
+import com.github.olympus.proteus.client.ui.RawInput;
+import com.github.olympus.proteus.client.ui.RawKey;
+import com.github.olympus.proteus.client.ui.RawMouse;
 import com.github.olympus.proteus.client.ui.UiApp;
 import com.github.olympus.proteus.client.ui.UiHost;
 import java.util.function.Function;
@@ -109,7 +112,7 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (ui instanceof RawInput raw && raw.rawMouse(event)) {
+        if (ui instanceof RawInput raw && raw.rawMouse(new RawMouse(event.button()))) {
             return true;
         }
         ui.mousePressed(button(event.button()));
@@ -130,7 +133,8 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if (ui instanceof RawInput raw && raw.rawKey(event)) {
+        if (ui instanceof RawInput raw
+                && raw.rawKey(new RawKey(event.key(), InputConstants.getKey(event), event.isEscape()))) {
             return true;
         }
         int key = translate(event);

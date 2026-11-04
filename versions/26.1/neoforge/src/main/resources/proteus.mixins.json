@@ -8,6 +8,7 @@
     "GuiRendererAccess",
     "GuiRendererDrawAccess",
     "GuiRendererMixin",
+    "GuiScreenMixin",
     "MinecraftTickMixin",
     "RenderSystemMixin",
     "ToastAddMixin",

@@ -1,7 +1,9 @@
 package com.github.olympus.proteus.client.svc;
 
-import com.github.olympus.proteus.client.RawInput;
 import com.github.olympus.proteus.client.ui.ButtonKind;
+import com.github.olympus.proteus.client.ui.RawInput;
+import com.github.olympus.proteus.client.ui.RawKey;
+import com.github.olympus.proteus.client.ui.RawMouse;
 import com.github.olympus.proteus.client.ui.Theme;
 import com.github.olympus.proteus.client.ui.UiHost;
 import de.maxhenkel.voicechat.VoicechatClient;
@@ -13,8 +15,6 @@ import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
 
 final class SvcSettingsApp extends SvcPanel implements RawInput {
     private final SvcMicControls mic = new SvcMicControls();
@@ -128,13 +128,13 @@ final class SvcSettingsApp extends SvcPanel implements RawInput {
     }
 
     @Override
-    public boolean rawKey(KeyEvent event) {
-        return mic.key(event);
+    public boolean rawKey(RawKey key) {
+        return mic.key(key);
     }
 
     @Override
-    public boolean rawMouse(MouseButtonEvent event) {
-        return mic.mouse(event);
+    public boolean rawMouse(RawMouse mouse) {
+        return mic.mouse(mouse);
     }
 
     @Override

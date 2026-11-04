@@ -1,7 +1,9 @@
 package com.github.olympus.proteus.client.svc;
 
-import com.github.olympus.proteus.client.RawInput;
 import com.github.olympus.proteus.client.ui.ButtonKind;
+import com.github.olympus.proteus.client.ui.RawInput;
+import com.github.olympus.proteus.client.ui.RawKey;
+import com.github.olympus.proteus.client.ui.RawMouse;
 import com.github.olympus.proteus.client.ui.Draw;
 import com.github.olympus.proteus.client.ui.Theme;
 import com.github.olympus.proteus.client.ui.UiHost;
@@ -18,8 +20,6 @@ import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.KeyEvents;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
 
 final class SvcOnboardingApp extends SvcPanel implements RawInput {
     enum Page {
@@ -205,13 +205,13 @@ final class SvcOnboardingApp extends SvcPanel implements RawInput {
     }
 
     @Override
-    public boolean rawKey(KeyEvent event) {
-        if (mic.key(event)) {
+    public boolean rawKey(RawKey key) {
+        if (mic.key(key)) {
             return true;
         }
         if (page == Page.FINAL && KeyEvents.KEY_VOICE_CHAT != null
                 && ClientCompatibilityManager.INSTANCE.getBoundKeyOf(KeyEvents.KEY_VOICE_CHAT).getValue()
-                == event.key()) {
+                == key.code()) {
             OnboardingManager.finishOnboarding();
             Svc.open(new VoiceChatScreen());
             return true;
@@ -220,8 +220,8 @@ final class SvcOnboardingApp extends SvcPanel implements RawInput {
     }
 
     @Override
-    public boolean rawMouse(MouseButtonEvent event) {
-        return mic.mouse(event);
+    public boolean rawMouse(RawMouse mouse) {
+        return mic.mouse(mouse);
     }
 
     @Override

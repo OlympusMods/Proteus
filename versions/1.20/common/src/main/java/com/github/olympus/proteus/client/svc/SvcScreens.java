@@ -25,7 +25,6 @@ import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Function;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 
 final class SvcScreens {
@@ -115,7 +114,7 @@ final class SvcScreens {
     }
 
     private static Screen previous() {
-        Screen current = Minecraft.getInstance().gui.screen();
+        Screen current = Svc.current();
         if (current instanceof ProteusScreen proteus && proteus.app() instanceof SvcPage page) {
             return page.original();
         }
@@ -123,7 +122,7 @@ final class SvcScreens {
     }
 
     private static Screen parent() {
-        Screen current = Minecraft.getInstance().gui.screen();
+        Screen current = Svc.current();
         return current instanceof ProteusScreen proteus ? proteus.parent() : current;
     }
 }

@@ -88,7 +88,7 @@ final class SvcDeviceList {
                     : on ? "message.voicechat.mic_test.enabled" : "message.voicechat.mic_test.disabled");
             if (gui.iconToggle("svc-device-test", x, y, ROW, ROW, on ? VoiceIcons.MIC : VoiceIcons.MIC_OFF, on,
                     test.active, tip)) {
-                test.onPress(null);
+                Svc.press(test);
             }
             return;
         }

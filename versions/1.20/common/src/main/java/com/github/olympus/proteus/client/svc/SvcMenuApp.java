@@ -1,7 +1,8 @@
 package com.github.olympus.proteus.client.svc;
 
-import com.github.olympus.proteus.client.RawInput;
 import com.github.olympus.proteus.client.ui.ButtonKind;
+import com.github.olympus.proteus.client.ui.RawInput;
+import com.github.olympus.proteus.client.ui.RawKey;
 import com.github.olympus.proteus.client.ui.Theme;
 import com.github.olympus.proteus.client.ui.UiHost;
 import com.github.olympus.proteus.client.ui.UiShell;
@@ -19,10 +20,6 @@ import de.maxhenkel.voicechat.voice.client.ClientPlayerStateManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.KeyEvents;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.network.chat.Component;
 
 final class SvcMenuApp extends UiShell implements RawInput {
     private static final int PAD = 10;
@@ -59,19 +56,19 @@ final class SvcMenuApp extends UiShell implements RawInput {
         int iw = pw - 2 * PAD;
         int y = py + PAD;
 
-        gui().centered(text("gui.voicechat.voice_chat.title"), px + pw / 2, y + 5, theme.titleColor());
+        gui().centered(Svc.text("gui.voicechat.voice_chat.title"), px + pw / 2, y + 5, theme.titleColor());
         y += 22;
 
         int half = (iw - GAP) / 2;
-        if (gui().button("svc-settings", ix, y, half, ROW, text("message.voicechat.settings"), null)) {
-            open(new VoiceChatSettingsScreen());
+        if (gui().button("svc-settings", ix, y, half, ROW, Svc.text("message.voicechat.settings"), null)) {
+            Svc.open(new VoiceChatSettingsScreen());
         }
         boolean groups = client != null && client.getConnection() != null
                 && client.getConnection().getData().groupsEnabled();
-        if (gui().button("svc-group", ix + half + GAP, y, half, ROW, text("message.voicechat.group"),
+        if (gui().button("svc-group", ix + half + GAP, y, half, ROW, Svc.text("message.voicechat.group"),
                 ButtonKind.NORMAL, false, groups, null)) {
             ClientGroup group = state.getGroup();
-            open(group != null ? new GroupScreen(group) : new JoinGroupScreen());
+            Svc.open(group != null ? new GroupScreen(group) : new JoinGroupScreen());
         }
 
         int by = py + ph - PAD - ROW;
@@ -80,7 +77,7 @@ final class SvcMenuApp extends UiShell implements RawInput {
         String muteText = !muteTip ? "message.voicechat.mute.disabled_ptt"
                 : state.isMuted() ? "message.voicechat.mute.enabled" : "message.voicechat.mute.disabled";
         if (gui().iconToggle("svc-mute", x, by, ROW, ROW, state.isMuted() ? VoiceIcons.MIC_OFF : VoiceIcons.MIC,
-                state.isMuted(), true, text(muteText))) {
+                state.isMuted(), true, Svc.text(muteText))) {
             state.setMuted(!state.isMuted());
         }
         x += ROW + GAP;
@@ -88,19 +85,19 @@ final class SvcMenuApp extends UiShell implements RawInput {
                 : state.isDisabled() ? "message.voicechat.disable.enabled" : "message.voicechat.disable.disabled";
         if (gui().iconToggle("svc-disable", x, by, ROW, ROW,
                 state.isDisabled() ? VoiceIcons.SPEAKER_OFF : VoiceIcons.SPEAKER, state.isDisabled(),
-                state.canEnable(), text(disableText))) {
+                state.canEnable(), Svc.text(disableText))) {
             state.setDisabled(!state.isDisabled());
         }
         x += ROW + GAP;
         if (gui().iconToggle("svc-volumes", x, by, ROW, ROW, VoiceIcons.SLIDERS, false, true,
-                text("message.voicechat.adjust_volumes"))) {
-            open(new AdjustVolumesScreen());
+                Svc.text("message.voicechat.adjust_volumes"))) {
+            Svc.open(new AdjustVolumesScreen());
         }
 
         int rx = ix + iw - ROW;
         boolean hidden = VoicechatClient.CLIENT_CONFIG.hideIcons.get();
         if (gui().iconToggle("svc-hide", rx, by, ROW, ROW, hidden ? VoiceIcons.EYE_OFF : VoiceIcons.EYE, hidden, true,
-                text(hidden ? "message.voicechat.hide_icons.enabled" : "message.voicechat.hide_icons.disabled"))) {
+                Svc.text(hidden ? "message.voicechat.hide_icons.enabled" : "message.voicechat.hide_icons.disabled"))) {
             VoicechatClient.CLIENT_CONFIG.hideIcons.set(!hidden).save();
         }
         AudioRecorder recorder = client == null ? null : client.getRecorder();
@@ -110,7 +107,7 @@ final class SvcMenuApp extends UiShell implements RawInput {
         if (canRecord) {
             rx -= ROW + GAP;
             if (gui().iconToggle("svc-record", rx, by, ROW, ROW, VoiceIcons.RECORD, recorder != null, true,
-                    text(recorder != null ? "message.voicechat.recording.enabled"
+                    Svc.text(recorder != null ? "message.voicechat.recording.enabled"
                             : "message.voicechat.recording.disabled"))) {
                 client.toggleRecording();
             }
@@ -121,27 +118,19 @@ final class SvcMenuApp extends UiShell implements RawInput {
             String time = recorder.getDuration();
             gui().centered(time, left + width / 2, gui().textY(by, ROW), theme.danger());
             if (gui().over(left, by, width, ROW)) {
-                gui().tooltip(text("message.voicechat.storage_size", recorder.getStorage()));
+                gui().tooltip(Svc.text("message.voicechat.storage_size", recorder.getStorage()));
             }
         }
     }
 
     @Override
-    public boolean rawKey(KeyEvent event) {
+    public boolean rawKey(RawKey key) {
         if (KeyEvents.KEY_VOICE_CHAT != null
                 && ClientCompatibilityManager.INSTANCE.getBoundKeyOf(KeyEvents.KEY_VOICE_CHAT).getValue()
-                == event.key()) {
+                == key.code()) {
             requestClose();
             return true;
         }
         return false;
-    }
-
-    private static void open(Screen screen) {
-        Minecraft.getInstance().gui.setScreen(screen);
-    }
-
-    private static String text(String key, Object... arguments) {
-        return Component.translatable(key, arguments).getString();
     }
 }

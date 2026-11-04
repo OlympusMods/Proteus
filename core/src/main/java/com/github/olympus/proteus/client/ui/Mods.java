@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.client.gui.screens.Screen;
 
 public final class Mods {
     public static final String VOICECHAT = "voicechat";
 
-    public record Entry(String id, String probe) {
+    public record Entry(String id, String probe, String takeover) {
         public boolean installed() {
             return PRESENT.computeIfAbsent(id, key -> {
                 try {
@@ -30,7 +31,10 @@ public final class Mods {
     }
 
     private static final Map<String, Boolean> PRESENT = new ConcurrentHashMap<>();
-    private static final List<Entry> ENTRIES = List.of(new Entry(VOICECHAT, "de.maxhenkel.voicechat.Voicechat"));
+    private static final ScreenTakeover NONE = screen -> screen;
+    private static final Map<String, ScreenTakeover> TAKEOVERS = new ConcurrentHashMap<>();
+    private static final List<Entry> ENTRIES = List.of(new Entry(VOICECHAT, "de.maxhenkel.voicechat.Voicechat",
+            "com.github.olympus.proteus.client.svc.SvcTakeover"));
 
     private Mods() {
     }
@@ -43,6 +47,34 @@ public final class Mods {
             }
         }
         return list;
+    }
+
+    public static Screen replace(Screen screen) {
+        if (screen == null) {
+            return null;
+        }
+        for (Entry entry : ENTRIES) {
+            if (entry.takeover() == null || !entry.installed() || !UiPrefs.get().modEnabled(entry.id())) {
+                continue;
+            }
+            ScreenTakeover takeover = TAKEOVERS.computeIfAbsent(entry.id(), key -> load(entry.takeover()));
+            if (takeover != NONE) {
+                Screen replaced = takeover.replace(screen);
+                if (replaced != screen) {
+                    return replaced;
+                }
+            }
+        }
+        return screen;
+    }
+
+    private static ScreenTakeover load(String name) {
+        try {
+            return (ScreenTakeover) Class.forName(name, true, Mods.class.getClassLoader()).getDeclaredConstructor()
+                    .newInstance();
+        } catch (ReflectiveOperationException | LinkageError error) {
+            return NONE;
+        }
     }
 
     public static boolean active(String id) {
