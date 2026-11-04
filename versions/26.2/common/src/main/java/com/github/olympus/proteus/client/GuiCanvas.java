@@ -7,11 +7,17 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.PlayerFaceExtractor;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -143,6 +149,15 @@ final class GuiCanvas implements Canvas {
         } catch (ReflectiveOperationException exception) {
             throw new IllegalStateException("Could not draw the sprite " + path, exception);
         }
+    }
+
+    @Override
+    public void head(UUID player, int x, int y, int size) {
+        Minecraft minecraft = Minecraft.getInstance();
+        ClientPacketListener connection = minecraft.getConnection();
+        PlayerInfo info = connection == null ? null : connection.getPlayerInfo(player);
+        PlayerSkin skin = info == null ? DefaultPlayerSkin.get(player) : info.getSkin();
+        PlayerFaceExtractor.extractRenderState(graphics, skin, x, y, size);
     }
 
     @Override

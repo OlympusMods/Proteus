@@ -1,5 +1,6 @@
 package com.github.olympus.proteus.client.ui;
 
+import java.util.UUID;
 import net.minecraft.client.Minecraft;
 
 public final class FadeCanvas implements Canvas {
@@ -141,6 +142,13 @@ public final class FadeCanvas implements Canvas {
     public void sprite(String path, int x, int y, int w, int h) {
         if (alpha > 0.45f && w > 0 && h > 0) {
             target.sprite(path, x, y, w, h);
+        }
+    }
+
+    @Override
+    public void head(UUID player, int x, int y, int size) {
+        if (alpha > 0.02f) {
+            target.head(player, x, y, size);
         }
     }
 

@@ -123,18 +123,24 @@ public final class Draw {
 
     public static List<String> wrap(Canvas c, String text, int maxWidth) {
         List<String> lines = new ArrayList<>();
-        StringBuilder line = new StringBuilder();
-        for (String word : text.split(" ")) {
-            String candidate = line.length() == 0 ? word : line + " " + word;
-            if (line.length() > 0 && c.textWidth(candidate) > maxWidth) {
-                lines.add(line.toString());
-                line = new StringBuilder(word);
-            } else {
-                line = new StringBuilder(candidate);
+        for (String paragraph : text.split("\n", -1)) {
+            if (paragraph.isEmpty()) {
+                lines.add("");
+                continue;
             }
-        }
-        if (line.length() > 0) {
-            lines.add(line.toString());
+            StringBuilder line = new StringBuilder();
+            for (String word : paragraph.split(" ")) {
+                String candidate = line.length() == 0 ? word : line + " " + word;
+                if (line.length() > 0 && c.textWidth(candidate) > maxWidth) {
+                    lines.add(line.toString());
+                    line = new StringBuilder(word);
+                } else {
+                    line = new StringBuilder(candidate);
+                }
+            }
+            if (line.length() > 0) {
+                lines.add(line.toString());
+            }
         }
         return lines;
     }

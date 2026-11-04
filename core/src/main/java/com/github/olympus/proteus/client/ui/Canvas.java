@@ -1,5 +1,7 @@
 package com.github.olympus.proteus.client.ui;
 
+import java.util.UUID;
+
 public interface Canvas {
     int width();
 
@@ -38,6 +40,9 @@ public interface Canvas {
     boolean exists(String namespace, String path);
 
     void tiled(String namespace, String path, int x, int y, int w, int h);
+
+    default void head(UUID player, int x, int y, int size) {
+    }
 
     default void glass(int x, int y, int w, int h, Glass glass) {
         Draw.round(this, x, y, w, h, glass.radius(), glass.fallbackColor());

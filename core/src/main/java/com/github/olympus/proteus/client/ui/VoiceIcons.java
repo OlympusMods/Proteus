@@ -9,6 +9,9 @@ public final class VoiceIcons {
     public static final String RECORD = "proteus:record";
     public static final String EYE = "proteus:eye";
     public static final String EYE_OFF = "proteus:eye_off";
+    public static final String LOCK = "proteus:lock";
+    public static final String GROUP = "proteus:group";
+    public static final String LEAVE = "proteus:leave";
 
     private static final String[] MIC_ROWS = {
         "..####..",
@@ -79,6 +82,39 @@ public final class VoiceIcons {
         "...####..."
     };
 
+    private static final String[] LOCK_ROWS = {
+        "..####..",
+        ".#....#.",
+        ".#....#.",
+        "########",
+        "########",
+        "###..###",
+        "###..###",
+        "########",
+        "########",
+        "########"
+    };
+    private static final String[] GROUP_ROWS = {
+        ".###....###.",
+        "#####..#####",
+        ".###....###.",
+        "............",
+        ".###....###.",
+        "#####..#####",
+        "#####..#####",
+        "#####..#####"
+    };
+    private static final String[] LEAVE_ROWS = {
+        "#####.......",
+        "#...#....#..",
+        "#...#....##.",
+        "#...#######.",
+        "#...#######.",
+        "#...#....##.",
+        "#...#....#..",
+        "#####......."
+    };
+
     private static boolean done;
 
     private VoiceIcons() {
@@ -97,6 +133,9 @@ public final class VoiceIcons {
         plain(RECORD, 8, 8, RECORD_ROWS);
         plain(EYE, 10, 8, EYE_ROWS);
         slashed(EYE_OFF, 10, 8, EYE_ROWS);
+        plain(LOCK, 8, 10, LOCK_ROWS);
+        plain(GROUP, 12, 8, GROUP_ROWS);
+        plain(LEAVE, 12, 8, LEAVE_ROWS);
     }
 
     private static void plain(String name, int width, int height, String[] rows) {
