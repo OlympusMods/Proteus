@@ -167,7 +167,8 @@ final class SvcSettingsApp extends UiShell implements MicTestButton.MicListener 
 
         MicrophoneActivationType type = config.microphoneActivationType.get();
         boolean testReady = test.active;
-        if (gui().iconToggle("svc-test", ix, y, ROW, ROW, VoiceIcons.MIC, test.isMicActive(), testReady,
+        if (gui().iconToggle("svc-test", ix, y, ROW, ROW, test.isMicActive() ? VoiceIcons.MIC : VoiceIcons.MIC_OFF,
+                test.isMicActive(), testReady,
                 text(!testReady ? "message.voicechat.mic_test_unavailable" : test.isMicActive()
                         ? "message.voicechat.mic_test.enabled" : "message.voicechat.mic_test.disabled"))) {
             test.onPress(null);
@@ -179,6 +180,9 @@ final class SvcSettingsApp extends UiShell implements MicTestButton.MicListener 
             listening = false;
         }
         y += ROW + GAP;
+
+        gui().progress(ix, y, lw, 8, shownLevel);
+        y += 8 + GAP;
 
         if (type == MicrophoneActivationType.PTT) {
             y = renderKeybind(ix, y, lw);
