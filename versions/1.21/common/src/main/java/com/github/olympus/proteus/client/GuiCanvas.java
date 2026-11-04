@@ -7,9 +7,15 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Axis;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.PlayerFaceRenderer;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.resources.DefaultPlayerSkin;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -140,6 +146,14 @@ final class GuiCanvas implements Canvas {
         RenderSystem.enableBlend();
         graphics.blitSprite(location, x, y, w, h);
         RenderSystem.disableBlend();
+    }
+
+    @Override
+    public void head(UUID player, int x, int y, int size) {
+        ClientPacketListener connection = Minecraft.getInstance().getConnection();
+        PlayerInfo info = connection == null ? null : connection.getPlayerInfo(player);
+        PlayerSkin skin = info == null ? DefaultPlayerSkin.get(player) : info.getSkin();
+        PlayerFaceRenderer.draw(graphics, skin, x, y, size);
     }
 
     @Override

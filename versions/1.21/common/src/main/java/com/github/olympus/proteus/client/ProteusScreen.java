@@ -1,14 +1,19 @@
 package com.github.olympus.proteus.client;
 
 import com.github.olympus.proteus.client.ui.Hub;
+import com.github.olympus.proteus.client.ui.RawInput;
+import com.github.olympus.proteus.client.ui.RawKey;
+import com.github.olympus.proteus.client.ui.RawMouse;
 import com.github.olympus.proteus.client.ui.UiApp;
 import com.github.olympus.proteus.client.ui.UiHost;
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.function.Function;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
+import org.lwjgl.glfw.GLFW;
 
 public final class ProteusScreen extends Screen implements UiHost {
     private final Screen parent;
@@ -19,6 +24,14 @@ public final class ProteusScreen extends Screen implements UiHost {
         super(title);
         this.parent = parent;
         this.ui = app.apply(this);
+    }
+
+    public UiApp app() {
+        return ui;
+    }
+
+    public Screen parent() {
+        return parent;
     }
 
     public static Screen open(Screen parent, String tab) {
@@ -77,6 +90,9 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (ui instanceof RawInput raw && raw.rawMouse(new RawMouse(button))) {
+            return true;
+        }
         ui.mousePressed(button);
         return true;
     }
@@ -95,6 +111,10 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public boolean keyPressed(int key, int scanCode, int modifiers) {
+        if (ui instanceof RawInput raw && raw.rawKey(new RawKey(key, InputConstants.getKey(key, scanCode),
+                key == GLFW.GLFW_KEY_ESCAPE))) {
+            return true;
+        }
         return ui.keyPressed(key, modifiers) || super.keyPressed(key, scanCode, modifiers);
     }
 
