@@ -1,22 +1,23 @@
 def svcVersion = findProperty('svc_version')
 if (svcVersion) {
     repositories {
-        exclusiveContent {
-            forRepository {
-                maven {
-                    name = 'Modrinth'
-                    url = 'https://api.modrinth.com/maven'
-                }
-            }
-            filter {
+        maven {
+            name = 'Modrinth'
+            url = 'https://api.modrinth.com/maven'
+            content {
                 includeGroup 'maven.modrinth'
             }
         }
     }
     def notation = "maven.modrinth:simple-voice-chat:${svcVersion}"
     def hasConfig = { String name -> configurations.findByName(name) != null }
+    def forgeGradle = project.extensions.findByName('fg')
+    def deobf = forgeGradle != null && forgeGradle.metaClass.respondsTo(forgeGradle, 'deobf')
     dependencies {
-        if (hasConfig('modCompileOnly')) {
+        if (deobf) {
+            compileOnly forgeGradle.deobf(notation)
+            runtimeOnly forgeGradle.deobf(notation)
+        } else if (hasConfig('modCompileOnly')) {
             modCompileOnly notation
             modLocalRuntime notation
         } else {
