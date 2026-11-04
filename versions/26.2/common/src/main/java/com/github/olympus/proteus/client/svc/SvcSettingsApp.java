@@ -108,6 +108,7 @@ final class SvcSettingsApp extends UiShell implements MicTestButton.MicListener 
 
     private void renderRows(Theme theme, int ix, int cy, int iw, int ch) {
         float scroll = gui().scrollBegin("svc-settings-scroll", ix, cy, iw, ch);
+        ix += 4;
         int lw = iw - 8;
         int top = cy - Math.round(scroll);
         int y = top;
