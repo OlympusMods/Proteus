@@ -462,6 +462,48 @@ public final class Gui {
         return hot && pressed && take();
     }
 
+    public boolean iconToggle(String id, int x, int y, int w, int h, String icon, boolean on, boolean enabled,
+            String tip) {
+        boolean hot = hot(id, x, y, w, h);
+        float hover = anim(id + "#h", hot && enabled ? 1f : 0f, "hover");
+        float press = anim(id + "#p", hot && enabled && mouseDown ? 1f : 0f, "press");
+        float chosen = anim(id + "#s", on ? 1f : 0f, "select");
+        theme.button(canvas, x, y, w, h, ButtonKind.NORMAL, hover, press, chosen, enabled);
+        int color = theme.buttonText(ButtonKind.NORMAL, hover, chosen, enabled);
+        int shift = press > 0.5f ? 1 : 0;
+        theme.icon(canvas, icon, x + w / 2 + shift, y + h / 2 + shift, color);
+        if (hot) {
+            tooltip(tip);
+        }
+        return hot && enabled && pressed && take();
+    }
+
+    public float valueSlider(String id, int x, int y, int w, int h, String label, float value, float level,
+            boolean enabled, String tip) {
+        boolean hot = hot(id, x, y, w, h);
+        if (enabled && hot && pressed && !consumed) {
+            consumed = true;
+            active = id;
+        }
+        boolean dragging = enabled && id.equals(active);
+        if (dragging && mouseDown) {
+            value = Motion.clamp((mouseX - x - 4) / (float) (w - 8), 0f, 1f);
+        }
+        float hover = anim(id + "#h", (hot || dragging) && enabled ? 1f : 0f, "hover");
+        theme.inset(canvas, x, y, w, h);
+        if (level > 0f) {
+            int filled = Math.round((w - 2) * Motion.clamp(level, 0f, 1f));
+            canvas.fill(x + 1, y + 1, filled, h - 2, Colors.alpha(theme.accentColor(), 0.5f));
+        }
+        canvas.text(fit(label, w - 24), x + (w - canvas.textWidth(fit(label, w - 24))) / 2, textY(y, h),
+                enabled ? theme.textPrimary() : theme.textDisabled(), theme.shadowText());
+        theme.button(canvas, x + Math.round(value * (w - 8)), y, 8, h, ButtonKind.NORMAL, hover, 0f, 0f, enabled);
+        if (hot) {
+            tooltip(tip);
+        }
+        return value;
+    }
+
     public boolean dragging() {
         return active != null;
     }
