@@ -109,6 +109,9 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (ui instanceof RawInput raw && raw.rawMouse(event)) {
+            return true;
+        }
         ui.mousePressed(button(event.button()));
         return true;
     }
@@ -127,6 +130,9 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
+        if (ui instanceof RawInput raw && raw.rawKey(event)) {
+            return true;
+        }
         int key = translate(event);
         int modifiers = shortcut(event) ? GLFW.GLFW_MOD_CONTROL : 0;
         return key != 0 && ui.keyPressed(key, modifiers) || super.keyPressed(event);

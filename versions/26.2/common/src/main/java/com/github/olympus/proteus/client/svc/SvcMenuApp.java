@@ -1,5 +1,6 @@
 package com.github.olympus.proteus.client.svc;
 
+import com.github.olympus.proteus.client.RawInput;
 import com.github.olympus.proteus.client.ui.ButtonKind;
 import com.github.olympus.proteus.client.ui.Theme;
 import com.github.olympus.proteus.client.ui.UiHost;
@@ -20,9 +21,10 @@ import de.maxhenkel.voicechat.voice.client.KeyEvents;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 
-final class SvcMenuApp extends UiShell {
+final class SvcMenuApp extends UiShell implements RawInput {
     private static final int PAD = 10;
     private static final int GAP = 4;
     private static final int ROW = 20;
@@ -125,13 +127,14 @@ final class SvcMenuApp extends UiShell {
     }
 
     @Override
-    public boolean keyPressed(int key, int mods) {
+    public boolean rawKey(KeyEvent event) {
         if (KeyEvents.KEY_VOICE_CHAT != null
-                && ClientCompatibilityManager.INSTANCE.getBoundKeyOf(KeyEvents.KEY_VOICE_CHAT).getValue() == key) {
+                && ClientCompatibilityManager.INSTANCE.getBoundKeyOf(KeyEvents.KEY_VOICE_CHAT).getValue()
+                == event.key()) {
             requestClose();
             return true;
         }
-        return super.keyPressed(key, mods);
+        return false;
     }
 
     private static void open(Screen screen) {

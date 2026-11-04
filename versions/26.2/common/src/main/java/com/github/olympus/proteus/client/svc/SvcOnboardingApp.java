@@ -1,5 +1,6 @@
 package com.github.olympus.proteus.client.svc;
 
+import com.github.olympus.proteus.client.RawInput;
 import com.github.olympus.proteus.client.ui.ButtonKind;
 import com.github.olympus.proteus.client.ui.Draw;
 import com.github.olympus.proteus.client.ui.Theme;
@@ -17,8 +18,10 @@ import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.voice.client.KeyEvents;
 import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 
-final class SvcOnboardingApp extends SvcPanel {
+final class SvcOnboardingApp extends SvcPanel implements RawInput {
     enum Page {
         INTRODUCTION,
         SPEAKER,
@@ -202,24 +205,23 @@ final class SvcOnboardingApp extends SvcPanel {
     }
 
     @Override
-    public boolean keyPressed(int key, int mods) {
-        if (mic.key(key)) {
+    public boolean rawKey(KeyEvent event) {
+        if (mic.key(event)) {
             return true;
         }
         if (page == Page.FINAL && KeyEvents.KEY_VOICE_CHAT != null
-                && ClientCompatibilityManager.INSTANCE.getBoundKeyOf(KeyEvents.KEY_VOICE_CHAT).getValue() == key) {
+                && ClientCompatibilityManager.INSTANCE.getBoundKeyOf(KeyEvents.KEY_VOICE_CHAT).getValue()
+                == event.key()) {
             OnboardingManager.finishOnboarding();
             Svc.open(new VoiceChatScreen());
             return true;
         }
-        return super.keyPressed(key, mods);
+        return false;
     }
 
     @Override
-    public void mousePressed(int button) {
-        if (!mic.mouse(button)) {
-            super.mousePressed(button);
-        }
+    public boolean rawMouse(MouseButtonEvent event) {
+        return mic.mouse(event);
     }
 
     @Override

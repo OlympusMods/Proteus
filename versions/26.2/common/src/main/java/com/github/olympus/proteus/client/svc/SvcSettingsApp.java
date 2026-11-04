@@ -1,5 +1,6 @@
 package com.github.olympus.proteus.client.svc;
 
+import com.github.olympus.proteus.client.RawInput;
 import com.github.olympus.proteus.client.ui.ButtonKind;
 import com.github.olympus.proteus.client.ui.Theme;
 import com.github.olympus.proteus.client.ui.UiHost;
@@ -12,8 +13,10 @@ import de.maxhenkel.voicechat.voice.client.MicrophoneActivationType;
 import de.maxhenkel.voicechat.voice.client.SoundManager;
 import de.maxhenkel.voicechat.voice.client.speaker.AudioType;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 
-final class SvcSettingsApp extends SvcPanel {
+final class SvcSettingsApp extends SvcPanel implements RawInput {
     private final SvcMicControls mic = new SvcMicControls();
 
     private float volume = -1f;
@@ -125,15 +128,13 @@ final class SvcSettingsApp extends SvcPanel {
     }
 
     @Override
-    public boolean keyPressed(int key, int mods) {
-        return mic.key(key) || super.keyPressed(key, mods);
+    public boolean rawKey(KeyEvent event) {
+        return mic.key(event);
     }
 
     @Override
-    public void mousePressed(int button) {
-        if (!mic.mouse(button)) {
-            super.mousePressed(button);
-        }
+    public boolean rawMouse(MouseButtonEvent event) {
+        return mic.mouse(event);
     }
 
     @Override

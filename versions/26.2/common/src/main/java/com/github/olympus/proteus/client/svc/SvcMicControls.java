@@ -15,8 +15,9 @@ import de.maxhenkel.voicechat.voice.client.VolumeManager;
 import de.maxhenkel.voicechat.voice.common.AudioUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
 
 final class SvcMicControls implements MicTestButton.MicListener {
     private static final int GAP = 4;
@@ -180,25 +181,26 @@ final class SvcMicControls implements MicTestButton.MicListener {
         return y + ROW + GAP;
     }
 
-    boolean key(int key) {
+    boolean key(KeyEvent event) {
         if (!listening) {
             return false;
         }
-        KeyEvents.KEY_PTT.setKey(key == GLFW.GLFW_KEY_ESCAPE ? InputConstants.UNKNOWN
-                : InputConstants.Type.KEYSYM.getOrCreate(key));
+        KeyEvents.KEY_PTT.setKey(event.isEscape() ? InputConstants.UNKNOWN : InputConstants.getKey(event));
         KeyMapping.resetMapping();
         Minecraft.getInstance().options.save();
         listening = false;
         return true;
     }
 
-    boolean mouse(int button) {
-        if (!listening || button != 1) {
+    boolean mouse(MouseButtonEvent event) {
+        if (!listening) {
             return false;
         }
-        KeyEvents.KEY_PTT.setKey(InputConstants.Type.MOUSE.getOrCreate(button));
-        KeyMapping.resetMapping();
-        Minecraft.getInstance().options.save();
+        if (event.button() != 0) {
+            KeyEvents.KEY_PTT.setKey(InputConstants.Type.MOUSE.getOrCreate(event.button()));
+            KeyMapping.resetMapping();
+            Minecraft.getInstance().options.save();
+        }
         listening = false;
         return true;
     }
