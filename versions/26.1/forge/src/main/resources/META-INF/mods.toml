@@ -1,0 +1,29 @@
+modLoader="javafml"
+loaderVersion="[62,)"
+license="GPL-3.0-only"
+
+[[mods]]
+modId="proteus"
+version="${mod_version}"
+displayName="Proteus"
+authors="Akis"
+logoFile="icon.png"
+
+description='''A shared UI toolkit for Olympus mods: animated widgets, themes and toasts.'''
+
+[[dependencies.proteus]]
+    modId="forge"
+    mandatory=true
+    versionRange="[62,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.proteus]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[26.1,26.2)"
+    ordering="NONE"
+    side="BOTH"
+
+[[mixins]]
+config = "proteus.mixins.json"

@@ -1,0 +1,78 @@
+plugins {
+	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+	id 'maven-publish'
+	id 'me.modmuss50.mod-publish-plugin' version '1.1.0'
+}
+
+repositories {
+	maven {
+		name = 'TerraformersMC'
+		url = 'https://maven.terraformersmc.com/releases/'
+	}
+}
+
+loom {
+	mods {
+		"proteus" {
+			sourceSet sourceSets.main
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.officialMojangMappings()
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+	testImplementation "org.junit.jupiter:junit-jupiter-api:5.9.2"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.9.2"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.9.2"
+}
+
+test {
+	useJUnitPlatform()
+	systemProperty 'proteus.golden.write', System.getProperty('proteus.golden.write', '')
+	systemProperty 'proteus.golden.dir', file('src/test/resources/golden').absolutePath
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = proteus_java.toInteger()
+}
+
+java {
+	withSourcesJar()
+
+	toolchain.languageVersion = JavaLanguageVersion.of(proteus_java.toInteger())
+}
+
+publishing {
+	publications {
+		create("mavenJava", MavenPublication) {
+			from components.java
+		}
+	}
+
+	repositories {
+	}
+}
+
+ext.proteusPublish = [
+	loader: 'fabric',
+	label: proteus_label,
+	java: proteus_java.toInteger(),
+	requires: ['fabric-api'],
+	jar: { tasks.remapJar.archiveFile }
+]
+apply from: 'publish.gradle'
