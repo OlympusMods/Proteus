@@ -6,6 +6,7 @@
   "mixins": [],
   "client": [
     "GuiRendererMixin",
+    "GuiScreenMixin",
     "MinecraftTickMixin",
     "ToastAddMixin",
     "ToastOverlayMixin"

@@ -1,0 +1,31 @@
+def svcVersion = findProperty('svc_version')
+if (svcVersion) {
+    repositories {
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = 'Modrinth'
+                    url = 'https://api.modrinth.com/maven'
+                }
+            }
+            filter {
+                includeGroup 'maven.modrinth'
+            }
+        }
+    }
+    def notation = "maven.modrinth:simple-voice-chat:${svcVersion}"
+    def hasConfig = { String name -> configurations.findByName(name) != null }
+    dependencies {
+        if (hasConfig('modCompileOnly')) {
+            modCompileOnly notation
+            modLocalRuntime notation
+        } else {
+            compileOnly notation
+            if (hasConfig('localRuntime')) {
+                localRuntime notation
+            } else {
+                runtimeOnly notation
+            }
+        }
+    }
+}

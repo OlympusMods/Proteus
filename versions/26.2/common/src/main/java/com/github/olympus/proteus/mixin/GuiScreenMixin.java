@@ -1,0 +1,16 @@
+package com.github.olympus.proteus.mixin;
+
+import com.github.olympus.proteus.client.svc.SvcHook;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.screens.Screen;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+
+@Mixin(Gui.class)
+public abstract class GuiScreenMixin {
+    @ModifyVariable(method = "setScreen", at = @At("HEAD"), argsOnly = true)
+    private Screen proteus$replace(Screen screen) {
+        return SvcHook.replace(screen);
+    }
+}

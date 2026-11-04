@@ -31,6 +31,10 @@ public final class ProteusScreen extends Screen implements UiHost {
         this.ui = app.apply(this);
     }
 
+    public Screen parent() {
+        return parent;
+    }
+
     private static Map<String, Integer> codes() {
         Map<String, Integer> codes = new HashMap<>();
         for (String name : new String[] {"KEY_BACKSPACE", "KEY_DELETE", "KEY_HOME", "KEY_END", "MOUSE_BUTTON_LEFT",
