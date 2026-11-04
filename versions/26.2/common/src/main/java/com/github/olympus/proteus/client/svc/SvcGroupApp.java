@@ -26,13 +26,18 @@ import net.minecraft.client.gui.screens.Screen;
 final class SvcGroupApp extends SvcPanel {
     private static final int CELL = 28;
     private static final int HEAD = 20;
-    private static final int SLIDER = 100;
+    private static final int SLIDER = 140;
 
     private final ClientPlayerStateManager state = ClientManager.getPlayerStateManager();
     private final SvcVolumes volumes = new SvcVolumes();
 
     SvcGroupApp(UiHost host, Screen original) {
         super(host, original);
+    }
+
+    @Override
+    protected int wide() {
+        return 340;
     }
 
     @Override

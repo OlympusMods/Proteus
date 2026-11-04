@@ -22,7 +22,7 @@ import net.minecraft.client.gui.screens.Screen;
 final class SvcVolumesApp extends SvcPanel {
     private static final int CELL = 28;
     private static final int HEAD = 20;
-    private static final int SLIDER = 100;
+    private static final int SLIDER = 140;
     private static final UUID NIL = new UUID(0L, 0L);
 
     private record Entry(String id, String name, UUID head, AdjustVolumeEntry source, String tip) {
@@ -33,6 +33,11 @@ final class SvcVolumesApp extends SvcPanel {
 
     SvcVolumesApp(UiHost host, Screen original) {
         super(host, original);
+    }
+
+    @Override
+    protected int wide() {
+        return 340;
     }
 
     @Override

@@ -495,7 +495,7 @@ public final class Gui {
             int filled = Math.round((w - 2) * Motion.clamp(level, 0f, 1f));
             canvas.fill(x + 1, y + 1, filled, h - 2, Colors.alpha(theme.accentColor(), 0.5f));
         }
-        canvas.text(fit(label, w - 24), x + (w - canvas.textWidth(fit(label, w - 24))) / 2, textY(y, h),
+        canvas.text(fit(label, w - 16), x + (w - canvas.textWidth(fit(label, w - 16))) / 2, textY(y, h),
                 enabled ? theme.textPrimary() : theme.textDisabled(), theme.shadowText());
         theme.button(canvas, x + Math.round(value * (w - 8)), y, 8, h, ButtonKind.NORMAL, hover, 0f, 0f, enabled);
         if (hot) {
