@@ -52,6 +52,8 @@
   "proteus.mods.voicechat.tooltip": "Draw the Simple Voice Chat menus with Proteus.",
   "proteus.mods.ji_afk": "Ji AFK Cinematic",
   "proteus.mods.ji_afk.tooltip": "Draw the Ji AFK Cinematic settings with Proteus.",
+  "proteus.mods.malilib": "MaLiLib (Litematica, MiniHUD)",
+  "proteus.mods.malilib.tooltip": "Draw the buttons, backgrounds, checkboxes, sliders, scrollbars and tooltips of MaLiLib screens with Proteus.",
   "proteus.ji.unsupported_key": "Unsupported key",
   "proteus.ji.invalid_path": "That is not a valid path.",
   "proteus.ui.done": "Done",

@@ -9,6 +9,7 @@ import net.minecraft.client.gui.screens.Screen;
 public final class Mods {
     public static final String VOICECHAT = "voicechat";
     public static final String JI_AFK = "ji_afk";
+    public static final String MALILIB = "malilib";
 
     public record Entry(String id, String probe, String takeover) {
         public boolean installed() {
@@ -36,7 +37,8 @@ public final class Mods {
     private static final Map<String, ScreenTakeover> TAKEOVERS = new ConcurrentHashMap<>();
     private static final List<Entry> ENTRIES = List.of(
             new Entry(VOICECHAT, "de.maxhenkel.voicechat.Voicechat", "com.github.olympus.proteus.client.svc.SvcTakeover"),
-            new Entry(JI_AFK, "com.ji.afkcinematic.config.SupportScreen", "com.github.olympus.proteus.client.ji.JiTakeover"));
+            new Entry(JI_AFK, "com.ji.afkcinematic.config.SupportScreen", "com.github.olympus.proteus.client.ji.JiTakeover"),
+            new Entry(MALILIB, "fi.dy.masa.malilib.gui.GuiBase", null));
 
     private Mods() {
     }

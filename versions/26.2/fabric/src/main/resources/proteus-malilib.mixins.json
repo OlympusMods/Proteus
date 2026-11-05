@@ -1,0 +1,20 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "com.github.olympus.proteus.mixin.malilib",
+  "compatibilityLevel": "JAVA_25",
+  "plugin": "com.github.olympus.proteus.mixin.malilib.MalilibMixinPlugin",
+  "mixins": [],
+  "client": [
+    "ButtonBaseAccess",
+    "ButtonGenericMixin",
+    "GuiBaseMixin",
+    "GuiScrollBarMixin",
+    "RenderUtilsMixin",
+    "WidgetCheckBoxMixin",
+    "WidgetSliderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}
