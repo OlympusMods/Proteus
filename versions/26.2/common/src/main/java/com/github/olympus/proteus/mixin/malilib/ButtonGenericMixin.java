@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = ButtonGeneric.class, remap = false)
@@ -28,21 +28,25 @@ public abstract class ButtonGenericMixin {
         }
     }
 
-    @ModifyArg(method = "drawText", at = @At(value = "INVOKE", target = "Lfi/dy/masa/malilib/gui/button/ButtonGeneric;drawCenteredStringWithShadow(Lfi/dy/masa/malilib/render/GuiContext;IIILjava/lang/String;)V"), index = 3)
-    private int proteus$centeredColor(int color) {
-        return proteus$color(color);
+    @Redirect(method = "drawText", at = @At(value = "INVOKE", target = "Lfi/dy/masa/malilib/gui/button/ButtonGeneric;drawCenteredStringWithShadow(Lfi/dy/masa/malilib/render/GuiContext;IIILjava/lang/String;)V"))
+    private void proteus$centered(ButtonGeneric button, GuiContext ctx, int x, int y, int color, String text) {
+        if (!proteus$label(ctx, x, y, text, true)) {
+            button.drawCenteredStringWithShadow(ctx, x, y, color, text);
+        }
     }
 
-    @ModifyArg(method = "drawText", at = @At(value = "INVOKE", target = "Lfi/dy/masa/malilib/gui/button/ButtonGeneric;drawStringWithShadow(Lfi/dy/masa/malilib/render/GuiContext;IIILjava/lang/String;)V"), index = 3)
-    private int proteus$leftColor(int color) {
-        return proteus$color(color);
+    @Redirect(method = "drawText", at = @At(value = "INVOKE", target = "Lfi/dy/masa/malilib/gui/button/ButtonGeneric;drawStringWithShadow(Lfi/dy/masa/malilib/render/GuiContext;IIILjava/lang/String;)V"))
+    private void proteus$left(ButtonGeneric button, GuiContext ctx, int x, int y, int color, String text) {
+        if (!proteus$label(ctx, x, y, text, false)) {
+            button.drawStringWithShadow(ctx, x, y, color, text);
+        }
     }
 
-    private int proteus$color(int color) {
+    private boolean proteus$label(GuiContext ctx, int x, int y, String text, boolean centered) {
         if (!renderDefaultBackground) {
-            return color;
+            return false;
         }
         ButtonBaseAccess state = (ButtonBaseAccess) this;
-        return MalilibSkin.buttonText(color, state.proteus$hovered(), state.proteus$enabled());
+        return MalilibSkin.label(ctx, x, y, text, centered, state.proteus$hovered(), state.proteus$enabled());
     }
 }

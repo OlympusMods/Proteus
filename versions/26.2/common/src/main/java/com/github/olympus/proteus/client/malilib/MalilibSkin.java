@@ -73,15 +73,21 @@ public final class MalilibSkin {
         }
     }
 
-    public static int buttonText(int original, boolean hovered, boolean enabled) {
+    public static boolean label(GuiGraphicsExtractor graphics, int x, int y, String text, boolean centered,
+            boolean hovered, boolean enabled) {
         if (!active()) {
-            return original;
+            return false;
         }
         try {
-            return Themes.current().buttonText(ButtonKind.NORMAL, hovered ? 1f : 0f, 0f, enabled);
+            Theme theme = Themes.current();
+            Canvas c = canvas(graphics);
+            int color = theme.buttonText(ButtonKind.NORMAL, hovered ? 1f : 0f, 0f, enabled);
+            int left = centered ? x - c.textWidth(text) / 2 : x;
+            graphics.nextStratum();
+            c.text(text, left, y, color, theme.shadowText());
+            return true;
         } catch (RuntimeException exception) {
-            fail(exception);
-            return original;
+            return fail(exception);
         }
     }
 
