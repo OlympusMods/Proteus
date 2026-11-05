@@ -127,4 +127,5 @@ ext.proteusPublish = [
     jar: { tasks.jar.archiveFile }
 ]
 apply from: 'svc.gradle'
+apply from: 'ji.gradle'
 apply from: 'publish.gradle'

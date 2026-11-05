@@ -1,0 +1,44 @@
+import java.util.zip.ZipFile
+
+def jiVersion = findProperty('ji_version')
+if (jiVersion) {
+    repositories {
+        maven {
+            name = 'Modrinth'
+            url = 'https://api.modrinth.com/maven'
+            content {
+                includeGroup 'maven.modrinth'
+            }
+        }
+    }
+    def wrapper = configurations.detachedConfiguration(dependencies.create("maven.modrinth:ji-afk-cinematic:${jiVersion}"))
+    wrapper.transitive = false
+    def exact = findProperty('ji_minecraft') ?: findProperty('minecraft_version')
+    def nested = layout.buildDirectory.file("ji/ji-afk-cinematic-${jiVersion}-${exact}.jar").get().asFile
+    if (!nested.exists()) {
+        def zip = new ZipFile(wrapper.singleFile)
+        try {
+            def entry = zip.entries().find { it.name.startsWith('META-INF/jars/') && it.name.contains("-fabric-${exact}-") }
+            if (entry == null) {
+                throw new GradleException("Ji AFK Cinematic ${jiVersion} has no nested jar for ${exact}")
+            }
+            nested.parentFile.mkdirs()
+            nested.bytes = zip.getInputStream(entry).bytes
+        } finally {
+            zip.close()
+        }
+    }
+    def hasConfig = { String name -> configurations.findByName(name) != null }
+    dependencies {
+        if (hasConfig('modCompileOnly')) {
+            modCompileOnly files(nested)
+            modLocalRuntime files(nested)
+        } else {
+            compileOnly files(nested)
+            localRuntime files(nested)
+        }
+    }
+}
+if (!jiVersion) {
+    sourceSets.main.java.exclude('**/client/ji/**')
+}
