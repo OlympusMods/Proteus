@@ -216,6 +216,11 @@ final class HubApp implements UiApp, RawInput {
     }
 
     @Override
+    public boolean typing() {
+        return app.typing();
+    }
+
+    @Override
     public boolean rawMouse(RawMouse mouse) {
         return app instanceof RawInput raw && raw.rawMouse(mouse);
     }

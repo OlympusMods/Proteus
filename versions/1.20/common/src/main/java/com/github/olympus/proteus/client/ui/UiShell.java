@@ -197,6 +197,11 @@ public abstract class UiShell implements UiApp {
     }
 
     @Override
+    public boolean typing() {
+        return gui.typing();
+    }
+
+    @Override
     public boolean charTyped(int codepoint) {
         return gui.charTyped(codepoint);
     }
