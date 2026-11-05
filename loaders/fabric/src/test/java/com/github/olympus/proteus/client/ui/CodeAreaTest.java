@@ -20,12 +20,15 @@ class CodeAreaTest {
     void setUp() {
         Language language = Language.builder("Test")
                 .comment("#")
-                .block("repeat", "end")
+                .block("end", "repeat", "if")
+                .middle("else")
                 .entry(Language.Entry.of("say", "say <message>", "Sends a message"))
                 .entry(Language.Entry.of("sound", "sound <name>", "Plays a sound").values("bell", "bass", "chime"))
                 .entry(Language.Entry.of("wait", "wait <time>", "Pauses"))
                 .entry(Language.Entry.of("repeat", "repeat <n>", "Loops"))
                 .entry(Language.Entry.of("end", "end", "Closes a loop"))
+                .entry(Language.Entry.of("if", "if <test>", "Branches"))
+                .entry(Language.Entry.of("else", "else", "Other branch"))
                 .entry(Language.Entry.of("command", "command <text>", "Runs a command").aliases("cmd"))
                 .validator(source -> source.contains("oops") ? List.of(new Problem(1, "bad")) : List.of())
                 .build();
@@ -121,6 +124,18 @@ class CodeAreaTest {
     }
 
     @Test
+    void elseLinesUpWithItsIfAndIndentsAfterwards() {
+        type("if a");
+        press(GLFW.GLFW_KEY_ENTER);
+        type("say hi");
+        press(GLFW.GLFW_KEY_ENTER);
+        type("else");
+        assertEquals("if a\n  say hi\nelse", area.text);
+        press(GLFW.GLFW_KEY_ENTER);
+        assertEquals("if a\n  say hi\nelse\n  ", area.text);
+    }
+
+    @Test
     void enterAcceptsOnlyWhenThereIsAPrefix() {
         type("say");
         assertTrue(area.completion().isEmpty());
@@ -132,7 +147,7 @@ class CodeAreaTest {
     @Test
     void controlSpaceListsEverything() {
         area.key(canvas, GLFW.GLFW_KEY_SPACE, GLFW.GLFW_MOD_CONTROL, text -> { }, () -> "");
-        assertEquals(6, area.completion().items().size());
+        assertEquals(8, area.completion().items().size());
     }
 
     @Test

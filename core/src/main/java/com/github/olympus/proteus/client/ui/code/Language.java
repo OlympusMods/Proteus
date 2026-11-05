@@ -1,8 +1,10 @@
 package com.github.olympus.proteus.client.ui.code;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public final class Language {
@@ -66,7 +68,8 @@ public final class Language {
     private final String title;
     private final String comment;
     private final List<Entry> entries;
-    private final String opener;
+    private final Set<String> openers;
+    private final Set<String> middles;
     private final String closer;
     private final Highlighter highlighter;
     private final Validator validator;
@@ -75,7 +78,8 @@ public final class Language {
         this.title = builder.title;
         this.comment = builder.comment;
         this.entries = List.copyOf(builder.entries);
-        this.opener = builder.opener;
+        this.openers = Set.copyOf(builder.openers);
+        this.middles = Set.copyOf(builder.middles);
         this.closer = builder.closer;
         this.highlighter = builder.highlighter;
         this.validator = builder.validator;
@@ -117,14 +121,15 @@ public final class Language {
     public int indentAfter(String line) {
         int indent = line.length() - line.stripLeading().length();
         String word = firstWord(line);
-        if (opener != null && word.equals(opener)) {
+        if (openers.contains(word) || middles.contains(word)) {
             indent += INDENT;
         }
         return indent;
     }
 
     public boolean closes(String line) {
-        return closer != null && line.strip().toLowerCase(Locale.ROOT).equals(closer);
+        String word = line.strip().toLowerCase(Locale.ROOT);
+        return closer != null && word.equals(closer) || middles.contains(word);
     }
 
     public static int indentWidth() {
@@ -229,7 +234,8 @@ public final class Language {
         private final String title;
         private final List<Entry> entries = new ArrayList<>();
         private String comment;
-        private String opener;
+        private final Set<String> openers = new HashSet<>();
+        private final Set<String> middles = new HashSet<>();
         private String closer;
         private Highlighter highlighter;
         private Validator validator;
@@ -248,9 +254,18 @@ public final class Language {
             return this;
         }
 
-        public Builder block(String open, String close) {
-            this.opener = open.toLowerCase(Locale.ROOT);
+        public Builder block(String close, String... opens) {
             this.closer = close.toLowerCase(Locale.ROOT);
+            for (String open : opens) {
+                openers.add(open.toLowerCase(Locale.ROOT));
+            }
+            return this;
+        }
+
+        public Builder middle(String... words) {
+            for (String word : words) {
+                middles.add(word.toLowerCase(Locale.ROOT));
+            }
             return this;
         }
 
