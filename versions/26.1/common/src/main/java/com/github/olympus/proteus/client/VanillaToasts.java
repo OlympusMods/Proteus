@@ -28,7 +28,7 @@ public final class VanillaToasts {
     public static boolean replace(Toast toast) {
         try {
             return show(toast);
-        } catch (RuntimeException exception) {
+        } catch (RuntimeException | LinkageError exception) {
             if (!warned) {
                 warned = true;
                 ProteusClient.LOGGER.warn("Proteus: could not redraw a vanilla toast, showing the normal one",
