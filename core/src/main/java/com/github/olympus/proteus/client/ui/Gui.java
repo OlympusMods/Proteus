@@ -900,6 +900,7 @@ public final class Gui {
             case KEYWORD -> theme.accentColor();
             case NUMBER -> lightTheme ? 0xFFB45F06 : 0xFFE5C07B;
             case STRING -> lightTheme ? 0xFF2E7D32 : 0xFF98C379;
+            case VARIABLE -> lightTheme ? 0xFF0B7285 : 0xFF56B6C2;
             case COMMENT -> theme.textSecondary();
             case UNKNOWN -> theme.danger();
         };
@@ -1001,6 +1002,19 @@ public final class Gui {
                     canvas.text(fit(row.replace("\t", "  "), inner - 10), x + pad + 6, cy, theme.textSecondary(), false);
                     cy += lineHeight;
                 }
+            }
+            cy += 6;
+        }
+        for (Language.Entry entry : language.references()) {
+            canvas.text(fit(entry.usage(), inner), x + pad, cy, theme.titleColor(), theme.shadowText());
+            cy += lineHeight;
+            for (String row : Draw.wrap(canvas, entry.summary(), inner)) {
+                canvas.text(row, x + pad, cy, theme.textPrimary(), theme.shadowText());
+                cy += lineHeight;
+            }
+            for (String row : Draw.wrap(canvas, entry.detail(), inner)) {
+                canvas.text(row, x + pad, cy, theme.textSecondary(), false);
+                cy += lineHeight;
             }
             cy += 6;
         }

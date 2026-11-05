@@ -5,6 +5,7 @@ public enum Kind {
     KEYWORD,
     NUMBER,
     STRING,
+    VARIABLE,
     COMMENT,
     UNKNOWN
 }

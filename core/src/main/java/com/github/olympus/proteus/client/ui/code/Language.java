@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class Language {
@@ -73,6 +74,12 @@ public final class Language {
     private final String closer;
     private final Highlighter highlighter;
     private final Validator validator;
+    private final List<Entry> references;
+    private final Set<String> words;
+    private final List<Marked> marks;
+
+    private record Marked(Pattern pattern, Kind kind) {
+    }
 
     private Language(Builder builder) {
         this.title = builder.title;
@@ -83,6 +90,9 @@ public final class Language {
         this.closer = builder.closer;
         this.highlighter = builder.highlighter;
         this.validator = builder.validator;
+        this.references = List.copyOf(builder.references);
+        this.words = Set.copyOf(builder.words);
+        this.marks = List.copyOf(builder.marks);
     }
 
     public static Builder builder(String title) {
@@ -95,6 +105,10 @@ public final class Language {
 
     public List<Entry> entries() {
         return entries;
+    }
+
+    public List<Entry> references() {
+        return references;
     }
 
     public Entry find(String word) {
@@ -221,11 +235,21 @@ public final class Language {
                 while (end < length && line.charAt(end) != ' ') {
                     end++;
                 }
-                if (NUMBER.matcher(line.substring(at, end)).matches()) {
+                String token = line.substring(at, end);
+                if (NUMBER.matcher(token).matches()) {
                     spans.add(new Span(at, end, Kind.NUMBER));
+                } else if (words.contains(token.toLowerCase(Locale.ROOT))) {
+                    spans.add(new Span(at, end, Kind.KEYWORD));
                 }
             }
             at = end;
+        }
+        for (Marked mark : marks) {
+            Matcher matcher = mark.pattern().matcher(line);
+            matcher.region(wordEnd, length);
+            while (matcher.find()) {
+                spans.add(new Span(matcher.start(), matcher.end(), mark.kind()));
+            }
         }
         return spans;
     }
@@ -239,6 +263,9 @@ public final class Language {
         private String closer;
         private Highlighter highlighter;
         private Validator validator;
+        private final List<Entry> references = new ArrayList<>();
+        private final Set<String> words = new HashSet<>();
+        private final List<Marked> marks = new ArrayList<>();
 
         private Builder(String title) {
             this.title = title;
@@ -266,6 +293,23 @@ public final class Language {
             for (String word : words) {
                 middles.add(word.toLowerCase(Locale.ROOT));
             }
+            return this;
+        }
+
+        public Builder reference(Entry entry) {
+            references.add(entry);
+            return this;
+        }
+
+        public Builder word(String... values) {
+            for (String value : values) {
+                words.add(value.toLowerCase(Locale.ROOT));
+            }
+            return this;
+        }
+
+        public Builder mark(Pattern pattern, Kind kind) {
+            marks.add(new Marked(pattern, kind));
             return this;
         }
 

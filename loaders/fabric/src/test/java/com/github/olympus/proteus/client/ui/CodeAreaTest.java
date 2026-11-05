@@ -8,6 +8,7 @@ import com.github.olympus.proteus.client.ui.code.Kind;
 import com.github.olympus.proteus.client.ui.code.Language;
 import com.github.olympus.proteus.client.ui.code.Problem;
 import java.util.List;
+import java.util.regex.Pattern;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lwjgl.glfw.GLFW;
@@ -22,6 +23,8 @@ class CodeAreaTest {
                 .comment("#")
                 .block("end", "repeat", "if")
                 .middle("else")
+                .word("from", "to")
+                .mark(Pattern.compile("\\{[^{}]*}"), Kind.VARIABLE)
                 .entry(Language.Entry.of("say", "say <message>", "Sends a message"))
                 .entry(Language.Entry.of("sound", "sound <name>", "Plays a sound").values("bell", "bass", "chime"))
                 .entry(Language.Entry.of("wait", "wait <time>", "Pauses"))
@@ -167,6 +170,16 @@ class CodeAreaTest {
         area.text = "foo";
         area.analyse();
         assertEquals(Kind.UNKNOWN, area.kinds[0]);
+    }
+
+    @Test
+    void secondaryWordsAndMarkedPatternsAreColored() {
+        area.text = "say a from {x} 3";
+        area.analyse();
+        assertEquals(Kind.PLAIN, area.kinds[4]);
+        assertEquals(Kind.KEYWORD, area.kinds[6]);
+        assertEquals(Kind.VARIABLE, area.kinds[11]);
+        assertEquals(Kind.NUMBER, area.kinds[15]);
     }
 
     @Test
