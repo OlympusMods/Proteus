@@ -14,6 +14,7 @@
 - Mods tab with a switch for every supported mod you have installed. Turning one off gives you its own menus back
 - Simple Voice Chat support: its voice chat menu, settings, group screens, player volumes, microphone and speaker pickers and setup screens are drawn with Proteus
 - New widgets: icon toggle, and a slider that shows a label and a live level
+- `Gui.codeEditor`: a code editor with line numbers, syntax colors, error marks, auto indent, tab completion and a `?` reference page, driven by a `Language` that the mod supplies
 - `Canvas.head` draws a player's face, and `Draw.wrap` keeps line breaks
 - `ui.json` stores the theme id; the old `style` setting is read once and moved over
 
