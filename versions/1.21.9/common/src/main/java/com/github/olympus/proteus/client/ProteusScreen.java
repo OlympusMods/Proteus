@@ -21,6 +21,7 @@ public final class ProteusScreen extends Screen implements UiHost {
     private final Screen parent;
     private final UiApp ui;
     private final GuiCanvas canvas = new GuiCanvas();
+    private TypingProbe typingProbe;
 
     public ProteusScreen(Component title, Screen parent, Function<UiHost, UiApp> app) {
         super(title);
@@ -43,6 +44,7 @@ public final class ProteusScreen extends Screen implements UiHost {
     @Override
     protected void init() {
         ui.resize(width, height);
+        typingProbe = new TypingProbe(font, ui::typing);
     }
 
     @Override
