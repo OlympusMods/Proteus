@@ -77,4 +77,5 @@ ext.proteusPublish = [
 ]
 apply from: 'svc.gradle'
 apply from: 'ji.gradle'
+apply from: 'malilib.gradle'
 apply from: 'publish.gradle'

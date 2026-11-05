@@ -36,7 +36,7 @@ def layersOf = { String id, String loader ->
 
 def mergeLayers = { String id, String loader ->
     def files = new TreeMap<String, File>()
-    ['publish.gradle', 'svc.gradle', 'ji.gradle', 'CHANGELOG.md'].each { files[it] = file(it) }
+    ['publish.gradle', 'svc.gradle', 'ji.gradle', 'malilib.gradle', 'CHANGELOG.md'].each { files[it] = file(it) }
     layersOf(id, loader).each { layer ->
         Path base = layer.toPath()
         layer.eachFileRecurse(groovy.io.FileType.FILES) { found ->

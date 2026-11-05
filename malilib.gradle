@@ -1,0 +1,27 @@
+def malilibVersion = findProperty('malilib_version')
+if (malilibVersion) {
+    repositories {
+        maven {
+            name = 'Modrinth'
+            url = 'https://api.modrinth.com/maven'
+            content {
+                includeGroup 'maven.modrinth'
+            }
+        }
+    }
+    def hasConfig = { String name -> configurations.findByName(name) != null }
+    dependencies {
+        def notation = "maven.modrinth:malilib:${malilibVersion}"
+        if (hasConfig('modCompileOnly')) {
+            modCompileOnly notation
+            modLocalRuntime notation
+        } else {
+            compileOnly notation
+            localRuntime notation
+        }
+    }
+}
+if (!malilibVersion) {
+    sourceSets.main.java.exclude('**/client/malilib/**')
+    sourceSets.main.java.exclude('**/mixin/malilib/**')
+}
