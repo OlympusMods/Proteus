@@ -4,7 +4,7 @@ import com.github.olympus.proteus.client.ui.theme.Effects;
 import java.util.List;
 import net.minecraft.network.chat.Component;
 
-final class HubApp implements UiApp {
+final class HubApp implements UiApp, RawInput {
     private static final int BAR_Y = 6;
     private static final int BAR_H = 22;
     private static final int INSET = BAR_Y + BAR_H + 2;
@@ -208,6 +208,16 @@ final class HubApp implements UiApp {
     @Override
     public boolean charTyped(int codepoint) {
         return app.charTyped(codepoint);
+    }
+
+    @Override
+    public boolean rawKey(RawKey key) {
+        return app instanceof RawInput raw && raw.rawKey(key);
+    }
+
+    @Override
+    public boolean rawMouse(RawMouse mouse) {
+        return app instanceof RawInput raw && raw.rawMouse(mouse);
     }
 
     @Override
