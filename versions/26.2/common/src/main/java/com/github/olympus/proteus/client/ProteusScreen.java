@@ -44,7 +44,7 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     private static Map<String, Integer> codes() {
         Map<String, Integer> codes = new HashMap<>();
-        for (String name : new String[] {"KEY_BACKSPACE", "KEY_DELETE", "KEY_HOME", "KEY_END", "KEY_SPACE", "KEY_Z", "KEY_Y", "MOUSE_BUTTON_LEFT",
+        for (String name : new String[] {"KEY_BACKSPACE", "KEY_DELETE", "KEY_HOME", "KEY_END", "KEY_SPACE", "MOUSE_BUTTON_LEFT",
                 "MOUSE_BUTTON_RIGHT"}) {
             try {
                 codes.put(name, InputConstants.class.getField(name).getInt(null));
@@ -137,8 +137,8 @@ public final class ProteusScreen extends Screen implements UiHost {
                 && raw.rawKey(new RawKey(event.key(), InputConstants.getKey(event), event.isEscape()))) {
             return true;
         }
-        int key = translate(event);
         boolean control = shortcut(event) || event.hasControlDown();
+        int key = event.hasControlDown() ? chord(event) : translate(event);
         int modifiers = (control ? GLFW.GLFW_MOD_CONTROL : 0) | (event.hasShiftDown() ? GLFW.GLFW_MOD_SHIFT : 0);
         return key != 0 && ui.keyPressed(key, modifiers) || super.keyPressed(event);
     }
@@ -156,6 +156,15 @@ public final class ProteusScreen extends Screen implements UiHost {
             return 1;
         }
         return -1;
+    }
+
+    private static int chord(KeyEvent event) {
+        String name = GLFW.glfwGetKeyName(event.key(), event.scancode());
+        if (name != null && name.length() == 1) {
+            char letter = Character.toUpperCase(name.charAt(0));
+            return "ACVXYZ".indexOf(letter) >= 0 ? letter : 0;
+        }
+        return translate(event);
     }
 
     private static boolean shortcut(KeyEvent event) {
@@ -205,12 +214,6 @@ public final class ProteusScreen extends Screen implements UiHost {
         }
         if (key == CODES.get("KEY_DELETE")) {
             return GLFW.GLFW_KEY_DELETE;
-        }
-        if (key == CODES.get("KEY_Z")) {
-            return GLFW.GLFW_KEY_Z;
-        }
-        if (key == CODES.get("KEY_Y")) {
-            return GLFW.GLFW_KEY_Y;
         }
         if (key == CODES.get("KEY_HOME")) {
             return GLFW.GLFW_KEY_HOME;
