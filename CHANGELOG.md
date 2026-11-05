@@ -13,6 +13,7 @@
 - Removed `ModernTheme`, `ClassicTheme`, `UiPrefs.classic()` and `Theme.animated()`. Use `Themes.current()`, `Theme.motion().enabled()` and `Theme.accentColor()`
 - Mods tab with a switch for every supported mod you have installed. Turning one off gives you its own menus back
 - Simple Voice Chat support: its voice chat menu, settings, group screens, player volumes, microphone and speaker pickers and setup screens are drawn with Proteus
+- Ji AFK Cinematic support on Fabric: its settings and music folder pages are drawn with Proteus
 - New widgets: icon toggle, and a slider that shows a label and a live level
 - `Gui.codeEditor`: a code editor with line numbers, syntax colors, error marks, auto indent, tab completion and a `?` reference page, driven by a `Language` that the mod supplies
 - The code editor has selection (Shift+arrows, Ctrl+arrows by word, click, drag, double and triple click), cut, copy, paste, undo and redo, word delete and block indent
