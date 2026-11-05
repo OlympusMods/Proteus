@@ -1,6 +1,7 @@
 package com.github.olympus.proteus.client;
 
 import com.github.olympus.proteus.client.ui.Hub;
+import com.github.olympus.proteus.client.ui.InputGuard;
 import com.github.olympus.proteus.client.ui.RawInput;
 import com.github.olympus.proteus.client.ui.RawKey;
 import com.github.olympus.proteus.client.ui.RawMouse;
@@ -108,7 +109,12 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (ui instanceof RawInput raw && raw.rawMouse(new RawMouse(event.button()))) {
+        return InputGuard.run("mouse press", () -> pressed(event));
+    }
+
+    private boolean pressed(MouseButtonEvent event) {
+        if (ui instanceof RawInput raw
+                && InputGuard.run("raw mouse hook", () -> raw.rawMouse(new RawMouse(event.button())))) {
             return true;
         }
         ui.mousePressed(event.button());
@@ -129,8 +135,13 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
+        return InputGuard.run("key press", () -> pressed(event));
+    }
+
+    private boolean pressed(KeyEvent event) {
         if (ui instanceof RawInput raw
-                && raw.rawKey(new RawKey(event.key(), InputConstants.getKey(event), event.isEscape()))) {
+                && InputGuard.run("raw key hook",
+                        () -> raw.rawKey(new RawKey(event.key(), InputConstants.getKey(event), event.isEscape())))) {
             return true;
         }
         boolean control = shortcut(event) || event.hasControlDown();
@@ -141,11 +152,11 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public boolean charTyped(CharacterEvent event) {
-        return ui.charTyped(event.codepoint());
+        return InputGuard.run("character input", () -> ui.charTyped(event.codepoint()));
     }
 
     private static int chord(KeyEvent event) {
-        String name = GLFW.glfwGetKeyName(event.key(), event.scancode());
+        String name = GLFW.glfwGetKeyName(event.key(), 0);
         if (name != null && name.length() == 1) {
             char letter = Character.toUpperCase(name.charAt(0));
             return "ACVXYZ".indexOf(letter) >= 0 ? letter : 0;

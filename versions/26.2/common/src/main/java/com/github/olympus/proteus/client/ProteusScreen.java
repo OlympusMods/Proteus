@@ -1,6 +1,7 @@
 package com.github.olympus.proteus.client;
 
 import com.github.olympus.proteus.client.ui.Hub;
+import com.github.olympus.proteus.client.ui.InputGuard;
 import com.github.olympus.proteus.client.ui.RawInput;
 import com.github.olympus.proteus.client.ui.RawKey;
 import com.github.olympus.proteus.client.ui.RawMouse;
@@ -8,6 +9,9 @@ import com.github.olympus.proteus.client.ui.UiApp;
 import com.github.olympus.proteus.client.ui.UiHost;
 import java.util.function.Function;
 import com.mojang.blaze3d.platform.InputConstants;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -22,6 +26,7 @@ import org.lwjgl.glfw.GLFW;
 
 public final class ProteusScreen extends Screen implements UiHost {
     private static final Map<String, Integer> CODES = codes();
+    private static final MethodHandle SHORTCUT_KEY = shortcutKey();
 
     private final Screen parent;
     private final UiApp ui;
@@ -112,7 +117,12 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (ui instanceof RawInput raw && raw.rawMouse(new RawMouse(event.button()))) {
+        return InputGuard.run("mouse press", () -> pressed(event));
+    }
+
+    private boolean pressed(MouseButtonEvent event) {
+        if (ui instanceof RawInput raw
+                && InputGuard.run("raw mouse hook", () -> raw.rawMouse(new RawMouse(event.button())))) {
             return true;
         }
         ui.mousePressed(button(event.button()));
@@ -133,8 +143,13 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
+        return InputGuard.run("key press", () -> pressed(event));
+    }
+
+    private boolean pressed(KeyEvent event) {
         if (ui instanceof RawInput raw
-                && raw.rawKey(new RawKey(event.key(), InputConstants.getKey(event), event.isEscape()))) {
+                && InputGuard.run("raw key hook",
+                        () -> raw.rawKey(new RawKey(event.key(), InputConstants.getKey(event), event.isEscape())))) {
             return true;
         }
         boolean control = shortcut(event) || event.hasControlDown();
@@ -145,7 +160,7 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     @Override
     public boolean charTyped(CharacterEvent event) {
-        return ui.charTyped(event.codepoint());
+        return InputGuard.run("character input", () -> ui.charTyped(event.codepoint()));
     }
 
     private static int button(int button) {
@@ -159,12 +174,33 @@ public final class ProteusScreen extends Screen implements UiHost {
     }
 
     private static int chord(KeyEvent event) {
-        String name = GLFW.glfwGetKeyName(event.key(), event.scancode());
-        if (name != null && name.length() == 1) {
-            char letter = Character.toUpperCase(name.charAt(0));
+        int letter = layoutLetter(event);
+        if (letter != 0) {
+            letter = Character.toUpperCase(letter);
             return "ACVXYZ".indexOf(letter) >= 0 ? letter : 0;
         }
         return translate(event);
+    }
+
+    private static int layoutLetter(KeyEvent event) {
+        if (SHORTCUT_KEY != null) {
+            try {
+                int code = (int) SHORTCUT_KEY.invokeExact(event);
+                return code > 0 && code < 128 ? code : 0;
+            } catch (Throwable throwable) {
+                return 0;
+            }
+        }
+        String name = GLFW.glfwGetKeyName(event.key(), 0);
+        return name != null && name.length() == 1 ? name.charAt(0) : 0;
+    }
+
+    private static MethodHandle shortcutKey() {
+        try {
+            return MethodHandles.publicLookup().findVirtual(KeyEvent.class, "shortcutKey", MethodType.methodType(int.class));
+        } catch (ReflectiveOperationException exception) {
+            return null;
+        }
     }
 
     private static boolean shortcut(KeyEvent event) {

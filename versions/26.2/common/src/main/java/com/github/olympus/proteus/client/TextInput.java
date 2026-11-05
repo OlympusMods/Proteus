@@ -33,7 +33,7 @@ final class TextInput {
         try {
             handle.invoke(MANAGER.invoke(Minecraft.getInstance()), owner);
         } catch (Throwable throwable) {
-            throw new IllegalStateException("Could not change text input state", throwable);
+            ProteusClient.LOGGER.warn("Proteus: could not change text input state", throwable);
         }
     }
 
