@@ -44,7 +44,7 @@ public final class ProteusScreen extends Screen implements UiHost {
 
     private static Map<String, Integer> codes() {
         Map<String, Integer> codes = new HashMap<>();
-        for (String name : new String[] {"KEY_BACKSPACE", "KEY_DELETE", "KEY_HOME", "KEY_END", "MOUSE_BUTTON_LEFT",
+        for (String name : new String[] {"KEY_BACKSPACE", "KEY_DELETE", "KEY_HOME", "KEY_END", "KEY_SPACE", "MOUSE_BUTTON_LEFT",
                 "MOUSE_BUTTON_RIGHT"}) {
             try {
                 codes.put(name, InputConstants.class.getField(name).getInt(null));
@@ -138,7 +138,8 @@ public final class ProteusScreen extends Screen implements UiHost {
             return true;
         }
         int key = translate(event);
-        int modifiers = shortcut(event) ? GLFW.GLFW_MOD_CONTROL : 0;
+        boolean control = shortcut(event) || event.hasControlDown() && key == GLFW.GLFW_KEY_SPACE;
+        int modifiers = (control ? GLFW.GLFW_MOD_CONTROL : 0) | (event.hasShiftDown() ? GLFW.GLFW_MOD_SHIFT : 0);
         return key != 0 && ui.keyPressed(key, modifiers) || super.keyPressed(event);
     }
 
@@ -174,6 +175,15 @@ public final class ProteusScreen extends Screen implements UiHost {
         if (event.isRight()) {
             return GLFW.GLFW_KEY_RIGHT;
         }
+        if (event.isUp()) {
+            return GLFW.GLFW_KEY_UP;
+        }
+        if (event.isDown()) {
+            return GLFW.GLFW_KEY_DOWN;
+        }
+        if (event.isCycleFocus()) {
+            return GLFW.GLFW_KEY_TAB;
+        }
         if (event.isSelectAll()) {
             return GLFW.GLFW_KEY_A;
         }
@@ -187,6 +197,9 @@ public final class ProteusScreen extends Screen implements UiHost {
             return GLFW.GLFW_KEY_X;
         }
         int key = event.key();
+        if (key == CODES.get("KEY_SPACE")) {
+            return GLFW.GLFW_KEY_SPACE;
+        }
         if (key == CODES.get("KEY_BACKSPACE")) {
             return GLFW.GLFW_KEY_BACKSPACE;
         }
