@@ -1,6 +1,11 @@
 package com.github.olympus.proteus.client.ui;
 
+import com.github.olympus.proteus.client.ui.code.Kind;
+import com.github.olympus.proteus.client.ui.code.Language;
+import com.github.olympus.proteus.client.ui.code.Problem;
+import com.github.olympus.proteus.client.ui.code.Span;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.lwjgl.glfw.GLFW;
 
@@ -14,6 +19,17 @@ final class Area {
     int wantX = -1;
     boolean follow;
     final List<int[]> lines = new ArrayList<>();
+    Language language;
+    boolean help;
+    int pick;
+    Kind[] kinds = new Kind[0];
+    List<Problem> problems = List.of();
+    private String analysed;
+    private int pickKey;
+    private String dismissedText;
+    private int dismissedCursor = -1;
+    private String forcedText;
+    private int forcedCursor = -1;
 
     void wrap(Canvas canvas, int width) {
         lines.clear();
@@ -89,13 +105,23 @@ final class Area {
         cursor += clean.length();
         wantX = -1;
         follow = true;
+        tidy();
     }
 
     boolean key(Canvas canvas, int key, int mods, java.util.function.Consumer<String> copy,
             java.util.function.Supplier<String> paste) {
         boolean control = (mods & (GLFW.GLFW_MOD_CONTROL | GLFW.GLFW_MOD_SUPER)) != 0;
+        boolean shift = (mods & GLFW.GLFW_MOD_SHIFT) != 0;
         if (control) {
             switch (key) {
+                case GLFW.GLFW_KEY_SPACE -> {
+                    if (language == null) {
+                        return false;
+                    }
+                    dismissedText = null;
+                    forcedText = text;
+                    forcedCursor = cursor;
+                }
                 case GLFW.GLFW_KEY_A -> all = !text.isEmpty();
                 case GLFW.GLFW_KEY_C -> copy.accept(text);
                 case GLFW.GLFW_KEY_X -> {
@@ -112,7 +138,13 @@ final class Area {
             return true;
         }
         switch (key) {
-            case GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER -> insert("\n");
+            case GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER -> enter();
+            case GLFW.GLFW_KEY_TAB -> {
+                if (language == null) {
+                    return false;
+                }
+                tab(shift);
+            }
             case GLFW.GLFW_KEY_BACKSPACE -> {
                 if (all) {
                     text = "";
@@ -139,13 +171,177 @@ final class Area {
             case GLFW.GLFW_KEY_RIGHT -> move(Math.min(text.length(), cursor + 1));
             case GLFW.GLFW_KEY_HOME -> move(lines.get(lineOf(cursor))[0]);
             case GLFW.GLFW_KEY_END -> move(lines.get(lineOf(cursor))[1]);
-            case GLFW.GLFW_KEY_UP -> vertical(canvas, -1);
-            case GLFW.GLFW_KEY_DOWN -> vertical(canvas, 1);
+            case GLFW.GLFW_KEY_UP -> {
+                if (!browse(-1)) {
+                    vertical(canvas, -1);
+                }
+            }
+            case GLFW.GLFW_KEY_DOWN -> {
+                if (!browse(1)) {
+                    vertical(canvas, 1);
+                }
+            }
             default -> {
                 return false;
             }
         }
         return true;
+    }
+
+    void analyse() {
+        if (language == null || analysed == text) {
+            return;
+        }
+        analysed = text;
+        kinds = new Kind[text.length()];
+        Arrays.fill(kinds, Kind.PLAIN);
+        int start = 0;
+        while (start <= text.length()) {
+            int newline = text.indexOf('\n', start);
+            int end = newline < 0 ? text.length() : newline;
+            for (Span span : language.highlight(text.substring(start, end))) {
+                for (int i = Math.max(0, span.start()); i < Math.min(span.end(), end - start); i++) {
+                    kinds[start + i] = span.kind();
+                }
+            }
+            if (newline < 0) {
+                break;
+            }
+            start = newline + 1;
+        }
+        problems = language.check(text);
+    }
+
+    int lineNumber(int index) {
+        int count = 0;
+        for (int i = 0; i < index && i < text.length(); i++) {
+            if (text.charAt(i) == '\n') {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    int lineCount() {
+        return lineNumber(text.length()) + 1;
+    }
+
+    int columnOf(int index) {
+        return index - (text.lastIndexOf('\n', index - 1) + 1);
+    }
+
+    Language.Completion completion() {
+        if (language == null) {
+            return Language.Completion.NONE;
+        }
+        if (dismissedText != null && dismissedCursor == cursor && dismissedText.equals(text)) {
+            return Language.Completion.NONE;
+        }
+        boolean forced = forcedText != null && forcedCursor == cursor && forcedText.equals(text);
+        Language.Completion found = language.complete(text, cursor, forced);
+        int key = text.hashCode() * 31 + cursor;
+        if (key != pickKey) {
+            pickKey = key;
+            pick = 0;
+        }
+        if (!found.isEmpty()) {
+            pick = Math.floorMod(pick, found.items().size());
+        }
+        return found;
+    }
+
+    boolean dismiss() {
+        if (completion().isEmpty()) {
+            return false;
+        }
+        dismissedText = text;
+        dismissedCursor = cursor;
+        return true;
+    }
+
+    void accept(Language.Completion found, int index) {
+        if (found.isEmpty() || index < 0 || index >= found.items().size()) {
+            return;
+        }
+        Language.Suggestion item = found.items().get(index);
+        int from = cursor - found.prefixLength();
+        String next = text.substring(0, from) + item.insert() + text.substring(cursor);
+        if (next.length() > max) {
+            return;
+        }
+        text = next;
+        cursor = from + item.insert().length();
+        all = false;
+        wantX = -1;
+        follow = true;
+        tidy();
+    }
+
+    private boolean browse(int direction) {
+        Language.Completion found = completion();
+        if (found.isEmpty()) {
+            return false;
+        }
+        pick = Math.floorMod(pick + direction, found.items().size());
+        return true;
+    }
+
+    private void enter() {
+        if (language == null) {
+            insert("\n");
+            return;
+        }
+        Language.Completion found = completion();
+        if (!found.isEmpty() && found.prefixLength() > 0) {
+            accept(found, pick);
+            return;
+        }
+        int lineStart = text.lastIndexOf('\n', cursor - 1) + 1;
+        int indent = language.indentAfter(text.substring(lineStart, cursor));
+        insert("\n" + " ".repeat(indent));
+    }
+
+    private void tab(boolean shift) {
+        if (shift) {
+            int lineStart = text.lastIndexOf('\n', cursor - 1) + 1;
+            int spaces = 0;
+            while (spaces < Language.indentWidth() && lineStart + spaces < text.length()
+                    && text.charAt(lineStart + spaces) == ' ') {
+                spaces++;
+            }
+            if (spaces > 0) {
+                text = text.substring(0, lineStart) + text.substring(lineStart + spaces);
+                cursor = Math.max(lineStart, cursor - spaces);
+            }
+            return;
+        }
+        Language.Completion found = completion();
+        if (!found.isEmpty()) {
+            accept(found, pick);
+            return;
+        }
+        insert(" ".repeat(Language.indentWidth()));
+    }
+
+    private void tidy() {
+        if (language == null) {
+            return;
+        }
+        int lineStart = text.lastIndexOf('\n', cursor - 1) + 1;
+        int lineEnd = text.indexOf('\n', cursor);
+        if (lineEnd >= 0 && lineEnd != cursor) {
+            return;
+        }
+        String line = text.substring(lineStart, cursor);
+        if (line.endsWith(" ") || !language.closes(line)) {
+            return;
+        }
+        int indent = line.length() - line.stripLeading().length();
+        int cut = Math.min(indent, Language.indentWidth());
+        if (cut > 0) {
+            text = text.substring(0, lineStart) + text.substring(lineStart + cut);
+            cursor -= cut;
+        }
     }
 
     private void move(int index) {

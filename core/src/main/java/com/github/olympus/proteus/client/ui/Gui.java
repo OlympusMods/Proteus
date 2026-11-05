@@ -1,5 +1,8 @@
 package com.github.olympus.proteus.client.ui;
 
+import com.github.olympus.proteus.client.ui.code.Kind;
+import com.github.olympus.proteus.client.ui.code.Language;
+import com.github.olympus.proteus.client.ui.code.Problem;
 import com.github.olympus.proteus.client.ui.theme.Moment;
 import com.github.olympus.proteus.client.ui.theme.MotionSpec;
 import com.github.olympus.proteus.client.ui.theme.Sizes;
@@ -716,6 +719,294 @@ public final class Gui {
         return area.text;
     }
 
+    public String codeEditor(String id, int x, int y, int w, int h, Language language, String hint, int maxLength) {
+        Area area = areas.computeIfAbsent(id, key -> new Area());
+        area.max = maxLength;
+        area.language = language;
+        area.analyse();
+        boolean hot = hot(id, x, y, w, h);
+        boolean focus = id.equals(focused);
+        float hover = anim(id + "#h", hot ? 1f : 0f, "hover");
+        float glow = anim(id + "#f", focus ? 1f : 0f, "focus");
+        theme.field(canvas, x, y, w, h, glow, hover);
+        int line = canvas.lineHeight() + 2;
+        int status = canvas.lineHeight() + 7;
+        int bodyH = h - status;
+        int pad = sizes().areaPad();
+        int digits = Math.max(2, String.valueOf(area.lineCount()).length());
+        int gutter = canvas.textWidth("0".repeat(digits)) + 10;
+        int textX = x + gutter + pad;
+        int textW = w - gutter - pad - 10;
+        area.wrap(canvas, textW);
+        int total = area.lines.size() * line + 8;
+        area.content = total;
+        float maxScroll = Math.max(0, total - bodyH);
+        if (!area.help && over(x, y, w, bodyH) && wheel != 0f) {
+            area.scroll -= wheel * line * 2;
+            wheel = 0f;
+        }
+        if (area.follow) {
+            float top = area.lineOf(area.cursor) * line;
+            if (top < area.scroll) {
+                area.scroll = top;
+            } else if (top + line + 8 > area.scroll + bodyH) {
+                area.scroll = top + line + 8 - bodyH;
+            }
+            area.follow = false;
+        }
+        area.scroll = Motion.clamp(area.scroll, 0f, maxScroll);
+        int scroll = Math.round(area.scroll);
+        int caretLine = area.lineOf(area.cursor);
+        int caretNumber = area.lineNumber(area.cursor) + 1;
+        if (area.help) {
+            codeHelp(id, area, x, y, w, bodyH);
+        } else {
+            canvas.clip(x + 2, y + 1, w - 4, bodyH - 1);
+            if (area.text.isEmpty() && !focus) {
+                String[] hintLines = hint.split("\n");
+                for (int i = 0; i < hintLines.length; i++) {
+                    canvas.text(fit(hintLines[i], textW), textX, y + 5 + i * line, theme.textDisabled(), false);
+                }
+            }
+            if (focus) {
+                int rowY = y + 4 + caretLine * line - scroll;
+                canvas.fill(x + gutter + 1, rowY - 1, w - gutter - 3, line, Colors.withAlpha(theme.textPrimary(), 16));
+            }
+            canvas.fill(x + gutter, y + 1, 1, bodyH - 2, Colors.withAlpha(theme.textPrimary(), 28));
+            int number = 0;
+            for (int i = 0; i < area.lines.size(); i++) {
+                int[] seg = area.lines.get(i);
+                boolean first = seg[0] == 0 || area.text.charAt(seg[0] - 1) == '\n';
+                if (first) {
+                    number++;
+                }
+                int ly = y + 4 + i * line - scroll;
+                if (ly + line < y || ly > y + bodyH) {
+                    continue;
+                }
+                String problem = first ? problemOn(area, number) : null;
+                if (first) {
+                    String label = Integer.toString(number);
+                    int color = problem != null ? theme.danger()
+                            : number == caretNumber && focus ? theme.textSecondary() : theme.textDisabled();
+                    canvas.text(label, x + gutter - 5 - canvas.textWidth(label), ly, color, false);
+                    if (problem != null) {
+                        canvas.fill(x + 2, ly - 1, 2, line, theme.danger());
+                        if (over(x, ly, gutter, line)) {
+                            tooltip(problem);
+                        }
+                    }
+                }
+                codeRun(area, seg[0], seg[1], textX, ly);
+                if (problemOn(area, number) != null && seg[1] > seg[0]) {
+                    canvas.fill(textX, ly + canvas.lineHeight(), canvas.textWidth(area.text.substring(seg[0], seg[1])), 1,
+                            Colors.alpha(theme.danger(), 0.7f));
+                }
+            }
+            if (focus && !area.all && (int) (time * 2) % 2 == 0) {
+                int[] seg = area.lines.get(caretLine);
+                int caretX = textX + canvas.textWidth(area.text.substring(seg[0], Math.min(area.cursor, seg[1])));
+                canvas.fill(caretX, y + 3 + caretLine * line - scroll, 1, line, theme.textPrimary());
+            }
+            canvas.unclip();
+            if (total > bodyH) {
+                int thumbH = Math.max(12, Math.round(bodyH * (bodyH / (float) total)));
+                int thumbY = y + Math.round((bodyH - thumbH) * (area.scroll / maxScroll));
+                theme.scrollbar(canvas, x + w - 6, y + 1, sizes().scrollbarWidth(), bodyH - 2, thumbY, thumbH, 0f);
+            }
+        }
+        canvas.fill(x + 1, y + bodyH, w - 2, 1, Colors.withAlpha(theme.textPrimary(), 28));
+        int size = status - 4;
+        int buttonX = x + w - size - 4;
+        int buttonY = y + bodyH + 2;
+        String position = caretNumber + ":" + (area.columnOf(area.cursor) + 1);
+        int positionW = canvas.textWidth(position);
+        int statusY = y + bodyH + (status - canvas.lineHeight()) / 2 + 1;
+        canvas.text(position, buttonX - 8 - positionW, statusY, theme.textDisabled(), false);
+        Problem shown = statusProblem(area, caretNumber);
+        if (shown != null) {
+            String message = shown.line() > 0 ? shown.line() + ": " + shown.message() : shown.message();
+            canvas.text(fit(message, buttonX - positionW - 24 - (x + 8)), x + 8, statusY, theme.danger(), false);
+        }
+        boolean opened = button(id + "#help", buttonX, buttonY, size, size, "?", ButtonKind.NORMAL, area.help, true,
+                language.title());
+        boolean pressedPopup = false;
+        if (focus && !area.help) {
+            pressedPopup = codePopup(area, textX, y, line, bodyH, scroll);
+        }
+        if (opened) {
+            area.help = !area.help;
+        }
+        if (hot && pressed && !consumed && !pressedPopup && !area.help && over(x, y, w, bodyH)) {
+            consumed = true;
+            focused = id;
+            area.all = false;
+            int row = (int) Math.floor((mouseY - (y + 4) + area.scroll) / (double) line);
+            row = Math.max(0, Math.min(area.lines.size() - 1, row));
+            area.cursor = area.indexAt(canvas, row, mouseX - textX);
+            area.wantX = -1;
+        } else if (hot && pressed && !consumed) {
+            focused = id;
+        }
+        area.cursor = Math.min(area.cursor, area.text.length());
+        return area.text;
+    }
+
+    private String problemOn(Area area, int number) {
+        for (Problem problem : area.problems) {
+            if (problem.line() == number) {
+                return problem.message();
+            }
+        }
+        return null;
+    }
+
+    private Problem statusProblem(Area area, int caretNumber) {
+        Problem first = null;
+        for (Problem problem : area.problems) {
+            if (problem.line() == caretNumber) {
+                return problem;
+            }
+            if (first == null) {
+                first = problem;
+            }
+        }
+        return first;
+    }
+
+    private void codeRun(Area area, int from, int to, int x, int y) {
+        int cx = x;
+        int i = from;
+        int limit = Math.min(to, area.kinds.length);
+        while (i < limit) {
+            Kind kind = area.kinds[i];
+            int j = i + 1;
+            while (j < limit && area.kinds[j] == kind) {
+                j++;
+            }
+            String run = area.text.substring(i, j);
+            canvas.text(run, cx, y, kindColor(kind), theme.shadowText());
+            cx += canvas.textWidth(run);
+            i = j;
+        }
+    }
+
+    private int kindColor(Kind kind) {
+        int base = theme.textPrimary();
+        float luminance = (0.299f * ((base >> 16) & 0xFF) + 0.587f * ((base >> 8) & 0xFF) + 0.114f * (base & 0xFF)) / 255f;
+        boolean lightTheme = luminance < 0.5f;
+        return switch (kind) {
+            case PLAIN -> base;
+            case KEYWORD -> theme.accentColor();
+            case NUMBER -> lightTheme ? 0xFFB45F06 : 0xFFE5C07B;
+            case STRING -> lightTheme ? 0xFF2E7D32 : 0xFF98C379;
+            case COMMENT -> theme.textSecondary();
+            case UNKNOWN -> theme.danger();
+        };
+    }
+
+    private boolean codePopup(Area area, int textX, int y, int line, int bodyH, int scroll) {
+        Language.Completion found = area.completion();
+        if (found.isEmpty()) {
+            return false;
+        }
+        List<Language.Suggestion> items = found.items();
+        int shown = Math.min(8, items.size());
+        int first = Math.max(0, Math.min(items.size() - shown, area.pick - shown / 2));
+        int rowH = line + 2;
+        int labelW = 0;
+        int hintW = 0;
+        for (Language.Suggestion item : items) {
+            labelW = Math.max(labelW, canvas.textWidth(item.label()));
+            hintW = Math.max(hintW, canvas.textWidth(item.hint()));
+        }
+        hintW = Math.min(hintW, 150);
+        Language.Suggestion chosen = items.get(area.pick);
+        String usage = chosen.entry() == null ? "" : chosen.entry().usage();
+        int usageH = usage.isEmpty() ? 0 : line + 3;
+        int width = Math.max(labelW + (hintW > 0 ? hintW + 16 : 0) + 16, Math.min(300, canvas.textWidth(usage) + 16));
+        width = Math.min(width, canvas.width() - 8);
+        int height = shown * rowH + 4 + usageH;
+        int[] seg = area.lines.get(area.lineOf(area.cursor));
+        int wordStart = Math.max(seg[0], area.cursor - found.prefixLength());
+        int px = textX + canvas.textWidth(area.text.substring(seg[0], wordStart)) - 6;
+        int caretY = y + 4 + area.lineOf(area.cursor) * line - scroll;
+        int py = caretY + line + 2;
+        if (py + height > canvas.height() - 4) {
+            py = caretY - height - 2;
+        }
+        px = Math.max(4, Math.min(px, canvas.width() - width - 4));
+        py = Math.max(4, py);
+        theme.tooltip(canvas, px, py, width, height);
+        boolean clicked = false;
+        for (int i = 0; i < shown; i++) {
+            int index = first + i;
+            Language.Suggestion item = items.get(index);
+            int ry = py + 2 + i * rowH;
+            boolean over = over(px + 2, ry, width - 4, rowH);
+            if (index == area.pick || over) {
+                theme.row(canvas, px + 2, ry, width - 4, rowH, over ? 1f : 0f, index == area.pick);
+            }
+            int ty = ry + (rowH - canvas.lineHeight()) / 2 + 1;
+            int split = Math.min(found.prefixLength(), item.label().length());
+            String head = item.label().substring(0, split);
+            canvas.text(head, px + 8, ty, theme.accentColor(), false);
+            canvas.text(item.label().substring(split), px + 8 + canvas.textWidth(head), ty, theme.textPrimary(),
+                    theme.shadowText());
+            if (hintW > 0) {
+                String hintText = fit(item.hint(), hintW);
+                canvas.text(hintText, px + width - 8 - canvas.textWidth(hintText), ty, theme.textSecondary(), false);
+            }
+            if (over && pressed && !consumed) {
+                area.accept(found, index);
+                take();
+                clicked = true;
+            }
+        }
+        if (usageH > 0) {
+            int uy = py + 2 + shown * rowH;
+            canvas.fill(px + 6, uy, width - 12, 1, Colors.withAlpha(theme.textPrimary(), 28));
+            canvas.text(fit(usage, width - 16), px + 8, uy + 3, theme.textSecondary(), false);
+        }
+        return clicked || (pressed && over(px, py, width, height));
+    }
+
+    private void codeHelp(String id, Area area, int x, int y, int w, int bodyH) {
+        Language language = area.language;
+        int pad = 10;
+        int inner = w - 2 * pad - 8;
+        int lineHeight = canvas.lineHeight() + 2;
+        float scroll = scrollBegin(id + "#help-scroll", x + 2, y + 2, w - 4, bodyH - 4);
+        int cy = y + 8 - Math.round(scroll);
+        int start = cy;
+        canvas.text(fit(language.title(), inner), x + pad, cy, theme.titleColor(), theme.shadowText());
+        cy += lineHeight + 6;
+        for (Language.Entry entry : language.entries()) {
+            canvas.text(fit(entry.usage(), inner), x + pad, cy, theme.accentColor(), theme.shadowText());
+            cy += lineHeight;
+            for (String row : Draw.wrap(canvas, entry.summary(), inner)) {
+                canvas.text(row, x + pad, cy, theme.textPrimary(), theme.shadowText());
+                cy += lineHeight;
+            }
+            if (!entry.detail().isEmpty()) {
+                for (String row : Draw.wrap(canvas, entry.detail(), inner)) {
+                    canvas.text(row, x + pad, cy, theme.textSecondary(), false);
+                    cy += lineHeight;
+                }
+            }
+            for (String example : entry.examples()) {
+                String[] rows = example.split("\n", -1);
+                canvas.fill(x + pad, cy - 1, 1, rows.length * lineHeight, Colors.withAlpha(theme.textPrimary(), 40));
+                for (String row : rows) {
+                    canvas.text(fit(row.replace("\t", "  "), inner - 10), x + pad + 6, cy, theme.textSecondary(), false);
+                    cy += lineHeight;
+                }
+            }
+            cy += 6;
+        }
+        scrollEnd(cy - start + 16);
+    }
+
     public void setTextArea(String id, String value) {
         Area area = areas.computeIfAbsent(id, key -> new Area());
         area.text = value;
@@ -723,6 +1014,7 @@ public final class Gui {
         area.all = false;
         area.scroll = 0f;
         area.follow = true;
+        area.help = false;
     }
 
     public void setField(String id, String value) {
@@ -777,7 +1069,14 @@ public final class Gui {
         Area area = areas.get(focused);
         if (area != null) {
             if (key == GLFW.GLFW_KEY_ESCAPE) {
-                focused = null;
+                if (area.help) {
+                    area.help = false;
+                } else if (!area.dismiss()) {
+                    focused = null;
+                }
+                return true;
+            }
+            if (area.help) {
                 return true;
             }
             return area.key(canvas, key, mods, text -> Minecraft.getInstance().keyboardHandler.setClipboard(text),
@@ -865,7 +1164,9 @@ public final class Gui {
         }
         Area area = areas.get(focused);
         if (area != null) {
-            area.insert(new String(Character.toChars(codepoint)));
+            if (!area.help) {
+                area.insert(new String(Character.toChars(codepoint)));
+            }
             return true;
         }
         Field field = fields.get(focused);
