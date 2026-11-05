@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screens.Screen;
 
 public final class Mods {
     public static final String VOICECHAT = "voicechat";
+    public static final String JI_AFK = "ji_afk";
 
     public record Entry(String id, String probe, String takeover) {
         public boolean installed() {
@@ -33,8 +34,9 @@ public final class Mods {
     private static final Map<String, Boolean> PRESENT = new ConcurrentHashMap<>();
     private static final ScreenTakeover NONE = screen -> screen;
     private static final Map<String, ScreenTakeover> TAKEOVERS = new ConcurrentHashMap<>();
-    private static final List<Entry> ENTRIES = List.of(new Entry(VOICECHAT, "de.maxhenkel.voicechat.Voicechat",
-            "com.github.olympus.proteus.client.svc.SvcTakeover"));
+    private static final List<Entry> ENTRIES = List.of(
+            new Entry(VOICECHAT, "de.maxhenkel.voicechat.Voicechat", "com.github.olympus.proteus.client.svc.SvcTakeover"),
+            new Entry(JI_AFK, "com.ji.afkcinematic.config.SupportScreen", "com.github.olympus.proteus.client.ji.JiTakeover"));
 
     private Mods() {
     }
@@ -59,7 +61,13 @@ public final class Mods {
             }
             ScreenTakeover takeover = TAKEOVERS.computeIfAbsent(entry.id(), key -> load(entry.takeover()));
             if (takeover != NONE) {
-                Screen replaced = takeover.replace(screen);
+                Screen replaced;
+                try {
+                    replaced = takeover.replace(screen);
+                } catch (LinkageError error) {
+                    TAKEOVERS.put(entry.id(), NONE);
+                    continue;
+                }
                 if (replaced != screen) {
                     return replaced;
                 }
