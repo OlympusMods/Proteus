@@ -4,16 +4,23 @@ import com.github.olympus.proteus.client.ui.code.Kind;
 import com.github.olympus.proteus.client.ui.code.Language;
 import com.github.olympus.proteus.client.ui.code.Problem;
 import com.github.olympus.proteus.client.ui.code.Span;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import org.lwjgl.glfw.GLFW;
 
 final class Area {
     String text = "";
     int max = 4000;
     int cursor;
-    boolean all;
+    int anchor = -1;
+    int clicks;
+    int clickIndex = -1;
+    double clickTime = -1;
     float scroll;
     float content;
     int wantX = -1;
@@ -30,6 +37,14 @@ final class Area {
     private int dismissedCursor = -1;
     private String forcedText;
     private int forcedCursor = -1;
+    private final Deque<Snapshot> undo = new ArrayDeque<>();
+    private final Deque<Snapshot> redo = new ArrayDeque<>();
+    private int lastKind;
+    private String lastText;
+    private int lastCursor = -1;
+
+    private record Snapshot(String text, int cursor) {
+    }
 
     void wrap(Canvas canvas, int width) {
         lines.clear();
@@ -90,26 +105,85 @@ final class Area {
         return best;
     }
 
+    boolean selecting() {
+        return anchor >= 0 && anchor != cursor;
+    }
+
+    int selectionStart() {
+        return selecting() ? Math.min(anchor, cursor) : cursor;
+    }
+
+    int selectionEnd() {
+        return selecting() ? Math.max(anchor, cursor) : cursor;
+    }
+
+    String selected() {
+        return text.substring(selectionStart(), selectionEnd());
+    }
+
+    void reset(String value) {
+        text = value;
+        cursor = value.length();
+        anchor = -1;
+        undo.clear();
+        redo.clear();
+        lastKind = 0;
+        lastText = null;
+    }
+
+    void selectAll() {
+        anchor = 0;
+        cursor = text.length();
+        wantX = -1;
+    }
+
+    void selectWord(int index) {
+        if (text.isEmpty()) {
+            return;
+        }
+        int pivot = Math.min(index, text.length() - 1);
+        int group = group(text.charAt(pivot));
+        int from = pivot;
+        while (from > 0 && group(text.charAt(from - 1)) == group) {
+            from--;
+        }
+        int to = pivot + 1;
+        while (to < text.length() && group(text.charAt(to)) == group) {
+            to++;
+        }
+        anchor = from;
+        cursor = to;
+        wantX = -1;
+    }
+
+    void selectLine(int index) {
+        int from = text.lastIndexOf('\n', index - 1) + 1;
+        int newline = text.indexOf('\n', index);
+        anchor = from;
+        cursor = newline < 0 ? text.length() : newline + 1;
+        wantX = -1;
+    }
+
     void insert(String value) {
         String clean = value.replace("\r", "").replaceAll("[\\p{Cntrl}&&[^\n]]", "");
-        if (all) {
-            text = "";
-            cursor = 0;
-            all = false;
-        }
-        String next = text.substring(0, cursor) + clean + text.substring(cursor);
+        int from = selectionStart();
+        int to = selectionEnd();
+        String next = text.substring(0, from) + clean + text.substring(to);
         if (next.length() > max) {
             return;
         }
+        int kind = clean.length() == 1 && !Character.isWhitespace(clean.charAt(0)) ? 1 : 0;
+        record(kind);
         text = next;
-        cursor += clean.length();
+        cursor = from + clean.length();
+        anchor = -1;
         wantX = -1;
         follow = true;
         tidy();
+        remember(kind);
     }
 
-    boolean key(Canvas canvas, int key, int mods, java.util.function.Consumer<String> copy,
-            java.util.function.Supplier<String> paste) {
+    boolean key(Canvas canvas, int key, int mods, Consumer<String> copy, Supplier<String> paste) {
         boolean control = (mods & (GLFW.GLFW_MOD_CONTROL | GLFW.GLFW_MOD_SUPER)) != 0;
         boolean shift = (mods & GLFW.GLFW_MOD_SHIFT) != 0;
         if (control) {
@@ -122,15 +196,45 @@ final class Area {
                     forcedText = text;
                     forcedCursor = cursor;
                 }
-                case GLFW.GLFW_KEY_A -> all = !text.isEmpty();
-                case GLFW.GLFW_KEY_C -> copy.accept(text);
+                case GLFW.GLFW_KEY_A -> selectAll();
+                case GLFW.GLFW_KEY_C -> {
+                    if (selecting()) {
+                        copy.accept(selected());
+                    }
+                }
                 case GLFW.GLFW_KEY_X -> {
-                    copy.accept(text);
-                    text = "";
-                    cursor = 0;
-                    all = false;
+                    if (selecting()) {
+                        copy.accept(selected());
+                        erase(selectionStart(), selectionEnd(), 0);
+                    }
                 }
                 case GLFW.GLFW_KEY_V -> insert(paste.get());
+                case GLFW.GLFW_KEY_Z -> {
+                    if (shift) {
+                        redo();
+                    } else {
+                        undo();
+                    }
+                }
+                case GLFW.GLFW_KEY_Y -> redo();
+                case GLFW.GLFW_KEY_BACKSPACE -> {
+                    if (selecting()) {
+                        erase(selectionStart(), selectionEnd(), 0);
+                    } else {
+                        erase(wordLeft(cursor), cursor, 0);
+                    }
+                }
+                case GLFW.GLFW_KEY_DELETE -> {
+                    if (selecting()) {
+                        erase(selectionStart(), selectionEnd(), 0);
+                    } else {
+                        erase(cursor, wordRight(cursor), 0);
+                    }
+                }
+                case GLFW.GLFW_KEY_LEFT -> move(wordLeft(cursor), shift);
+                case GLFW.GLFW_KEY_RIGHT -> move(wordRight(cursor), shift);
+                case GLFW.GLFW_KEY_HOME -> move(0, shift);
+                case GLFW.GLFW_KEY_END -> move(text.length(), shift);
                 default -> {
                     return false;
                 }
@@ -146,39 +250,43 @@ final class Area {
                 tab(shift);
             }
             case GLFW.GLFW_KEY_BACKSPACE -> {
-                if (all) {
-                    text = "";
-                    cursor = 0;
-                    all = false;
-                } else if (cursor > 0) {
-                    text = text.substring(0, cursor - 1) + text.substring(cursor);
-                    cursor--;
+                if (selecting()) {
+                    erase(selectionStart(), selectionEnd(), 0);
+                } else {
+                    erase(cursor - 1, cursor, 2);
                 }
-                wantX = -1;
-                follow = true;
             }
             case GLFW.GLFW_KEY_DELETE -> {
-                if (all) {
-                    text = "";
-                    cursor = 0;
-                    all = false;
-                } else if (cursor < text.length()) {
-                    text = text.substring(0, cursor) + text.substring(cursor + 1);
+                if (selecting()) {
+                    erase(selectionStart(), selectionEnd(), 0);
+                } else {
+                    erase(cursor, cursor + 1, 3);
                 }
-                follow = true;
             }
-            case GLFW.GLFW_KEY_LEFT -> move(Math.max(0, cursor - 1));
-            case GLFW.GLFW_KEY_RIGHT -> move(Math.min(text.length(), cursor + 1));
-            case GLFW.GLFW_KEY_HOME -> move(lines.get(lineOf(cursor))[0]);
-            case GLFW.GLFW_KEY_END -> move(lines.get(lineOf(cursor))[1]);
+            case GLFW.GLFW_KEY_LEFT -> {
+                if (!shift && selecting()) {
+                    move(selectionStart(), false);
+                } else {
+                    move(Math.max(0, cursor - 1), shift);
+                }
+            }
+            case GLFW.GLFW_KEY_RIGHT -> {
+                if (!shift && selecting()) {
+                    move(selectionEnd(), false);
+                } else {
+                    move(Math.min(text.length(), cursor + 1), shift);
+                }
+            }
+            case GLFW.GLFW_KEY_HOME -> move(lines.get(lineOf(cursor))[0], shift);
+            case GLFW.GLFW_KEY_END -> move(lines.get(lineOf(cursor))[1], shift);
             case GLFW.GLFW_KEY_UP -> {
-                if (!browse(-1)) {
-                    vertical(canvas, -1);
+                if (shift || !browse(-1)) {
+                    vertical(canvas, -1, shift);
                 }
             }
             case GLFW.GLFW_KEY_DOWN -> {
-                if (!browse(1)) {
-                    vertical(canvas, 1);
+                if (shift || !browse(1)) {
+                    vertical(canvas, 1, shift);
                 }
             }
             default -> {
@@ -186,6 +294,110 @@ final class Area {
             }
         }
         return true;
+    }
+
+    void undo() {
+        if (undo.isEmpty()) {
+            return;
+        }
+        redo.push(new Snapshot(text, cursor));
+        restore(undo.pop());
+    }
+
+    void redo() {
+        if (redo.isEmpty()) {
+            return;
+        }
+        undo.push(new Snapshot(text, cursor));
+        restore(redo.pop());
+    }
+
+    private void restore(Snapshot snapshot) {
+        text = snapshot.text();
+        cursor = Math.min(snapshot.cursor(), text.length());
+        anchor = -1;
+        wantX = -1;
+        follow = true;
+        lastKind = 0;
+    }
+
+    private void record(int kind) {
+        if (kind != 0 && kind == lastKind && cursor == lastCursor && text.equals(lastText)) {
+            return;
+        }
+        undo.push(new Snapshot(text, cursor));
+        if (undo.size() > 200) {
+            undo.removeLast();
+        }
+        redo.clear();
+    }
+
+    private void remember(int kind) {
+        lastKind = kind;
+        lastText = text;
+        lastCursor = cursor;
+    }
+
+    private void erase(int from, int to, int kind) {
+        int start = Math.max(0, from);
+        int end = Math.min(text.length(), to);
+        if (start >= end) {
+            return;
+        }
+        record(kind);
+        text = text.substring(0, start) + text.substring(end);
+        cursor = start;
+        anchor = -1;
+        wantX = -1;
+        follow = true;
+        remember(kind);
+    }
+
+    private static int group(char c) {
+        if (c == '\n') {
+            return 3;
+        }
+        if (Character.isWhitespace(c)) {
+            return 0;
+        }
+        return Character.isLetterOrDigit(c) || c == '_' ? 1 : 2;
+    }
+
+    private int wordLeft(int from) {
+        int i = from;
+        if (i > 0 && text.charAt(i - 1) == '\n') {
+            return i - 1;
+        }
+        while (i > 0 && group(text.charAt(i - 1)) == 0) {
+            i--;
+        }
+        if (i == 0 || text.charAt(i - 1) == '\n') {
+            return i;
+        }
+        int group = group(text.charAt(i - 1));
+        while (i > 0 && group(text.charAt(i - 1)) == group) {
+            i--;
+        }
+        return i;
+    }
+
+    private int wordRight(int from) {
+        int i = from;
+        int length = text.length();
+        if (i < length && text.charAt(i) == '\n') {
+            return i + 1;
+        }
+        while (i < length && group(text.charAt(i)) == 0) {
+            i++;
+        }
+        if (i == length || text.charAt(i) == '\n') {
+            return i;
+        }
+        int group = group(text.charAt(i));
+        while (i < length && group(text.charAt(i)) == group) {
+            i++;
+        }
+        return i;
     }
 
     void analyse() {
@@ -231,7 +443,7 @@ final class Area {
     }
 
     Language.Completion completion() {
-        if (language == null) {
+        if (language == null || selecting()) {
             return Language.Completion.NONE;
         }
         if (dismissedText != null && dismissedCursor == cursor && dismissedText.equals(text)) {
@@ -269,12 +481,14 @@ final class Area {
         if (next.length() > max) {
             return;
         }
+        record(0);
         text = next;
         cursor = from + item.insert().length();
-        all = false;
+        anchor = -1;
         wantX = -1;
         follow = true;
         tidy();
+        remember(0);
     }
 
     private boolean browse(int direction) {
@@ -296,12 +510,17 @@ final class Area {
             accept(found, pick);
             return;
         }
-        int lineStart = text.lastIndexOf('\n', cursor - 1) + 1;
-        int indent = language.indentAfter(text.substring(lineStart, cursor));
+        int start = selectionStart();
+        int lineStart = text.lastIndexOf('\n', start - 1) + 1;
+        int indent = language.indentAfter(text.substring(lineStart, start));
         insert("\n" + " ".repeat(indent));
     }
 
     private void tab(boolean shift) {
+        if (selecting()) {
+            indentBlock(shift);
+            return;
+        }
         if (shift) {
             int lineStart = text.lastIndexOf('\n', cursor - 1) + 1;
             int spaces = 0;
@@ -310,8 +529,10 @@ final class Area {
                 spaces++;
             }
             if (spaces > 0) {
+                record(0);
                 text = text.substring(0, lineStart) + text.substring(lineStart + spaces);
                 cursor = Math.max(lineStart, cursor - spaces);
+                remember(0);
             }
             return;
         }
@@ -321,6 +542,43 @@ final class Area {
             return;
         }
         insert(" ".repeat(Language.indentWidth()));
+    }
+
+    private void indentBlock(boolean shift) {
+        int from = text.lastIndexOf('\n', selectionStart() - 1) + 1;
+        int to = selectionEnd();
+        if (to > from && text.charAt(to - 1) == '\n') {
+            to--;
+        }
+        String[] rows = text.substring(from, to).split("\n", -1);
+        StringBuilder block = new StringBuilder();
+        for (int i = 0; i < rows.length; i++) {
+            String row = rows[i];
+            if (shift) {
+                int spaces = 0;
+                while (spaces < Language.indentWidth() && spaces < row.length() && row.charAt(spaces) == ' ') {
+                    spaces++;
+                }
+                row = row.substring(spaces);
+            } else if (!row.isEmpty()) {
+                row = " ".repeat(Language.indentWidth()) + row;
+            }
+            if (i > 0) {
+                block.append('\n');
+            }
+            block.append(row);
+        }
+        String next = text.substring(0, from) + block + text.substring(to);
+        if (next.length() > max) {
+            return;
+        }
+        record(0);
+        text = next;
+        anchor = from;
+        cursor = from + block.length();
+        wantX = -1;
+        follow = true;
+        remember(0);
     }
 
     private void tidy() {
@@ -344,24 +602,33 @@ final class Area {
         }
     }
 
-    private void move(int index) {
-        all = false;
+    void move(int index, boolean extend) {
+        if (!extend) {
+            anchor = -1;
+        } else if (anchor < 0) {
+            anchor = cursor;
+        }
         cursor = index;
         wantX = -1;
         follow = true;
     }
 
-    private void vertical(Canvas canvas, int direction) {
-        all = false;
+    private void vertical(Canvas canvas, int direction, boolean extend) {
         int line = lineOf(cursor);
         int target = line + direction;
-        if (target < 0 || target >= lines.size()) {
+        if (target < 0) {
+            move(0, extend);
+            return;
+        }
+        if (target >= lines.size()) {
+            move(text.length(), extend);
             return;
         }
         if (wantX < 0) {
             wantX = canvas.textWidth(text.substring(lines.get(line)[0], cursor));
         }
-        cursor = indexAt(canvas, target, wantX);
-        follow = true;
+        int keep = wantX;
+        move(indexAt(canvas, target, keep), extend);
+        wantX = keep;
     }
 }

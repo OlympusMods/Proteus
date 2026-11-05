@@ -659,15 +659,10 @@ public final class Gui {
         area.content = total;
         float maxScroll = Math.max(0, total - h);
         if (hot && pressed) {
-            consumed = true;
-            focused = id;
             focus = true;
-            area.all = false;
-            int row = (int) Math.floor((mouseY - (y + 4) + area.scroll) / (double) line);
-            row = Math.max(0, Math.min(area.lines.size() - 1, row));
-            area.cursor = area.indexAt(canvas, row, mouseX - (x + sizes().areaPad()));
-            area.wantX = -1;
+            areaPress(area, id, x + sizes().areaPad(), y, line);
         }
+        areaDrag(area, id, x + sizes().areaPad(), y, line, h);
         if (over(x, y, w, h) && wheel != 0f) {
             area.scroll -= wheel * line * 2;
             wheel = 0f;
@@ -698,12 +693,12 @@ public final class Gui {
             }
             int[] seg = area.lines.get(i);
             String shown = area.text.substring(seg[0], seg[1]);
-            if (area.all && focus && !shown.isEmpty()) {
-                canvas.fill(x + sizes().areaPad() - 1, ly - 1, canvas.textWidth(shown) + 2, line, 0x663B82F6);
+            if (focus) {
+                selectionFill(area, seg, x + sizes().areaPad(), ly, line);
             }
             canvas.text(shown, x + sizes().areaPad(), ly, theme.textPrimary(), theme.shadowText());
         }
-        if (focus && !area.all && (int) (time * 2) % 2 == 0) {
+        if (focus && (int) (time * 2) % 2 == 0) {
             int caretLine = area.lineOf(area.cursor);
             int[] seg = area.lines.get(caretLine);
             int caretX = x + sizes().areaPad() + canvas.textWidth(area.text.substring(seg[0], Math.min(area.cursor, seg[1])));
@@ -797,13 +792,16 @@ public final class Gui {
                         }
                     }
                 }
+                if (focus) {
+                    selectionFill(area, seg, textX, ly, line);
+                }
                 codeRun(area, seg[0], seg[1], textX, ly);
                 if (problemOn(area, number) != null && seg[1] > seg[0]) {
                     canvas.fill(textX, ly + canvas.lineHeight(), canvas.textWidth(area.text.substring(seg[0], seg[1])), 1,
                             Colors.alpha(theme.danger(), 0.7f));
                 }
             }
-            if (focus && !area.all && (int) (time * 2) % 2 == 0) {
+            if (focus && (int) (time * 2) % 2 == 0) {
                 int[] seg = area.lines.get(caretLine);
                 int caretX = textX + canvas.textWidth(area.text.substring(seg[0], Math.min(area.cursor, seg[1])));
                 canvas.fill(caretX, y + 3 + caretLine * line - scroll, 1, line, theme.textPrimary());
@@ -838,18 +836,76 @@ public final class Gui {
             area.help = !area.help;
         }
         if (hot && pressed && !consumed && !pressedPopup && !area.help && over(x, y, w, bodyH)) {
-            consumed = true;
-            focused = id;
-            area.all = false;
-            int row = (int) Math.floor((mouseY - (y + 4) + area.scroll) / (double) line);
-            row = Math.max(0, Math.min(area.lines.size() - 1, row));
-            area.cursor = area.indexAt(canvas, row, mouseX - textX);
-            area.wantX = -1;
+            areaPress(area, id, textX, y, line);
         } else if (hot && pressed && !consumed) {
             focused = id;
         }
+        if (!area.help) {
+            areaDrag(area, id, textX, y, line, bodyH);
+        }
         area.cursor = Math.min(area.cursor, area.text.length());
         return area.text;
+    }
+
+    private int areaIndex(Area area, int textX, int y, int line, int mx, int my) {
+        int row = (int) Math.floor((my - (y + 4) + area.scroll) / (double) line);
+        row = Math.max(0, Math.min(area.lines.size() - 1, row));
+        return area.indexAt(canvas, row, mx - textX);
+    }
+
+    private void areaPress(Area area, String id, int textX, int y, int line) {
+        consumed = true;
+        focused = id;
+        active = id;
+        int index = areaIndex(area, textX, y, line, mouseX, mouseY);
+        boolean repeat = time - area.clickTime < 0.4 && Math.abs(index - area.clickIndex) <= 1;
+        area.clicks = repeat ? area.clicks % 3 + 1 : 1;
+        area.clickTime = time;
+        area.clickIndex = index;
+        if (area.clicks == 2) {
+            area.selectWord(index);
+        } else if (area.clicks == 3) {
+            area.selectLine(index);
+        } else {
+            area.cursor = index;
+            area.anchor = index;
+            area.wantX = -1;
+        }
+    }
+
+    private void areaDrag(Area area, String id, int textX, int y, int line, int bodyH) {
+        if (!id.equals(active) || !mouseDown || pressed) {
+            return;
+        }
+        if (mouseY < y) {
+            area.scroll -= Math.min(30f, (y - mouseY) * 0.25f + 1f);
+        } else if (mouseY > y + bodyH) {
+            area.scroll += Math.min(30f, (mouseY - y - bodyH) * 0.25f + 1f);
+        }
+        int my = Math.max(y + 1, Math.min(y + bodyH - 1, mouseY));
+        int index = areaIndex(area, textX, y, line, mouseX, my);
+        if (area.clicks > 1 && index == area.clickIndex && area.selecting()) {
+            return;
+        }
+        area.clicks = 0;
+        area.cursor = index;
+        area.wantX = -1;
+    }
+
+    private void selectionFill(Area area, int[] seg, int x, int ly, int line) {
+        if (!area.selecting()) {
+            return;
+        }
+        int end = area.selectionEnd();
+        int from = Math.max(seg[0], area.selectionStart());
+        int to = Math.min(seg[1], end);
+        boolean newline = end > seg[1] && seg[1] < area.text.length() && area.text.charAt(seg[1]) == '\n';
+        if (from > to || from == to && !newline) {
+            return;
+        }
+        int startX = x + canvas.textWidth(area.text.substring(seg[0], from));
+        int width = canvas.textWidth(area.text.substring(from, to)) + (newline ? 4 : 0);
+        canvas.fill(startX, ly - 1, width, line, Colors.withAlpha(theme.accentColor(), 90));
     }
 
     private String problemOn(Area area, int number) {
@@ -1023,9 +1079,7 @@ public final class Gui {
 
     public void setTextArea(String id, String value) {
         Area area = areas.computeIfAbsent(id, key -> new Area());
-        area.text = value;
-        area.cursor = value.length();
-        area.all = false;
+        area.reset(value);
         area.scroll = 0f;
         area.follow = true;
         area.help = false;

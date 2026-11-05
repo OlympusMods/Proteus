@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.github.olympus.proteus.client.ui.code.Kind;
 import com.github.olympus.proteus.client.ui.code.Language;
 import com.github.olympus.proteus.client.ui.code.Problem;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,6 +50,16 @@ class CodeAreaTest {
 
     private void press(int key) {
         area.key(canvas, key, 0, text -> { }, () -> "");
+        area.wrap(canvas, 1000);
+    }
+
+    private void press(int key, int mods) {
+        area.key(canvas, key, mods, text -> { }, () -> "");
+        area.wrap(canvas, 1000);
+    }
+
+    private void load(String value) {
+        area.reset(value);
         area.wrap(canvas, 1000);
     }
 
@@ -202,5 +213,167 @@ class CodeAreaTest {
         area.text = "say oops";
         area.analyse();
         assertEquals(1, area.problems.size());
+    }
+
+    @Test
+    void shiftArrowsExtendTheSelection() {
+        load("say hello");
+        press(GLFW.GLFW_KEY_LEFT, GLFW.GLFW_MOD_SHIFT);
+        press(GLFW.GLFW_KEY_LEFT, GLFW.GLFW_MOD_SHIFT);
+        assertEquals("lo", area.selected());
+        press(GLFW.GLFW_KEY_RIGHT, GLFW.GLFW_MOD_SHIFT);
+        assertEquals("o", area.selected());
+    }
+
+    @Test
+    void plainArrowCollapsesToTheEdge() {
+        load("say hello");
+        press(GLFW.GLFW_KEY_LEFT, GLFW.GLFW_MOD_SHIFT);
+        press(GLFW.GLFW_KEY_LEFT, GLFW.GLFW_MOD_SHIFT);
+        press(GLFW.GLFW_KEY_LEFT);
+        assertFalse(area.selecting());
+        assertEquals(7, area.cursor);
+    }
+
+    @Test
+    void controlArrowsJumpWords() {
+        load("say hello world");
+        press(GLFW.GLFW_KEY_LEFT, GLFW.GLFW_MOD_CONTROL);
+        assertEquals(10, area.cursor);
+        press(GLFW.GLFW_KEY_LEFT, GLFW.GLFW_MOD_CONTROL);
+        assertEquals(4, area.cursor);
+        press(GLFW.GLFW_KEY_RIGHT, GLFW.GLFW_MOD_CONTROL);
+        assertEquals(9, area.cursor);
+    }
+
+    @Test
+    void controlShiftArrowsSelectWords() {
+        load("say hello world");
+        int both = GLFW.GLFW_MOD_CONTROL | GLFW.GLFW_MOD_SHIFT;
+        press(GLFW.GLFW_KEY_LEFT, both);
+        press(GLFW.GLFW_KEY_LEFT, both);
+        assertEquals("hello world", area.selected());
+    }
+
+    @Test
+    void controlArrowStopsAtLineBreaks() {
+        load("say\nhello");
+        area.cursor = 4;
+        press(GLFW.GLFW_KEY_LEFT, GLFW.GLFW_MOD_CONTROL);
+        assertEquals(3, area.cursor);
+        press(GLFW.GLFW_KEY_LEFT, GLFW.GLFW_MOD_CONTROL);
+        assertEquals(0, area.cursor);
+    }
+
+    @Test
+    void controlBackspaceAndDeleteRemoveWords() {
+        load("say hello world");
+        press(GLFW.GLFW_KEY_BACKSPACE, GLFW.GLFW_MOD_CONTROL);
+        assertEquals("say hello ", area.text);
+        area.cursor = 4;
+        press(GLFW.GLFW_KEY_DELETE, GLFW.GLFW_MOD_CONTROL);
+        assertEquals("say  ", area.text);
+    }
+
+    @Test
+    void typingReplacesTheSelection() {
+        load("say hello");
+        press(GLFW.GLFW_KEY_A, GLFW.GLFW_MOD_CONTROL);
+        type("wait");
+        assertEquals("wait", area.text);
+        assertFalse(area.selecting());
+    }
+
+    @Test
+    void backspaceDeletesTheSelection() {
+        load("say hello");
+        press(GLFW.GLFW_KEY_LEFT, GLFW.GLFW_MOD_CONTROL | GLFW.GLFW_MOD_SHIFT);
+        press(GLFW.GLFW_KEY_BACKSPACE);
+        assertEquals("say ", area.text);
+    }
+
+    @Test
+    void copyCutAndPaste() {
+        List<String> clipboard = new ArrayList<>();
+        load("say hello");
+        press(GLFW.GLFW_KEY_LEFT, GLFW.GLFW_MOD_CONTROL | GLFW.GLFW_MOD_SHIFT);
+        area.key(canvas, GLFW.GLFW_KEY_C, GLFW.GLFW_MOD_CONTROL, clipboard::add, () -> "");
+        assertEquals(List.of("hello"), clipboard);
+        assertEquals("say hello", area.text);
+        area.key(canvas, GLFW.GLFW_KEY_X, GLFW.GLFW_MOD_CONTROL, clipboard::add, () -> "");
+        assertEquals("say ", area.text);
+        assertEquals("hello", clipboard.get(1));
+        area.key(canvas, GLFW.GLFW_KEY_V, GLFW.GLFW_MOD_CONTROL, clipboard::add, () -> "bye");
+        assertEquals("say bye", area.text);
+    }
+
+    @Test
+    void copyWithoutASelectionLeavesTheClipboardAlone() {
+        List<String> clipboard = new ArrayList<>();
+        load("say hello");
+        area.key(canvas, GLFW.GLFW_KEY_C, GLFW.GLFW_MOD_CONTROL, clipboard::add, () -> "");
+        assertTrue(clipboard.isEmpty());
+    }
+
+    @Test
+    void homeAndEndSelectToLineEdges() {
+        load("say hello");
+        press(GLFW.GLFW_KEY_HOME, GLFW.GLFW_MOD_SHIFT);
+        assertEquals("say hello", area.selected());
+        press(GLFW.GLFW_KEY_END);
+        press(GLFW.GLFW_KEY_HOME, GLFW.GLFW_MOD_CONTROL);
+        assertEquals(0, area.cursor);
+    }
+
+    @Test
+    void shiftDownSelectsAcrossLines() {
+        load("say a\nsay b");
+        area.cursor = 0;
+        press(GLFW.GLFW_KEY_DOWN, GLFW.GLFW_MOD_SHIFT);
+        assertEquals("say a\n", area.selected());
+    }
+
+    @Test
+    void doubleClickSelectsTheWordAndTripleTheLine() {
+        load("say hello\nwait 5");
+        area.selectWord(6);
+        assertEquals("hello", area.selected());
+        area.selectLine(6);
+        assertEquals("say hello\n", area.selected());
+    }
+
+    @Test
+    void tabIndentsSelectedLinesAndShiftTabUndoesIt() {
+        load("say a\nsay b");
+        press(GLFW.GLFW_KEY_A, GLFW.GLFW_MOD_CONTROL);
+        press(GLFW.GLFW_KEY_TAB);
+        assertEquals("  say a\n  say b", area.text);
+        press(GLFW.GLFW_KEY_TAB, GLFW.GLFW_MOD_SHIFT);
+        assertEquals("say a\nsay b", area.text);
+    }
+
+    @Test
+    void undoGroupsTypingAndRedoRestores() {
+        type("say");
+        type(" hi");
+        press(GLFW.GLFW_KEY_Z, GLFW.GLFW_MOD_CONTROL);
+        assertEquals("say ", area.text);
+        press(GLFW.GLFW_KEY_Z, GLFW.GLFW_MOD_CONTROL);
+        press(GLFW.GLFW_KEY_Z, GLFW.GLFW_MOD_CONTROL);
+        assertEquals("", area.text);
+        press(GLFW.GLFW_KEY_Y, GLFW.GLFW_MOD_CONTROL);
+        assertEquals("say", area.text);
+        press(GLFW.GLFW_KEY_Z, GLFW.GLFW_MOD_CONTROL | GLFW.GLFW_MOD_SHIFT);
+        assertEquals("say ", area.text);
+    }
+
+    @Test
+    void undoBringsBackACutSelection() {
+        load("say hello");
+        press(GLFW.GLFW_KEY_A, GLFW.GLFW_MOD_CONTROL);
+        press(GLFW.GLFW_KEY_BACKSPACE);
+        assertEquals("", area.text);
+        press(GLFW.GLFW_KEY_Z, GLFW.GLFW_MOD_CONTROL);
+        assertEquals("say hello", area.text);
     }
 }
