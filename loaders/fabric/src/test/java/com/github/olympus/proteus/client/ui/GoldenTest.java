@@ -95,4 +95,19 @@ class GoldenTest {
         assertTrue(calls.stream().anyMatch(line -> line.startsWith("glass 10 20 300 200 r6")));
         assertTrue(calls.stream().anyMatch(line -> line.startsWith("glass 8 8 160 40 r6")));
     }
+
+    @Test
+    void win98DrawsSquareBevelsWithoutWarnings() throws IOException {
+        List<String> warnings = new ArrayList<>();
+        Map<String, JsonObject> raw = new HashMap<>();
+        raw.put("proteus:modern", bundled("modern"));
+        raw.put("proteus:win98", bundled("win98"));
+        ThemeSources sources = new ThemeSources(raw, warnings::add);
+        ThemeSpec modern = ThemeSpec.parse("proteus:modern", sources.resolve("proteus:modern"), null, warnings::add);
+        ThemeSpec win98 = ThemeSpec.parse("proteus:win98", sources.resolve("proteus:win98"), modern, warnings::add);
+        List<String> calls = record(new StyledTheme(win98));
+        assertEquals(List.of(), warnings);
+        assertFalse(calls.isEmpty());
+        assertTrue(calls.stream().noneMatch(line -> line.startsWith("glass") || line.startsWith("round")));
+    }
 }

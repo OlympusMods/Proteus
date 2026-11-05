@@ -8,6 +8,8 @@
   "proteus.theme.liquid_glass.description": "Clear glass that bends and tints what is behind it, with bright edges and springy motion.",
   "proteus.theme.aero": "Aero",
   "proteus.theme.aero.description": "Windows 7: frosted glass frames in your accent color, glossy gray buttons and a light client area.",
+  "proteus.theme.win98": "Windows 98",
+  "proteus.theme.win98.description": "Windows 98: gray square surfaces with raised and sunken bevels, a blue title bar and a teal desktop.",
   "proteus.ui.locked_accent_note": "This theme sets its own colors.",
   "proteus.ui.accent": "Accent color",
   "proteus.ui.accent.theme": "Theme color",

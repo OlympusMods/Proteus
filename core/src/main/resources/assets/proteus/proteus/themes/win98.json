@@ -1,0 +1,282 @@
+{
+  "name": "proteus.theme.win98",
+  "description": "proteus.theme.win98.description",
+  "parent": "proteus:modern",
+  "accent": { "color": "#FF000080", "locked": true },
+  "colors": {
+    "text": "#FF000000",
+    "text_secondary": "#FF404040",
+    "text_disabled": "#FF808080",
+    "title": "#FFFFFFFF",
+    "danger": "#FFC00000",
+    "toast_title": "#FFC0C0C0"
+  },
+  "text": { "shadow": false, "title_align": "left" },
+  "segments": { "sliding": false },
+  "backdrop": { "vanilla_blur": false },
+  "sizes": {
+    "toggle": { "width": 34, "height": 20 },
+    "segment": { "pad": 0, "gap": 0 },
+    "scrollbar": { "width": 10 },
+    "toast": { "margin": 8, "pad": 8 }
+  },
+  "motion": { "enabled": false },
+  "widgets": {
+    "backdrop": {
+      "layers": [
+        { "type": "fill", "color": "#FF008080", "when": "!in_world" },
+        { "type": "fill", "color": "#A0008080", "when": "in_world" }
+      ]
+    },
+    "window": {
+      "vars": { "otl": "#FFFFFFFF", "obr": "#FF404040", "itl": "#FFDFDFDF", "ibr": "#FF808080", "face": "#FFC0C0C0" },
+      "layers": [
+        { "type": "fill", "x": 0, "y": 0, "w": "w", "h": "h", "color": "obr" },
+        { "type": "fill", "x": 0, "y": 0, "w": "w - 1", "h": "h - 1", "color": "otl" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 2", "h": "h - 2", "color": "ibr" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 3", "h": "h - 3", "color": "itl" },
+        { "type": "fill", "x": 2, "y": 2, "w": "w - 4", "h": "h - 4", "color": "face" },
+        { "type": "fill", "x": "4 + floor((w - 8) * 0 / 16)", "y": 4, "w": "floor((w - 8) * 1 / 16) - floor((w - 8) * 0 / 16)", "h": 26, "color": "#FF000080" },
+        { "type": "fill", "x": "4 + floor((w - 8) * 1 / 16)", "y": 4, "w": "floor((w - 8) * 2 / 16) - floor((w - 8) * 1 / 16)", "h": 26, "color": "#FF010985" },
+        { "type": "fill", "x": "4 + floor((w - 8) * 2 / 16)", "y": 4, "w": "floor((w - 8) * 3 / 16) - floor((w - 8) * 2 / 16)", "h": 26, "color": "#FF02128B" },
+        { "type": "fill", "x": "4 + floor((w - 8) * 3 / 16)", "y": 4, "w": "floor((w - 8) * 4 / 16) - floor((w - 8) * 3 / 16)", "h": 26, "color": "#FF031A90" },
+        { "type": "fill", "x": "4 + floor((w - 8) * 4 / 16)", "y": 4, "w": "floor((w - 8) * 5 / 16) - floor((w - 8) * 4 / 16)", "h": 26, "color": "#FF042395" },
+        { "type": "fill", "x": "4 + floor((w - 8) * 5 / 16)", "y": 4, "w": "floor((w - 8) * 6 / 16) - floor((w - 8) * 5 / 16)", "h": 26, "color": "#FF052C9B" },
+        { "type": "fill", "x": "4 + floor((w - 8) * 6 / 16)", "y": 4, "w": "floor((w - 8) * 7 / 16) - floor((w - 8) * 6 / 16)", "h": 26, "color": "#FF0635A0" },
+        { "type": "fill", "x": "4 + floor((w - 8) * 7 / 16)", "y": 4, "w": "floor((w - 8) * 8 / 16) - floor((w - 8) * 7 / 16)", "h": 26, "color": "#FF073EA5" },
+        { "type": "fill", "x": "4 + floor((w - 8) * 8 / 16)", "y": 4, "w": "floor((w - 8) * 9 / 16) - floor((w - 8) * 8 / 16)", "h": 26, "color": "#FF0946AB" },
+        { "type": "fill", "x": "4 + floor((w - 8) * 9 / 16)", "y": 4, "w": "floor((w - 8) * 10 / 16) - floor((w - 8) * 9 / 16)", "h": 26, "color": "#FF0A4FB0" },
+        { "type": "fill", "x": "4 + floor((w - 8) * 10 / 16)", "y": 4, "w": "floor((w - 8) * 11 / 16) - floor((w - 8) * 10 / 16)", "h": 26, "color": "#FF0B58B5" },
+        { "type": "fill", "x": "4 + floor((w - 8) * 11 / 16)", "y": 4, "w": "floor((w - 8) * 12 / 16) - floor((w - 8) * 11 / 16)", "h": 26, "color": "#FF0C61BB" },
+        { "type": "fill", "x": "4 + floor((w - 8) * 12 / 16)", "y": 4, "w": "floor((w - 8) * 13 / 16) - floor((w - 8) * 12 / 16)", "h": 26, "color": "#FF0D6AC0" },
+        { "type": "fill", "x": "4 + floor((w - 8) * 13 / 16)", "y": 4, "w": "floor((w - 8) * 14 / 16) - floor((w - 8) * 13 / 16)", "h": 26, "color": "#FF0E72C5" },
+        { "type": "fill", "x": "4 + floor((w - 8) * 14 / 16)", "y": 4, "w": "floor((w - 8) * 15 / 16) - floor((w - 8) * 14 / 16)", "h": 26, "color": "#FF0F7BCB" },
+        { "type": "fill", "x": "4 + floor((w - 8) * 15 / 16)", "y": 4, "w": "floor((w - 8) * 16 / 16) - floor((w - 8) * 15 / 16)", "h": 26, "color": "#FF1084D0" }
+      ]
+    },
+    "card": {
+      "layers": [
+        { "type": "ring", "w": "w - 1", "h": "h - 1", "color": "#FF808080" },
+        { "type": "ring", "x": 1, "y": 1, "w": "w - 1", "h": "h - 1", "color": "#FFFFFFFF" }
+      ]
+    },
+    "button": {
+      "vars": { "ins": 0, "pr": "if(enabled, press > 0.5 || selected > 0.5, 0)", "otl": "if(pr, #FF404040, #FFFFFFFF)", "obr": "if(pr, #FFFFFFFF, #FF404040)", "itl": "if(pr, #FF808080, #FFDFDFDF)", "ibr": "if(pr, #FFDFDFDF, #FF808080)", "face": "#FFC0C0C0" },
+      "layers": [
+        { "type": "fill", "x": "ins", "y": "ins", "w": "w - 2 * ins", "h": "h - 2 * ins", "color": "obr" },
+        { "type": "fill", "x": "ins", "y": "ins", "w": "w - 2 * ins - 1", "h": "h - 2 * ins - 1", "color": "otl" },
+        { "type": "fill", "x": "ins + 1", "y": "ins + 1", "w": "w - 2 * ins - 2", "h": "h - 2 * ins - 2", "color": "ibr" },
+        { "type": "fill", "x": "ins + 1", "y": "ins + 1", "w": "w - 2 * ins - 3", "h": "h - 2 * ins - 3", "color": "itl" },
+        { "type": "fill", "x": "ins + 2", "y": "ins + 2", "w": "w - 2 * ins - 4", "h": "h - 2 * ins - 4", "color": "face" },
+        { "type": "ring", "color": "#FF000000", "when": "ins > 0" }
+      ],
+      "text_color": "if(enabled, #FF000000, #FF808080)"
+    },
+    "button.primary": {
+      "vars": { "ins": 1 }
+    },
+    "button.danger": {
+      "text_color": "if(enabled, #FFC00000, #FF808080)"
+    },
+    "button.ghost": {
+      "vars": { "hv": "if(enabled, hover > 0.5, 0)", "pr": "if(enabled, press > 0.5 || selected > 0.5, 0)", "show": "hv || pr", "tl": "if(pr, #FF808080, #FFFFFFFF)", "br": "if(pr, #FFFFFFFF, #FF808080)" },
+      "layers": [
+        { "type": "fill", "color": "br", "when": "show" },
+        { "type": "fill", "w": "w - 1", "h": "h - 1", "color": "tl", "when": "show" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 2", "h": "h - 2", "color": "#FFC0C0C0", "when": "show" }
+      ],
+      "text_color": "if(enabled, #FF000000, #FF808080)"
+    },
+    "segment_track": {
+      "layers": [],
+      "text_color": "#FF000000"
+    },
+    "segment_thumb": {
+      "layers": []
+    },
+    "toggle": {
+      "vars": { "value": "on > 0.5", "otl": "if(value, #FF404040, #FFFFFFFF)", "obr": "if(value, #FFFFFFFF, #FF404040)", "itl": "if(value, #FF808080, #FFDFDFDF)", "ibr": "if(value, #FFDFDFDF, #FF808080)", "face": "#FFC0C0C0" },
+      "layers": [
+        { "type": "fill", "x": 0, "y": 0, "w": "w", "h": "h", "color": "obr" },
+        { "type": "fill", "x": 0, "y": 0, "w": "w - 1", "h": "h - 1", "color": "otl" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 2", "h": "h - 2", "color": "ibr" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 3", "h": "h - 3", "color": "itl" },
+        { "type": "fill", "x": 2, "y": 2, "w": "w - 4", "h": "h - 4", "color": "face" },
+        { "type": "text", "text": "=if(value, on_label, off_label)", "color": "if(enabled, #FF000000, #FF808080)", "shadow": false }
+      ]
+    },
+    "checkbox": {
+      "vars": { "otl": "#FF808080", "obr": "#FFFFFFFF", "itl": "#FF404040", "ibr": "#FFDFDFDF", "face": "if(enabled, #FFFFFFFF, #FFC0C0C0)" },
+      "layers": [
+        { "type": "fill", "x": 0, "y": 0, "w": "w", "h": "h", "color": "obr" },
+        { "type": "fill", "x": 0, "y": 0, "w": "w - 1", "h": "h - 1", "color": "otl" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 2", "h": "h - 2", "color": "ibr" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 3", "h": "h - 3", "color": "itl" },
+        { "type": "fill", "x": 2, "y": 2, "w": "w - 4", "h": "h - 4", "color": "face" },
+        { "type": "check", "x": "floor((w - 8) / 2)", "y": "floor((h - 7) / 2) + 1", "color": "if(enabled, #FF000000, #FF808080)", "when": "on > 0.5" }
+      ]
+    },
+    "inset": {
+      "vars": { "otl": "#FF808080", "obr": "#FFFFFFFF", "itl": "#FF404040", "ibr": "#FFDFDFDF", "face": "#FFFFFFFF" },
+      "layers": [
+        { "type": "fill", "x": 0, "y": 0, "w": "w", "h": "h", "color": "obr" },
+        { "type": "fill", "x": 0, "y": 0, "w": "w - 1", "h": "h - 1", "color": "otl" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 2", "h": "h - 2", "color": "ibr" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 3", "h": "h - 3", "color": "itl" },
+        { "type": "fill", "x": 2, "y": 2, "w": "w - 4", "h": "h - 4", "color": "face" }
+      ]
+    },
+    "field": {
+      "vars": { "otl": "#FF808080", "obr": "#FFFFFFFF", "itl": "#FF404040", "ibr": "#FFDFDFDF", "face": "#FFFFFFFF" },
+      "layers": [
+        { "type": "fill", "x": 0, "y": 0, "w": "w", "h": "h", "color": "obr" },
+        { "type": "fill", "x": 0, "y": 0, "w": "w - 1", "h": "h - 1", "color": "otl" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 2", "h": "h - 2", "color": "ibr" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 3", "h": "h - 3", "color": "itl" },
+        { "type": "fill", "x": 2, "y": 2, "w": "w - 4", "h": "h - 4", "color": "face" }
+      ]
+    },
+    "row": {
+      "layers": [
+        { "type": "fill", "color": "#FF9EA8D8", "when": "highlighted" },
+        { "type": "ring", "color": "#FF000080", "when": "highlighted" },
+        { "type": "fill", "color": "#FFDFDFDF", "when": "hover > 0.5 && !highlighted" }
+      ]
+    },
+    "progress": {
+      "vars": { "otl": "#FF808080", "obr": "#FFFFFFFF", "itl": "#FF404040", "ibr": "#FFDFDFDF", "face": "#FFC0C0C0", "inner_w": "w - 6", "inner_h": "h - 6", "filled": "round(inner_w * min(1, max(0, value)))", "band": 30, "start": "floor(((time * 0.7) % 1) * (inner_w + band)) - band" },
+      "layers": [
+        { "type": "fill", "x": 0, "y": 0, "w": "w", "h": "h", "color": "obr" },
+        { "type": "fill", "x": 0, "y": 0, "w": "w - 1", "h": "h - 1", "color": "otl" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 2", "h": "h - 2", "color": "ibr" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 3", "h": "h - 3", "color": "itl" },
+        { "type": "fill", "x": 2, "y": 2, "w": "w - 4", "h": "h - 4", "color": "face" },
+        { "type": "group", "x": 3, "y": 3, "w": "inner_w", "h": "inner_h", "layers": [
+          { "type": "fill", "x": 0, "w": "min(8, filled - 0)", "color": "#FF000080", "when": "value >= 0 && filled > 0" },
+          { "type": "fill", "x": 10, "w": "min(8, filled - 10)", "color": "#FF000080", "when": "value >= 0 && filled > 10" },
+          { "type": "fill", "x": 20, "w": "min(8, filled - 20)", "color": "#FF000080", "when": "value >= 0 && filled > 20" },
+          { "type": "fill", "x": 30, "w": "min(8, filled - 30)", "color": "#FF000080", "when": "value >= 0 && filled > 30" },
+          { "type": "fill", "x": 40, "w": "min(8, filled - 40)", "color": "#FF000080", "when": "value >= 0 && filled > 40" },
+          { "type": "fill", "x": 50, "w": "min(8, filled - 50)", "color": "#FF000080", "when": "value >= 0 && filled > 50" },
+          { "type": "fill", "x": 60, "w": "min(8, filled - 60)", "color": "#FF000080", "when": "value >= 0 && filled > 60" },
+          { "type": "fill", "x": 70, "w": "min(8, filled - 70)", "color": "#FF000080", "when": "value >= 0 && filled > 70" },
+          { "type": "fill", "x": 80, "w": "min(8, filled - 80)", "color": "#FF000080", "when": "value >= 0 && filled > 80" },
+          { "type": "fill", "x": 90, "w": "min(8, filled - 90)", "color": "#FF000080", "when": "value >= 0 && filled > 90" },
+          { "type": "fill", "x": 100, "w": "min(8, filled - 100)", "color": "#FF000080", "when": "value >= 0 && filled > 100" },
+          { "type": "fill", "x": 110, "w": "min(8, filled - 110)", "color": "#FF000080", "when": "value >= 0 && filled > 110" },
+          { "type": "fill", "x": 120, "w": "min(8, filled - 120)", "color": "#FF000080", "when": "value >= 0 && filled > 120" },
+          { "type": "fill", "x": 130, "w": "min(8, filled - 130)", "color": "#FF000080", "when": "value >= 0 && filled > 130" },
+          { "type": "fill", "x": 140, "w": "min(8, filled - 140)", "color": "#FF000080", "when": "value >= 0 && filled > 140" },
+          { "type": "fill", "x": 150, "w": "min(8, filled - 150)", "color": "#FF000080", "when": "value >= 0 && filled > 150" },
+          { "type": "fill", "x": 160, "w": "min(8, filled - 160)", "color": "#FF000080", "when": "value >= 0 && filled > 160" },
+          { "type": "fill", "x": 170, "w": "min(8, filled - 170)", "color": "#FF000080", "when": "value >= 0 && filled > 170" },
+          { "type": "fill", "x": 180, "w": "min(8, filled - 180)", "color": "#FF000080", "when": "value >= 0 && filled > 180" },
+          { "type": "fill", "x": 190, "w": "min(8, filled - 190)", "color": "#FF000080", "when": "value >= 0 && filled > 190" },
+          { "type": "fill", "x": 200, "w": "min(8, filled - 200)", "color": "#FF000080", "when": "value >= 0 && filled > 200" },
+          { "type": "fill", "x": 210, "w": "min(8, filled - 210)", "color": "#FF000080", "when": "value >= 0 && filled > 210" },
+          { "type": "fill", "x": 220, "w": "min(8, filled - 220)", "color": "#FF000080", "when": "value >= 0 && filled > 220" },
+          { "type": "fill", "x": 230, "w": "min(8, filled - 230)", "color": "#FF000080", "when": "value >= 0 && filled > 230" },
+          { "type": "fill", "x": 240, "w": "min(8, filled - 240)", "color": "#FF000080", "when": "value >= 0 && filled > 240" },
+          { "type": "fill", "x": 250, "w": "min(8, filled - 250)", "color": "#FF000080", "when": "value >= 0 && filled > 250" },
+          { "type": "fill", "x": 260, "w": "min(8, filled - 260)", "color": "#FF000080", "when": "value >= 0 && filled > 260" },
+          { "type": "fill", "x": 270, "w": "min(8, filled - 270)", "color": "#FF000080", "when": "value >= 0 && filled > 270" },
+          { "type": "fill", "x": 280, "w": "min(8, filled - 280)", "color": "#FF000080", "when": "value >= 0 && filled > 280" },
+          { "type": "fill", "x": 290, "w": "min(8, filled - 290)", "color": "#FF000080", "when": "value >= 0 && filled > 290" },
+          { "type": "fill", "x": 300, "w": "min(8, filled - 300)", "color": "#FF000080", "when": "value >= 0 && filled > 300" },
+          { "type": "fill", "x": 310, "w": "min(8, filled - 310)", "color": "#FF000080", "when": "value >= 0 && filled > 310" },
+          { "type": "fill", "x": 320, "w": "min(8, filled - 320)", "color": "#FF000080", "when": "value >= 0 && filled > 320" },
+          { "type": "fill", "x": 330, "w": "min(8, filled - 330)", "color": "#FF000080", "when": "value >= 0 && filled > 330" },
+          { "type": "fill", "x": 340, "w": "min(8, filled - 340)", "color": "#FF000080", "when": "value >= 0 && filled > 340" },
+          { "type": "fill", "x": 350, "w": "min(8, filled - 350)", "color": "#FF000080", "when": "value >= 0 && filled > 350" },
+          { "type": "fill", "x": 360, "w": "min(8, filled - 360)", "color": "#FF000080", "when": "value >= 0 && filled > 360" },
+          { "type": "fill", "x": 370, "w": "min(8, filled - 370)", "color": "#FF000080", "when": "value >= 0 && filled > 370" },
+          { "type": "fill", "x": 380, "w": "min(8, filled - 380)", "color": "#FF000080", "when": "value >= 0 && filled > 380" },
+          { "type": "fill", "x": 390, "w": "min(8, filled - 390)", "color": "#FF000080", "when": "value >= 0 && filled > 390" },
+          { "type": "fill", "x": 0, "w": 8, "color": "#FF000080", "when": "value < 0 && 0 >= start && 0 + 8 <= start + band" },
+          { "type": "fill", "x": 10, "w": 8, "color": "#FF000080", "when": "value < 0 && 10 >= start && 10 + 8 <= start + band" },
+          { "type": "fill", "x": 20, "w": 8, "color": "#FF000080", "when": "value < 0 && 20 >= start && 20 + 8 <= start + band" },
+          { "type": "fill", "x": 30, "w": 8, "color": "#FF000080", "when": "value < 0 && 30 >= start && 30 + 8 <= start + band" },
+          { "type": "fill", "x": 40, "w": 8, "color": "#FF000080", "when": "value < 0 && 40 >= start && 40 + 8 <= start + band" },
+          { "type": "fill", "x": 50, "w": 8, "color": "#FF000080", "when": "value < 0 && 50 >= start && 50 + 8 <= start + band" },
+          { "type": "fill", "x": 60, "w": 8, "color": "#FF000080", "when": "value < 0 && 60 >= start && 60 + 8 <= start + band" },
+          { "type": "fill", "x": 70, "w": 8, "color": "#FF000080", "when": "value < 0 && 70 >= start && 70 + 8 <= start + band" },
+          { "type": "fill", "x": 80, "w": 8, "color": "#FF000080", "when": "value < 0 && 80 >= start && 80 + 8 <= start + band" },
+          { "type": "fill", "x": 90, "w": 8, "color": "#FF000080", "when": "value < 0 && 90 >= start && 90 + 8 <= start + band" },
+          { "type": "fill", "x": 100, "w": 8, "color": "#FF000080", "when": "value < 0 && 100 >= start && 100 + 8 <= start + band" },
+          { "type": "fill", "x": 110, "w": 8, "color": "#FF000080", "when": "value < 0 && 110 >= start && 110 + 8 <= start + band" },
+          { "type": "fill", "x": 120, "w": 8, "color": "#FF000080", "when": "value < 0 && 120 >= start && 120 + 8 <= start + band" },
+          { "type": "fill", "x": 130, "w": 8, "color": "#FF000080", "when": "value < 0 && 130 >= start && 130 + 8 <= start + band" },
+          { "type": "fill", "x": 140, "w": 8, "color": "#FF000080", "when": "value < 0 && 140 >= start && 140 + 8 <= start + band" },
+          { "type": "fill", "x": 150, "w": 8, "color": "#FF000080", "when": "value < 0 && 150 >= start && 150 + 8 <= start + band" },
+          { "type": "fill", "x": 160, "w": 8, "color": "#FF000080", "when": "value < 0 && 160 >= start && 160 + 8 <= start + band" },
+          { "type": "fill", "x": 170, "w": 8, "color": "#FF000080", "when": "value < 0 && 170 >= start && 170 + 8 <= start + band" },
+          { "type": "fill", "x": 180, "w": 8, "color": "#FF000080", "when": "value < 0 && 180 >= start && 180 + 8 <= start + band" },
+          { "type": "fill", "x": 190, "w": 8, "color": "#FF000080", "when": "value < 0 && 190 >= start && 190 + 8 <= start + band" },
+          { "type": "fill", "x": 200, "w": 8, "color": "#FF000080", "when": "value < 0 && 200 >= start && 200 + 8 <= start + band" },
+          { "type": "fill", "x": 210, "w": 8, "color": "#FF000080", "when": "value < 0 && 210 >= start && 210 + 8 <= start + band" },
+          { "type": "fill", "x": 220, "w": 8, "color": "#FF000080", "when": "value < 0 && 220 >= start && 220 + 8 <= start + band" },
+          { "type": "fill", "x": 230, "w": 8, "color": "#FF000080", "when": "value < 0 && 230 >= start && 230 + 8 <= start + band" },
+          { "type": "fill", "x": 240, "w": 8, "color": "#FF000080", "when": "value < 0 && 240 >= start && 240 + 8 <= start + band" },
+          { "type": "fill", "x": 250, "w": 8, "color": "#FF000080", "when": "value < 0 && 250 >= start && 250 + 8 <= start + band" },
+          { "type": "fill", "x": 260, "w": 8, "color": "#FF000080", "when": "value < 0 && 260 >= start && 260 + 8 <= start + band" },
+          { "type": "fill", "x": 270, "w": 8, "color": "#FF000080", "when": "value < 0 && 270 >= start && 270 + 8 <= start + band" },
+          { "type": "fill", "x": 280, "w": 8, "color": "#FF000080", "when": "value < 0 && 280 >= start && 280 + 8 <= start + band" },
+          { "type": "fill", "x": 290, "w": 8, "color": "#FF000080", "when": "value < 0 && 290 >= start && 290 + 8 <= start + band" },
+          { "type": "fill", "x": 300, "w": 8, "color": "#FF000080", "when": "value < 0 && 300 >= start && 300 + 8 <= start + band" },
+          { "type": "fill", "x": 310, "w": 8, "color": "#FF000080", "when": "value < 0 && 310 >= start && 310 + 8 <= start + band" },
+          { "type": "fill", "x": 320, "w": 8, "color": "#FF000080", "when": "value < 0 && 320 >= start && 320 + 8 <= start + band" },
+          { "type": "fill", "x": 330, "w": 8, "color": "#FF000080", "when": "value < 0 && 330 >= start && 330 + 8 <= start + band" },
+          { "type": "fill", "x": 340, "w": 8, "color": "#FF000080", "when": "value < 0 && 340 >= start && 340 + 8 <= start + band" },
+          { "type": "fill", "x": 350, "w": 8, "color": "#FF000080", "when": "value < 0 && 350 >= start && 350 + 8 <= start + band" },
+          { "type": "fill", "x": 360, "w": 8, "color": "#FF000080", "when": "value < 0 && 360 >= start && 360 + 8 <= start + band" },
+          { "type": "fill", "x": 370, "w": 8, "color": "#FF000080", "when": "value < 0 && 370 >= start && 370 + 8 <= start + band" },
+          { "type": "fill", "x": 380, "w": 8, "color": "#FF000080", "when": "value < 0 && 380 >= start && 380 + 8 <= start + band" },
+          { "type": "fill", "x": 390, "w": 8, "color": "#FF000080", "when": "value < 0 && 390 >= start && 390 + 8 <= start + band" }
+        ] }
+      ]
+    },
+    "scrollbar": {
+      "vars": { "otl": "#FFFFFFFF", "obr": "#FF404040", "itl": "#FFDFDFDF", "ibr": "#FF808080", "face": "#FFC0C0C0" },
+      "layers": [
+        { "type": "fill", "color": "#FFE0E0E0" },
+        { "type": "fill", "x": 0, "y": "thumb_y", "w": "w", "h": "thumb_h", "color": "obr" },
+        { "type": "fill", "x": 0, "y": "thumb_y", "w": "w - 1", "h": "thumb_h - 1", "color": "otl" },
+        { "type": "fill", "x": 1, "y": "thumb_y + 1", "w": "w - 2", "h": "thumb_h - 2", "color": "ibr" },
+        { "type": "fill", "x": 1, "y": "thumb_y + 1", "w": "w - 3", "h": "thumb_h - 3", "color": "itl" },
+        { "type": "fill", "x": 2, "y": "thumb_y + 2", "w": "w - 4", "h": "thumb_h - 4", "color": "face" }
+      ]
+    },
+    "tooltip": {
+      "layers": [
+        { "type": "panel", "radius": 0, "color": "#FFFFFFE1", "border": "#FF000000" }
+      ]
+    },
+    "toast": {
+      "vars": { "otl": "#FFFFFFFF", "obr": "#FF404040", "itl": "#FFDFDFDF", "ibr": "#FF808080", "face": "#FFC0C0C0" },
+      "layers": [
+        { "type": "fill", "x": 0, "y": 0, "w": "w", "h": "h", "color": "obr" },
+        { "type": "fill", "x": 0, "y": 0, "w": "w - 1", "h": "h - 1", "color": "otl" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 2", "h": "h - 2", "color": "ibr" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 3", "h": "h - 3", "color": "itl" },
+        { "type": "fill", "x": "2 + floor((w - 4) * 0 / 12)", "y": 2, "w": "floor((w - 4) * 1 / 12) - floor((w - 4) * 0 / 12)", "h": "h - 4", "color": "#FF000080" },
+        { "type": "fill", "x": "2 + floor((w - 4) * 1 / 12)", "y": 2, "w": "floor((w - 4) * 2 / 12) - floor((w - 4) * 1 / 12)", "h": "h - 4", "color": "#FF010C87" },
+        { "type": "fill", "x": "2 + floor((w - 4) * 2 / 12)", "y": 2, "w": "floor((w - 4) * 3 / 12) - floor((w - 4) * 2 / 12)", "h": "h - 4", "color": "#FF03188F" },
+        { "type": "fill", "x": "2 + floor((w - 4) * 3 / 12)", "y": 2, "w": "floor((w - 4) * 4 / 12) - floor((w - 4) * 3 / 12)", "h": "h - 4", "color": "#FF042496" },
+        { "type": "fill", "x": "2 + floor((w - 4) * 4 / 12)", "y": 2, "w": "floor((w - 4) * 5 / 12) - floor((w - 4) * 4 / 12)", "h": "h - 4", "color": "#FF06309D" },
+        { "type": "fill", "x": "2 + floor((w - 4) * 5 / 12)", "y": 2, "w": "floor((w - 4) * 6 / 12) - floor((w - 4) * 5 / 12)", "h": "h - 4", "color": "#FF073CA4" },
+        { "type": "fill", "x": "2 + floor((w - 4) * 6 / 12)", "y": 2, "w": "floor((w - 4) * 7 / 12) - floor((w - 4) * 6 / 12)", "h": "h - 4", "color": "#FF0948AC" },
+        { "type": "fill", "x": "2 + floor((w - 4) * 7 / 12)", "y": 2, "w": "floor((w - 4) * 8 / 12) - floor((w - 4) * 7 / 12)", "h": "h - 4", "color": "#FF0A54B3" },
+        { "type": "fill", "x": "2 + floor((w - 4) * 8 / 12)", "y": 2, "w": "floor((w - 4) * 9 / 12) - floor((w - 4) * 8 / 12)", "h": "h - 4", "color": "#FF0C60BA" },
+        { "type": "fill", "x": "2 + floor((w - 4) * 9 / 12)", "y": 2, "w": "floor((w - 4) * 10 / 12) - floor((w - 4) * 9 / 12)", "h": "h - 4", "color": "#FF0D6CC1" },
+        { "type": "fill", "x": "2 + floor((w - 4) * 10 / 12)", "y": 2, "w": "floor((w - 4) * 11 / 12) - floor((w - 4) * 10 / 12)", "h": "h - 4", "color": "#FF0F78C9" },
+        { "type": "fill", "x": "2 + floor((w - 4) * 11 / 12)", "y": 2, "w": "floor((w - 4) * 12 / 12) - floor((w - 4) * 11 / 12)", "h": "h - 4", "color": "#FF1084D0" }
+      ]
+    },
+    "swatch": {
+      "layers": [
+        { "type": "fill", "x": -2, "y": -2, "w": "w + 4", "h": "h + 4", "color": "#FF000080", "when": "selected > 0.5" },
+        { "type": "panel", "radius": 0, "color": "color", "border": "if(selected > 0.5, #FFFFFFFF, #FF404040)" }
+      ]
+    }
+  }
+}
