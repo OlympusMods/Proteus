@@ -6,7 +6,8 @@ public enum Surface {
     TOASTS(true),
     CHAT(false),
     MENUS(false),
-    EFFECTS(false);
+    EFFECTS(false),
+    TOOLTIPS(false);
 
     private final boolean defaultOn;
 

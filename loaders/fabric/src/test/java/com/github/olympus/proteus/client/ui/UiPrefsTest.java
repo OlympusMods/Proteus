@@ -69,6 +69,7 @@ class UiPrefsTest {
         assertFalse(prefs.surface(Surface.CHAT));
         assertFalse(prefs.surface(Surface.MENUS));
         assertFalse(prefs.surface(Surface.EFFECTS));
+        assertFalse(prefs.surface(Surface.TOOLTIPS));
     }
 
     @Test

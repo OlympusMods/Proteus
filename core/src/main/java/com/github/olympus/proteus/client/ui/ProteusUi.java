@@ -118,6 +118,9 @@ public final class ProteusUi extends UiShell {
         if (prefs().surface(Surface.EFFECTS)) {
             y = EffectsOptions.render(panel, y);
         }
+        if (prefs().surface(Surface.TOOLTIPS)) {
+            y = TooltipOptions.render(panel, y);
+        }
 
         gui().scrollEnd(y - top);
     }
