@@ -14,6 +14,7 @@ public final class MenuHud {
     private static int depth;
     private static AbstractWidget animated;
     private static float savedAlpha;
+    private static boolean backgrounded;
 
     private MenuHud() {
     }
@@ -46,8 +47,16 @@ public final class MenuHud {
         try {
             depth = 0;
             animated = null;
+            backgrounded = false;
             if (Menus.enter(screen)) {
                 CANVAS.bind(graphics, Minecraft.getInstance().font, screen.width, screen.height);
+                if (MenuBackdrop.paintsAtStart() && Menus.scope() == Menus.Kind.OTHER && !Menus.inWorld()) {
+                    paint(() -> {
+                        MenuBackdrop.below();
+                        Menus.backdropRegion(CANVAS, 0, 0, screen.width, screen.height);
+                        backgrounded = true;
+                    });
+                }
             }
         } catch (RuntimeException | LinkageError error) {
             Menus.fail(error);
@@ -72,7 +81,10 @@ public final class MenuHud {
 
     public static void backdropInWorld() {
         if (Menus.scope() == Menus.Kind.PAUSE || Menus.scope() == Menus.Kind.OTHER && Menus.inWorld()) {
-            paint(() -> Menus.backdrop(CANVAS));
+            paint(() -> {
+                Menus.backdrop(CANVAS);
+                backgrounded = true;
+            });
         }
     }
 
@@ -183,6 +195,48 @@ public final class MenuHud {
         boolean[] handled = new boolean[1];
         paint(() -> handled[0] = Menus.scroller(CANVAS, path, x, y, w, h));
         return handled[0];
+    }
+
+    public static boolean dirt() {
+        if (Menus.scope() != Menus.Kind.OTHER) {
+            return false;
+        }
+        if (backgrounded) {
+            return true;
+        }
+        return Menus.inWorld() && paint(() -> {
+            Menus.backdrop(CANVAS);
+            backgrounded = true;
+        });
+    }
+
+    public static boolean listBackground(int x, int y, int w, int h) {
+        if (!Menus.themedLists()) {
+            return false;
+        }
+        return paint(() -> Menus.listBackground(CANVAS, x, y, w, h));
+    }
+
+    public static boolean listScope() {
+        return Menus.scope() == Menus.Kind.OTHER;
+    }
+
+    public static boolean listEdge(int x, int y, int w, int h) {
+        if (!listScope()) {
+            return false;
+        }
+        if (!backgrounded) {
+            paint(() -> Menus.backdropRegion(CANVAS, x, y, w, h));
+        }
+        return true;
+    }
+
+    public static boolean scrollTrack(int x, int y, int w, int h) {
+        return listScope() && paint(() -> Menus.scroller(CANVAS, "widget/scroller_background", x, y, w, h));
+    }
+
+    public static boolean scrollThumb(int x, int y, int w, int h) {
+        return listScope() && paint(() -> Menus.scroller(CANVAS, "widget/scroller", x, y, w, h));
     }
 
     public static boolean skipsBlur(Screen screen) {
