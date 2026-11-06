@@ -10,6 +10,8 @@
     "EffectsInventoryMixin",
     "GuiRendererMixin",
     "GuiScreenMixin",
+    "MenuButtonMixin",
+    "MenuScreenMixin",
     "MinecraftTickMixin",
     "ToastAddMixin",
     "ToastOverlayMixin"

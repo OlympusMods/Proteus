@@ -12,6 +12,8 @@
     "GuiRendererDrawAccess",
     "GuiRendererMixin",
     "GuiScreenMixin",
+    "MenuButtonMixin",
+    "MenuScreenMixin",
     "MinecraftTickMixin",
     "RenderSystemMixin",
     "ToastAddMixin",

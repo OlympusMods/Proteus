@@ -84,5 +84,11 @@
   "proteus.toasts.tutorial.tooltip": "Hints like \"Move with WASD\" or \"Punch a tree\".",
   "proteus.toasts.system": "System notices",
   "proteus.toasts.system.tooltip": "Notices from the game itself, such as world backups, unsecure servers and narrator changes.",
-  "proteus.key.open": "Open Proteus"
+  "proteus.key.open": "Open Proteus",
+  "proteus.menus.heading": "Menus",
+  "proteus.menus.note": "Buttons and backdrops follow the theme. Every button keeps doing what it did, including the ones other mods add.",
+  "proteus.menus.title": "Title screen",
+  "proteus.menus.title.tooltip": "Draw the main menu with the theme. Mod Menu's button is included.",
+  "proteus.menus.pause": "Pause menu",
+  "proteus.menus.pause.tooltip": "Draw the game menu with the theme. Mod Menu's button is included."
 }
