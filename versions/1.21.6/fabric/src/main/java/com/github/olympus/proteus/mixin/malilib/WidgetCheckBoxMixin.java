@@ -10,7 +10,7 @@ import net.minecraft.client.gui.GuiGraphics;
 
 @Mixin(value = WidgetCheckBox.class, remap = false)
 public abstract class WidgetCheckBoxMixin {
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lfi/dy/masa/malilib/gui/interfaces/IGuiIcon;renderAt"))
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lfi/dy/masa/malilib/gui/interfaces/IGuiIcon;renderAt(Lnet/minecraft/class_332;IIFZZ)V"))
     private void proteus$box(IGuiIcon icon, GuiGraphics ctx, int x, int y, float z, boolean first, boolean second) {
         boolean checked = ((WidgetCheckBox) (Object) this).isChecked();
         if (!MalilibSkin.checkbox(ctx, x, y, icon.getWidth(), checked)) {

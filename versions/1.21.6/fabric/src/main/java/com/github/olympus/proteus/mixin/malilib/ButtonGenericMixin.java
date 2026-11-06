@@ -28,14 +28,14 @@ public abstract class ButtonGenericMixin {
         }
     }
 
-    @Redirect(method = "drawText", at = @At(value = "INVOKE", target = "Lfi/dy/masa/malilib/gui/button/ButtonGeneric;drawCenteredStringWithShadow"))
+    @Redirect(method = "drawText", at = @At(value = "INVOKE", target = "Lfi/dy/masa/malilib/gui/button/ButtonGeneric;drawCenteredStringWithShadow(Lnet/minecraft/class_332;IIILjava/lang/String;)V"))
     private void proteus$centered(ButtonGeneric button, GuiGraphics ctx, int x, int y, int color, String text) {
         if (!proteus$label(ctx, x, y, text, true)) {
             button.drawCenteredStringWithShadow(ctx, x, y, color, text);
         }
     }
 
-    @Redirect(method = "drawText", at = @At(value = "INVOKE", target = "Lfi/dy/masa/malilib/gui/button/ButtonGeneric;drawStringWithShadow"))
+    @Redirect(method = "drawText", at = @At(value = "INVOKE", target = "Lfi/dy/masa/malilib/gui/button/ButtonGeneric;drawStringWithShadow(Lnet/minecraft/class_332;IIILjava/lang/String;)V"))
     private void proteus$left(ButtonGeneric button, GuiGraphics ctx, int x, int y, int color, String text) {
         if (!proteus$label(ctx, x, y, text, false)) {
             button.drawStringWithShadow(ctx, x, y, color, text);
