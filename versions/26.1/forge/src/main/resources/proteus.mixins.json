@@ -25,6 +25,7 @@
     "RenderSystemMixin",
     "ToastAddMixin",
     "ToastOverlayMixin",
+    "EffectsTipMixin",
     "TooltipMixin",
     "WidgetAlphaAccess"
   ],

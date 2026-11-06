@@ -21,6 +21,8 @@
     "PauseScreenAccess",
     "ToastAddMixin",
     "ToastOverlayMixin",
+    "EffectsTipMixin",
+    "TooltipMixin",
     "WidgetAlphaAccess"
   ],
   "injectors": {

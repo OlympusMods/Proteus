@@ -21,6 +21,8 @@
     "MinecraftTickMixin",
     "ToastAddMixin",
     "ToastOverlayMixin",
+    "EffectsTipMixin",
+    "TooltipMixin",
     "WidgetAlphaAccess"
   ],
   "injectors": {

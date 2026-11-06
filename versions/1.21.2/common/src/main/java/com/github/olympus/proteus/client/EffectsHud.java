@@ -56,6 +56,12 @@ public final class EffectsHud {
                 available, mouseX, mouseY, minecraft.level.tickRateManager().tickrate());
     }
 
+    public static void tip(GuiGraphics graphics) {
+        Minecraft minecraft = Minecraft.getInstance();
+        CANVAS.bind(graphics, minecraft.font, graphics.guiWidth(), graphics.guiHeight());
+        EffectsOverlay.tip(CANVAS);
+    }
+
     private static List<EffectInfo> infos(Collection<MobEffectInstance> active, boolean reverse) {
         Ordering<MobEffectInstance> order = reverse ? Ordering.<MobEffectInstance>natural().reverse()
                 : Ordering.<MobEffectInstance>natural();
