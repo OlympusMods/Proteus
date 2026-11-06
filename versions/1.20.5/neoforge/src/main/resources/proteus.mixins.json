@@ -6,6 +6,9 @@
   "mixins": [],
   "client": [
     "ChatInputMixin",
+    "ChatLayoutMixin",
+    "ChatSuggestListMixin",
+    "ChatSuggestMixin",
     "ChatMessageMixin",
     "ChatRenderMixin",
     "ContainerScreenAccess",
