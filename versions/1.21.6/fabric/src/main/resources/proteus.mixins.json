@@ -7,6 +7,9 @@
   "client": [
     "ChatGraphicsMixin",
     "ChatInputMixin",
+    "ChatLayoutMixin",
+    "ChatSuggestListMixin",
+    "ChatSuggestMixin",
     "ChatMessageMixin",
     "ChatRenderMixin",
     "ContainerScreenAccess",
