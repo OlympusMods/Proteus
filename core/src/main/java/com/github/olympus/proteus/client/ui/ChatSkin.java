@@ -140,7 +140,15 @@ public final class ChatSkin {
 
     public static void bubble(Canvas c, Box box, float fade, double backgroundOpacity, Sample sample, boolean slide) {
         boolean game = UiPrefs.get().option(OPACITY, 0) == 1;
-        float alpha = bubbleAlpha(fade, backgroundOpacity, game);
+        draw(c, box, bubbleAlpha(fade, backgroundOpacity, game), sample, slide);
+    }
+
+    public static void bubble(Canvas c, Box box, int color, double backgroundOpacity, Sample sample, boolean slide) {
+        boolean game = UiPrefs.get().option(OPACITY, 0) == 1;
+        draw(c, box, lineAlpha(color, backgroundOpacity, game), sample, slide);
+    }
+
+    private static void draw(Canvas c, Box box, float alpha, Sample sample, boolean slide) {
         int dx = slide ? Math.round(sample.dx()) : 0;
         int dy = slide ? Math.round(sample.dy()) : 0;
         FADE.bind(c, sample.alpha());
