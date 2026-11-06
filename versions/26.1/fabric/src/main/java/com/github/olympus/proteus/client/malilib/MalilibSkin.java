@@ -100,6 +100,11 @@ public final class MalilibSkin {
             Canvas c = canvas(ctx);
             int color = theme.buttonText(ButtonKind.NORMAL, hovered ? 1f : 0f, 0f, enabled);
             int left = centered ? x - c.textWidth(text) / 2 : x;
+            if (LABELS.size() > 4096) {
+                LABELS.clear();
+                armed = false;
+                return false;
+            }
             LABELS.add(new Label(left, y, text, color, theme.shadowText(), ctx.peekLastScissor()));
             return true;
         } catch (RuntimeException exception) {

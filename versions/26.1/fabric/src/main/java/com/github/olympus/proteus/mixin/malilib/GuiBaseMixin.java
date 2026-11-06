@@ -3,7 +3,6 @@ package com.github.olympus.proteus.mixin.malilib;
 import com.github.olympus.proteus.client.malilib.MalilibSkin;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.render.GuiContext;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class GuiBaseMixin {
     @Inject(method = "drawScreenBackground", at = @At("HEAD"), cancellable = true)
     private void proteus$background(GuiContext ctx, int mouseX, int mouseY, CallbackInfo ci) {
+        MalilibSkin.beginFrame();
         Screen screen = (Screen) (Object) this;
         if (MalilibSkin.backdrop(ctx, screen.width, screen.height)) {
             ci.cancel();
@@ -27,18 +27,13 @@ public abstract class GuiBaseMixin {
         }
     }
 
-    @Inject(method = "extractRenderState", at = @At("HEAD"))
-    private void proteus$begin(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks, CallbackInfo ci) {
-        MalilibSkin.beginFrame();
-    }
-
     @Inject(method = "drawHoveredWidget", at = @At("HEAD"))
     private void proteus$labels(GuiContext ctx, int mouseX, int mouseY, CallbackInfo ci) {
         MalilibSkin.flushLabels(ctx);
     }
 
-    @Inject(method = "extractRenderState", at = @At("TAIL"))
-    private void proteus$end(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks, CallbackInfo ci) {
+    @Inject(method = "drawGuiMessages", at = @At("TAIL"))
+    private void proteus$end(GuiContext ctx, CallbackInfo ci) {
         MalilibSkin.endFrame();
     }
 }
