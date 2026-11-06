@@ -23,7 +23,8 @@
 		]
 	},
 	"mixins": [
-		"proteus.mixins.json"
+		"proteus.mixins.json",
+		"proteus-malilib.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.19.5",
