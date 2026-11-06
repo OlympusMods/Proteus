@@ -1,0 +1,14 @@
+{
+  "mappings": {
+    "com/github/olympus/proteus/mixin/malilib/WidgetSliderMixin": {
+      "Lfi/dy/masa/malilib/render/GuiContext;method_52706(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/class_2960;IIII)V": "Lfi/dy/masa/malilib/render/GuiContext;method_52706(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/class_2960;IIII)V"
+    }
+  },
+  "data": {
+    "named:intermediary": {
+      "com/github/olympus/proteus/mixin/malilib/WidgetSliderMixin": {
+        "Lfi/dy/masa/malilib/render/GuiContext;method_52706(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/class_2960;IIII)V": "Lfi/dy/masa/malilib/render/GuiContext;method_52706(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/class_2960;IIII)V"
+      }
+    }
+  }
+}

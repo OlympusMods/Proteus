@@ -1,0 +1,22 @@
+{
+  "mappings": {
+    "com/github/olympus/proteus/mixin/malilib/RenderUtilsMixin": {
+      "drawHoverText(Lnet/minecraft/class_332;IILjava/util/List;)V": "drawHoverText(Lnet/minecraft/class_332;IILjava/util/List;)V",
+      "drawOutlinedBox(Lnet/minecraft/class_332;IIIIII)V": "drawOutlinedBox(Lnet/minecraft/class_332;IIIIII)V"
+    },
+    "com/github/olympus/proteus/mixin/malilib/WidgetSliderMixin": {
+      "Lnet/minecraft/class_332;method_52706(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/class_2960;IIII)V": "Lnet/minecraft/class_332;method_52706(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/class_2960;IIII)V"
+    }
+  },
+  "data": {
+    "named:intermediary": {
+      "com/github/olympus/proteus/mixin/malilib/RenderUtilsMixin": {
+        "drawHoverText(Lnet/minecraft/class_332;IILjava/util/List;)V": "drawHoverText(Lnet/minecraft/class_332;IILjava/util/List;)V",
+        "drawOutlinedBox(Lnet/minecraft/class_332;IIIIII)V": "drawOutlinedBox(Lnet/minecraft/class_332;IIIIII)V"
+      },
+      "com/github/olympus/proteus/mixin/malilib/WidgetSliderMixin": {
+        "Lnet/minecraft/class_332;method_52706(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/class_2960;IIII)V": "Lnet/minecraft/class_332;method_52706(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/class_2960;IIII)V"
+      }
+    }
+  }
+}

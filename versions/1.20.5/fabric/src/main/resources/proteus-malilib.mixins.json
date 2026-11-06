@@ -16,5 +16,6 @@
   ],
   "injectors": {
     "defaultRequire": 0
-  }
+  },
+  "refmap": "proteus-malilib.refmap.json"
 }

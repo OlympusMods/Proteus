@@ -1,0 +1,56 @@
+{
+  "mappings": {
+    "com/github/olympus/proteus/mixin/malilib/ButtonGenericMixin": {
+      "Lnet/minecraft/class_332;method_52706(Lnet/minecraft/class_2960;IIII)V": "Lnet/minecraft/class_332;method_52706(Lnet/minecraft/class_2960;IIII)V",
+      "Lfi/dy/masa/malilib/gui/button/ButtonGeneric;drawCenteredStringWithShadow(IIILjava/lang/String;Lnet/minecraft/class_332;)V": "Lfi/dy/masa/malilib/gui/button/ButtonGeneric;drawCenteredStringWithShadow(IIILjava/lang/String;Lnet/minecraft/class_332;)V",
+      "Lfi/dy/masa/malilib/gui/button/ButtonGeneric;drawStringWithShadow(IIILjava/lang/String;Lnet/minecraft/class_332;)V": "Lfi/dy/masa/malilib/gui/button/ButtonGeneric;drawStringWithShadow(IIILjava/lang/String;Lnet/minecraft/class_332;)V",
+      "Lnet/minecraft/class_332;method_52706(Ljava/util/function/Function;Lnet/minecraft/class_2960;IIII)V": "Lnet/minecraft/class_332;method_52706(Ljava/util/function/Function;Lnet/minecraft/class_2960;IIII)V"
+    },
+    "com/github/olympus/proteus/mixin/malilib/GuiBaseMixin": {
+      "method_25394": "method_25394",
+      "drawScreenBackground(Lnet/minecraft/class_332;II)V": "drawScreenBackground(Lnet/minecraft/class_332;II)V",
+      "drawTexturedBG(Lnet/minecraft/class_332;IIIIZ)V": "drawTexturedBG(Lnet/minecraft/class_332;IIIIZ)V"
+    },
+    "com/github/olympus/proteus/mixin/malilib/RenderUtilsMixin": {
+      "drawHoverText(IILjava/util/List;Lnet/minecraft/class_332;)V": "drawHoverText(IILjava/util/List;Lnet/minecraft/class_332;)V"
+    },
+    "com/github/olympus/proteus/mixin/malilib/WidgetSliderMixin": {
+      "Lnet/minecraft/class_332;method_52706(Lnet/minecraft/class_2960;IIII)V": "Lnet/minecraft/class_332;method_52706(Lnet/minecraft/class_2960;IIII)V",
+      "Lnet/minecraft/class_332;method_52706(Ljava/util/function/Function;Lnet/minecraft/class_2960;IIII)V": "Lnet/minecraft/class_332;method_52706(Ljava/util/function/Function;Lnet/minecraft/class_2960;IIII)V"
+    },
+    "com/github/olympus/proteus/mixin/malilib/GuiScrollBarMixin": {
+      "render(IIFIIIIILnet/minecraft/class_332;)V": "render(IIFIIIIILnet/minecraft/class_332;)V"
+    },
+    "com/github/olympus/proteus/mixin/malilib/WidgetCheckBoxMixin": {
+      "Lfi/dy/masa/malilib/gui/interfaces/IGuiIcon;renderAt(IIFZZLnet/minecraft/class_332;)V": "Lfi/dy/masa/malilib/gui/interfaces/IGuiIcon;renderAt(IIFZZLnet/minecraft/class_332;)V"
+    }
+  },
+  "data": {
+    "named:intermediary": {
+      "com/github/olympus/proteus/mixin/malilib/ButtonGenericMixin": {
+        "Lnet/minecraft/class_332;method_52706(Lnet/minecraft/class_2960;IIII)V": "Lnet/minecraft/class_332;method_52706(Lnet/minecraft/class_2960;IIII)V",
+        "Lfi/dy/masa/malilib/gui/button/ButtonGeneric;drawCenteredStringWithShadow(IIILjava/lang/String;Lnet/minecraft/class_332;)V": "Lfi/dy/masa/malilib/gui/button/ButtonGeneric;drawCenteredStringWithShadow(IIILjava/lang/String;Lnet/minecraft/class_332;)V",
+        "Lfi/dy/masa/malilib/gui/button/ButtonGeneric;drawStringWithShadow(IIILjava/lang/String;Lnet/minecraft/class_332;)V": "Lfi/dy/masa/malilib/gui/button/ButtonGeneric;drawStringWithShadow(IIILjava/lang/String;Lnet/minecraft/class_332;)V",
+        "Lnet/minecraft/class_332;method_52706(Ljava/util/function/Function;Lnet/minecraft/class_2960;IIII)V": "Lnet/minecraft/class_332;method_52706(Ljava/util/function/Function;Lnet/minecraft/class_2960;IIII)V"
+      },
+      "com/github/olympus/proteus/mixin/malilib/GuiBaseMixin": {
+        "method_25394": "method_25394",
+        "drawScreenBackground(Lnet/minecraft/class_332;II)V": "drawScreenBackground(Lnet/minecraft/class_332;II)V",
+        "drawTexturedBG(Lnet/minecraft/class_332;IIIIZ)V": "drawTexturedBG(Lnet/minecraft/class_332;IIIIZ)V"
+      },
+      "com/github/olympus/proteus/mixin/malilib/RenderUtilsMixin": {
+        "drawHoverText(IILjava/util/List;Lnet/minecraft/class_332;)V": "drawHoverText(IILjava/util/List;Lnet/minecraft/class_332;)V"
+      },
+      "com/github/olympus/proteus/mixin/malilib/WidgetSliderMixin": {
+        "Lnet/minecraft/class_332;method_52706(Lnet/minecraft/class_2960;IIII)V": "Lnet/minecraft/class_332;method_52706(Lnet/minecraft/class_2960;IIII)V",
+        "Lnet/minecraft/class_332;method_52706(Ljava/util/function/Function;Lnet/minecraft/class_2960;IIII)V": "Lnet/minecraft/class_332;method_52706(Ljava/util/function/Function;Lnet/minecraft/class_2960;IIII)V"
+      },
+      "com/github/olympus/proteus/mixin/malilib/GuiScrollBarMixin": {
+        "render(IIFIIIIILnet/minecraft/class_332;)V": "render(IIFIIIIILnet/minecraft/class_332;)V"
+      },
+      "com/github/olympus/proteus/mixin/malilib/WidgetCheckBoxMixin": {
+        "Lfi/dy/masa/malilib/gui/interfaces/IGuiIcon;renderAt(IIFZZLnet/minecraft/class_332;)V": "Lfi/dy/masa/malilib/gui/interfaces/IGuiIcon;renderAt(IIFZZLnet/minecraft/class_332;)V"
+      }
+    }
+  }
+}
