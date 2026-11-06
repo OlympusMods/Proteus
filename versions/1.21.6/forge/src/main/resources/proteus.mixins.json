@@ -5,6 +5,10 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
   "client": [
+    "ChatGraphicsMixin",
+    "ChatInputMixin",
+    "ChatMessageMixin",
+    "ChatRenderMixin",
     "ContainerScreenAccess",
     "EffectsHudMixin",
     "EffectsInventoryMixin",

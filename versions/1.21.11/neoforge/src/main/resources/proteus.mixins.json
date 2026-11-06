@@ -5,6 +5,10 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
   "client": [
+    "ChatBackgroundMixin",
+    "ChatFocusedMixin",
+    "ChatInputMixin",
+    "ChatMessageMixin",
     "GuiRendererAccess",
     "GuiRendererDrawAccess",
     "GuiRendererMixin",
