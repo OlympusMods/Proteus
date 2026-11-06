@@ -14,6 +14,7 @@ Proteus is the UI library behind Olympus mods, and it also works on its own. The
 - **One menu for every mod**: each mod built on Proteus gets a card at the top of its menu, so you can go from Orpheus to Mneme to the Proteus settings without closing anything. When there are more cards than fit, the arrows page through them
 - **Mods tab** that lists the mods Proteus can draw menus for, with a switch for each. Turn one off and its own menus come back
 - **Vanilla UI** tab with a switch for each part of the game's own interface that Proteus can draw: toasts, chat, menus and effects. Toasts are on by default and the rest are off. Under Toasts, advancements, recipes, tutorial hints and system notices can each be set back to the vanilla toast
+- **Effects** shown in game and in the inventory can be drawn by Proteus: icon, name, time left, a different look for harmful and beneficial effects, a pulse when one is about to run out, and the theme's animation when one is gained or lost. Turn it on under Vanilla UI
 - One toolkit across every supported version: widgets are drawn through a small `Canvas` interface, and each Minecraft range only implements that interface
 
 Open the settings with the Proteus key (unbound by default, set it under Controls, Miscellaneous), with the config button in Mod Menu or the mods list, or from the Proteus card in any mod's menu. Settings are stored in `config/proteus/ui.json`.
@@ -39,7 +40,7 @@ The top-level keys are:
 
 - `name` and `description`: shown in the Style list. Either can be a lang key
 - `accent`: `color` is the theme's own accent, used when the player picks "Theme color". `"locked": true` ignores the player's accent and hides the picker
-- `colors`: `text`, `text_secondary`, `text_disabled`, `title`, `danger`, `toast_title`, plus any names of your own for use in widgets
+- `colors`: `text`, `text_secondary`, `text_disabled`, `title`, `danger`, `toast_title`, `effect_good`, `effect_bad`, plus any names of your own for use in widgets
 - `text`: `shadow` (true or false) and `title_align` (`left` or `center`)
 - `segments.sliding`: segmented controls slide a thumb (Modern) or draw separate buttons (Classic)
 - `backdrop.vanilla_blur`: use the game's blurred background behind menus
@@ -48,7 +49,9 @@ The top-level keys are:
 
 ### Widgets
 
-Each entry in `widgets` draws one part of the UI: `backdrop`, `window`, `card`, `button` (with the variants `button.primary`, `button.danger`, `button.ghost` and `button.segment`, which start from `button`), `segment_track`, `segment_thumb`, `toggle`, `checkbox`, `inset`, `field`, `row`, `progress`, `scrollbar`, `tooltip`, `toast` and `swatch`.
+Each entry in `widgets` draws one part of the UI: `backdrop`, `window`, `card`, `button` (with the variants `button.primary`, `button.danger`, `button.ghost` and `button.segment`, which start from `button`), `segment_track`, `segment_thumb`, `toggle`, `checkbox`, `inset`, `field`, `row`, `progress`, `scrollbar`, `tooltip`, `toast`, `effect` and `swatch`.
+
+`effect` is the plate behind one active effect, 24 by 24 in game and as wide as the entry in the inventory. Its state is `harmful`, `ambient`, `inventory` (true in the inventory list) and `warn`, which pulses from 0 to 1 while the effect has less than ten seconds left. `effect_good` and `effect_bad` are the colors for beneficial and harmful effects.
 
 A widget has `vars`, a list of `layers` drawn in order, and for buttons and `segment_track` a `text_color`. Every value is an expression, so `"radius": 6`, `"color": "#FF101010"` and `"color": "mix(text, accent, hover)"` all work. Vars are worked out first and in order, so layers and later vars can use them.
 
@@ -85,7 +88,7 @@ Expressions have numbers, colors (`#RRGGBB` or `#AARRGGBB`), `"text"`, `+ - * / 
 
 ### Motion
 
-`motion` has `enabled`, `speed` (multiplies every animation) and one entry per moment: `window`, `content`, `card_bar`, `toast_in`, `toast_out`, `toast_resize`, `toast_move` (toasts making room for a new one), `tooltip`, `hover`, `press`, `select`, `toggle`, `checkbox`, `row`, `segment`, `focus`, `knob` and `scroll`.
+`motion` has `enabled`, `speed` (multiplies every animation) and one entry per moment: `window`, `content`, `card_bar`, `toast_in`, `toast_out`, `toast_resize`, `toast_move` (toasts making room for a new one), `effect_in`, `effect_out`, `effect_move` (effects making room), `effect_warn` (the scale throb while an effect is about to run out), `tooltip`, `hover`, `press`, `select`, `toggle`, `checkbox`, `row`, `segment`, `focus`, `knob` and `scroll`.
 
 ```json
 "motion": {
@@ -95,7 +98,7 @@ Expressions have numbers, colors (`#RRGGBB` or `#AARRGGBB`), `"text"`, `+ - * / 
 }
 ```
 
-`easing` is `spring` (with `rate`), or a curve with a `duration` in seconds: `linear`, `ease_in`, `ease_out`, `ease_in_out`, `back` (`overshoot`), `bounce` or `elastic` (`period`). `delay` waits before a curve starts. `effects` apply to windows, content, the card bar, toasts and tooltips: `fade`, `slide` (`x`, `y`, and `"relative": true` to move by the element's size), `scale` (`from`) and `spin` (`degrees`). Each effect can take its own `easing` and `speed`. The Animations switch in Appearance turns all of it off.
+`easing` is `spring` (with `rate`), or a curve with a `duration` in seconds: `linear`, `ease_in`, `ease_out`, `ease_in_out`, `back` (`overshoot`), `bounce` or `elastic` (`period`). `delay` waits before a curve starts. `effects` apply to windows, content, the card bar, toasts, effects and tooltips: `fade`, `slide` (`x`, `y`, and `"relative": true` to move by the element's size), `scale` (`from`) and `spin` (`degrees`). Each effect can take its own `easing` and `speed`. The Animations switch in Appearance turns all of it off. A theme with no `effect_*` entries, or with `enabled` set to false, shows effects without animation.
 
 ## Supported mods
 
