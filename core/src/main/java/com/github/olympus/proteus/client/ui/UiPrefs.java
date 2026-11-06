@@ -3,6 +3,7 @@ package com.github.olympus.proteus.client.ui;
 import com.github.olympus.proteus.client.ProteusClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
@@ -14,6 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 public final class UiPrefs {
@@ -41,6 +44,8 @@ public final class UiPrefs {
     private boolean animations = true;
     private final Set<ToastKind> vanillaToasts = EnumSet.noneOf(ToastKind.class);
     private final Set<String> disabledMods = new HashSet<>();
+    private final Set<Surface> surfaces = defaultSurfaces();
+    private final Map<String, Integer> options = new LinkedHashMap<>();
 
     private UiPrefs() {
     }
@@ -159,7 +164,51 @@ public final class UiPrefs {
         save();
     }
 
+    private static Set<Surface> defaultSurfaces() {
+        Set<Surface> set = EnumSet.noneOf(Surface.class);
+        for (Surface surface : Surface.values()) {
+            if (surface.defaultOn()) {
+                set.add(surface);
+            }
+        }
+        return set;
+    }
+
+    public boolean surface(Surface surface) {
+        return surfaces.contains(surface);
+    }
+
+    public void setSurface(Surface surface, boolean value) {
+        if (value) {
+            surfaces.add(surface);
+        } else {
+            surfaces.remove(surface);
+        }
+        save();
+    }
+
+    public int option(String key, int fallback) {
+        return options.getOrDefault(key, fallback);
+    }
+
+    public void setOption(String key, int value) {
+        options.put(key, value);
+        save();
+    }
+
+    public boolean flag(String key, boolean fallback) {
+        return option(key, fallback ? 1 : 0) != 0;
+    }
+
+    public void setFlag(String key, boolean value) {
+        setOption(key, value ? 1 : 0);
+    }
+
     public boolean replaces(ToastKind kind) {
+        return surface(Surface.TOASTS) && !vanillaToasts.contains(kind);
+    }
+
+    public boolean kindReplaced(ToastKind kind) {
         return !vanillaToasts.contains(kind);
     }
 
@@ -246,6 +295,20 @@ public final class UiPrefs {
                 }
             }
         }
+        if (object.has("surfaces")) {
+            JsonObject saved = object.getAsJsonObject("surfaces");
+            for (Surface surface : Surface.values()) {
+                if (saved.has(surface.key())) {
+                    prefs.setSurfaceQuiet(surface, saved.get(surface.key()).getAsBoolean());
+                }
+            }
+        }
+        if (object.has("options")) {
+            JsonObject saved = object.getAsJsonObject("options");
+            for (Map.Entry<String, JsonElement> entry : saved.entrySet()) {
+                prefs.options.put(entry.getKey(), entry.getValue().getAsInt());
+            }
+        }
         if (object.has("mods")) {
             JsonObject mods = object.getAsJsonObject("mods");
             for (String id : mods.keySet()) {
@@ -255,6 +318,14 @@ public final class UiPrefs {
             }
         }
         return prefs;
+    }
+
+    private void setSurfaceQuiet(Surface surface, boolean value) {
+        if (value) {
+            surfaces.add(surface);
+        } else {
+            surfaces.remove(surface);
+        }
     }
 
     JsonObject toJson() {
@@ -273,6 +344,16 @@ public final class UiPrefs {
             toasts.addProperty(kind.key(), vanillaToasts.contains(kind) ? "vanilla" : "proteus");
         }
         object.add("toasts", toasts);
+        JsonObject saved = new JsonObject();
+        for (Surface surface : Surface.values()) {
+            saved.addProperty(surface.key(), surfaces.contains(surface));
+        }
+        object.add("surfaces", saved);
+        JsonObject extra = new JsonObject();
+        for (Map.Entry<String, Integer> entry : options.entrySet()) {
+            extra.addProperty(entry.getKey(), entry.getValue());
+        }
+        object.add("options", extra);
         JsonObject mods = new JsonObject();
         for (String id : disabledMods) {
             mods.addProperty(id, false);

@@ -61,4 +61,35 @@ class UiPrefsTest {
         assertFalse(UiPrefs.fromJson(prefs.toJson()).modEnabled("voicechat"));
         assertTrue(UiPrefs.fromJson(prefs.toJson()).modEnabled("other"));
     }
+
+    @Test
+    void surfacesKeepTheirDefaults() {
+        UiPrefs prefs = prefs("{}");
+        assertTrue(prefs.surface(Surface.TOASTS));
+        assertFalse(prefs.surface(Surface.CHAT));
+        assertFalse(prefs.surface(Surface.MENUS));
+        assertFalse(prefs.surface(Surface.EFFECTS));
+    }
+
+    @Test
+    void surfacesAndOptionsRoundTrip() {
+        UiPrefs prefs = prefs("{\"surfaces\": {\"toasts\": false, \"chat\": true}, \"options\": {\"chat.lines\": 12}}");
+        assertFalse(prefs.surface(Surface.TOASTS));
+        assertTrue(prefs.surface(Surface.CHAT));
+        assertEquals(12, prefs.option("chat.lines", 5));
+        UiPrefs again = UiPrefs.fromJson(prefs.toJson());
+        assertFalse(again.surface(Surface.TOASTS));
+        assertTrue(again.surface(Surface.CHAT));
+        assertEquals(12, again.option("chat.lines", 5));
+        assertEquals(5, again.option("missing", 5));
+    }
+
+    @Test
+    void toastsSurfaceOffMeansVanillaForEveryKind() {
+        UiPrefs prefs = prefs("{\"surfaces\": {\"toasts\": false}}");
+        for (ToastKind kind : ToastKind.values()) {
+            assertFalse(prefs.replaces(kind));
+        }
+        assertTrue(prefs("{}").replaces(ToastKind.RECIPES));
+    }
 }
