@@ -8,14 +8,23 @@ import com.github.olympus.proteus.client.ui.Mods;
 import com.github.olympus.proteus.client.ui.Theme;
 import com.github.olympus.proteus.client.ui.Themes;
 import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.render.GuiContext;
+import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 
 public final class MalilibSkin {
     private static final GuiCanvas CANVAS = new GuiCanvas();
 
+    private record Label(int x, int y, String text, int color, boolean shadow, ScreenRectangle clip) {
+    }
+
+    private static final List<Label> LABELS = new ArrayList<>();
+
     private static boolean broken;
+    private static boolean armed;
 
     private MalilibSkin() {
     }
@@ -73,21 +82,54 @@ public final class MalilibSkin {
         }
     }
 
-    public static boolean label(GuiGraphicsExtractor graphics, int x, int y, String text, boolean centered,
-            boolean hovered, boolean enabled) {
-        if (!active()) {
+    public static boolean label(GuiContext ctx, int x, int y, String text, boolean centered, boolean hovered,
+            boolean enabled) {
+        if (!armed || !active()) {
             return false;
         }
         try {
             Theme theme = Themes.current();
-            Canvas c = canvas(graphics);
+            Canvas c = canvas(ctx);
             int color = theme.buttonText(ButtonKind.NORMAL, hovered ? 1f : 0f, 0f, enabled);
             int left = centered ? x - c.textWidth(text) / 2 : x;
-            graphics.nextStratum();
-            c.text(text, left, y, color, theme.shadowText());
+            LABELS.add(new Label(left, y, text, color, theme.shadowText(), ctx.peekLastScissor()));
             return true;
         } catch (RuntimeException exception) {
             return fail(exception);
+        }
+    }
+
+    public static void beginFrame() {
+        LABELS.clear();
+        armed = true;
+    }
+
+    public static void endFrame() {
+        LABELS.clear();
+        armed = false;
+    }
+
+    public static void flushLabels(GuiContext ctx) {
+        if (LABELS.isEmpty()) {
+            return;
+        }
+        try {
+            Canvas c = canvas(ctx);
+            ctx.nextStratum();
+            for (Label label : LABELS) {
+                ScreenRectangle clip = label.clip();
+                if (clip != null) {
+                    c.clip(clip.left(), clip.top(), clip.width(), clip.height());
+                }
+                c.text(label.text(), label.x(), label.y(), label.color(), label.shadow());
+                if (clip != null) {
+                    c.unclip();
+                }
+            }
+        } catch (RuntimeException exception) {
+            fail(exception);
+        } finally {
+            LABELS.clear();
         }
     }
 
