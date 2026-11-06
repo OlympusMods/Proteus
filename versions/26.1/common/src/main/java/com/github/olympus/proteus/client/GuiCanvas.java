@@ -144,6 +144,12 @@ public final class GuiCanvas implements Canvas {
     }
 
     @Override
+    public void tinted(String sprite, int x, int y, int w, int h, float alpha) {
+        int color = (Math.round(Math.max(0f, Math.min(1f, alpha)) * 255f) << 24) | 0xFFFFFF;
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.parse(sprite), x, y, w, h, color);
+    }
+
+    @Override
     public void effectIcon(String effect, int x, int y, int size, float alpha) {
         Identifier sprite = Identifier.parse(effect).withPrefix("mob_effect/");
         int color = (Math.round(Math.max(0f, Math.min(1f, alpha)) * 255f) << 24) | 0xFFFFFF;

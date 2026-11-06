@@ -102,5 +102,7 @@
   "proteus.menus.title": "Title screen",
   "proteus.menus.title.tooltip": "Draw the main menu with the theme. Mod Menu's button is included.",
   "proteus.menus.pause": "Pause menu",
-  "proteus.menus.pause.tooltip": "Draw the game menu with the theme. Mod Menu's button is included."
+  "proteus.menus.pause.tooltip": "Draw the game menu with the theme. Mod Menu's button is included.",
+  "proteus.menus.screens": "Other screens",
+  "proteus.menus.screens.tooltip": "Options, worlds, servers and every other screen that opens from the menus. Buttons, sliders, fields and lists follow the theme."
 }

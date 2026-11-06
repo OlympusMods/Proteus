@@ -5,8 +5,8 @@ import net.minecraft.network.chat.Component;
 final class MenuOptions {
     private static final int ROW = 20;
     private static final int GAP = 6;
-    private static final String[] FLAGS = {Menus.TITLE_FLAG, Menus.PAUSE_FLAG};
-    private static final String[] KEYS = {"title", "pause"};
+    private static final String[] FLAGS = {Menus.TITLE_FLAG, Menus.PAUSE_FLAG, Menus.SCREENS_FLAG};
+    private static final String[] KEYS = {"title", "pause", "screens"};
 
     private MenuOptions() {
     }
