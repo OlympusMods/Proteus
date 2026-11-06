@@ -9,9 +9,16 @@
     "EffectsHudMixin",
     "EffectsInventoryMixin",
     "GuiScreenMixin",
+    "MenuButtonMixin",
+    "MenuImageButtonMixin",
+    "MenuPauseMixin",
+    "MenuScreenMixin",
+    "MenuTitleMixin",
     "MinecraftTickMixin",
+    "PauseScreenAccess",
     "ToastAddMixin",
-    "ToastOverlayMixin"
+    "ToastOverlayMixin",
+    "WidgetAlphaAccess"
   ],
   "injectors": {
     "defaultRequire": 1

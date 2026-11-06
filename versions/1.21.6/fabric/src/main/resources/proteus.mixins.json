@@ -12,10 +12,15 @@
     "GuiRendererDrawAccess",
     "GuiRendererMixin",
     "GuiScreenMixin",
+    "MenuBlurMixin",
+    "MenuButtonMixin",
+    "MenuImageButtonMixin",
+    "MenuScreenMixin",
     "MinecraftTickMixin",
     "RenderSystemMixin",
     "ToastAddMixin",
-    "ToastOverlayMixin"
+    "ToastOverlayMixin",
+    "WidgetAlphaAccess"
   ],
   "injectors": {
     "defaultRequire": 1
