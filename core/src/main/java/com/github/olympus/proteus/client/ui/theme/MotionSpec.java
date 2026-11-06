@@ -98,6 +98,10 @@ public final class MotionSpec {
         return speed;
     }
 
+    public boolean has(String key) {
+        return moments.containsKey(key);
+    }
+
     public Moment get(String key) {
         Moment moment = moments.get(key);
         if (moment != null) {

@@ -272,6 +272,21 @@
         { "type": "fill", "x": "2 + floor((w - 4) * 11 / 12)", "y": 2, "w": "floor((w - 4) * 12 / 12) - floor((w - 4) * 11 / 12)", "h": "h - 4", "color": "#FF1084D0" }
       ]
     },
+    "effect": {
+      "vars": {
+        "otl": "#FFFFFFFF", "obr": "#FF404040", "itl": "#FFDFDFDF", "ibr": "#FF808080",
+        "tone": "if(harmful > 0.5, effect_bad, effect_good)",
+        "face": "mix(#FFC0C0C0, tone, warn * 0.45)"
+      },
+      "layers": [
+        { "type": "fill", "x": 0, "y": 0, "w": "w", "h": "h", "color": "obr" },
+        { "type": "fill", "x": 0, "y": 0, "w": "w - 1", "h": "h - 1", "color": "otl" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 2", "h": "h - 2", "color": "ibr" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 3", "h": "h - 3", "color": "itl" },
+        { "type": "fill", "x": 2, "y": 2, "w": "w - 4", "h": "h - 4", "color": "face" },
+        { "type": "fill", "x": 3, "y": "h - 5", "w": "w - 6", "h": 2, "color": "tone", "when": "ambient < 0.5" }
+      ]
+    },
     "swatch": {
       "layers": [
         { "type": "fill", "x": -2, "y": -2, "w": "w + 4", "h": "h + 4", "color": "#FF000080", "when": "selected > 0.5" },

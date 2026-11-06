@@ -85,6 +85,23 @@ public class StyledTheme implements Theme {
     }
 
     @Override
+    public int effectGood() {
+        return color("effect_good", textPrimary());
+    }
+
+    @Override
+    public int effectBad() {
+        return color("effect_bad", danger());
+    }
+
+    @Override
+    public void effect(Canvas c, int x, int y, int w, int h, boolean harmful, boolean ambient, boolean inventory,
+            float warn) {
+        render("effect", c, x, y, w, h, state("harmful", harmful, "ambient", ambient, "inventory", inventory,
+                "warn", warn));
+    }
+
+    @Override
     public boolean vanillaBackdrop() {
         return spec.vanillaBlur();
     }

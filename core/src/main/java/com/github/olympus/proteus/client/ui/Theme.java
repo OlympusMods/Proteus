@@ -36,6 +36,19 @@ public interface Theme {
         return 0xFFE5484D;
     }
 
+    default int effectGood() {
+        return textPrimary();
+    }
+
+    default int effectBad() {
+        return danger();
+    }
+
+    default void effect(Canvas c, int x, int y, int w, int h, boolean harmful, boolean ambient, boolean inventory,
+            float warn) {
+        card(c, x, y, w, h);
+    }
+
     default int toastTitle() {
         return textSecondary();
     }

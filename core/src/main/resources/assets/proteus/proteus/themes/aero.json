@@ -42,7 +42,12 @@
     "toggle": { "easing": "ease_out", "duration": 0.15 },
     "checkbox": { "easing": "ease_out", "duration": 0.12 },
     "segment": { "easing": "ease_out", "duration": 0.15 },
-    "focus": { "easing": "ease_out", "duration": 0.2 }
+    "focus": { "easing": "ease_out", "duration": 0.2 },
+    "effect_in": { "easing": "ease_out", "duration": 0.25,
+                   "effects": { "fade": true, "slide": { "y": -0.4, "relative": true } } },
+    "effect_out": { "easing": "ease_in", "duration": 0.25, "effects": { "fade": true } },
+    "effect_move": { "easing": "ease_out", "duration": 0.22 },
+    "effect_warn": { "easing": "linear", "duration": 0.1, "effects": { "scale": { "from": 0.95 } } }
   },
   "widgets": {
     "backdrop": {
@@ -254,6 +259,22 @@
         { "type": "ring", "radius": "radius", "color": "#C0101820" },
         { "type": "ring", "inset": 1, "radius": "radius - 1", "color": "#70FFFFFF" },
         { "type": "panel", "inset": "frame", "radius": 0, "color": "client", "border": "client_edge" }
+      ]
+    },
+    "effect": {
+      "vars": {
+        "radius": 5,
+        "tone": "if(harmful > 0.5, effect_bad, effect_good)",
+        "tint": "alpha(tone, 0.45)",
+        "inner": "mix(client, tone, warn * 0.4)"
+      },
+      "layers": [
+        { "type": "shadow", "radius": "radius", "spread": 6, "alpha": 90 },
+        { "type": "glass", "radius": "radius", "color": "tint", "blur": 5, "refraction": 1, "depth": 3,
+          "dispersion": 0, "zoom": 0, "smear": 0, "highlight": 0.45, "saturation": 1.15 },
+        { "type": "ring", "radius": "radius", "color": "#C0101820" },
+        { "type": "ring", "inset": 1, "radius": "radius - 1", "color": "#70FFFFFF" },
+        { "type": "panel", "inset": 3, "radius": 0, "color": "inner", "border": "client_edge" }
       ]
     },
     "swatch": {

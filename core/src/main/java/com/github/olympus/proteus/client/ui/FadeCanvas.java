@@ -166,6 +166,14 @@ public final class FadeCanvas implements Canvas {
     }
 
     @Override
+    public void effectIcon(String effect, int x, int y, int size, float opacity) {
+        float combined = alpha * opacity;
+        if (combined > 0.02f && size > 0) {
+            target.effectIcon(effect, x, y, size, combined);
+        }
+    }
+
+    @Override
     public void glass(int x, int y, int w, int h, Glass glass) {
         float opacity = glass.opacity() * alpha;
         if (opacity <= 0.01f || w <= 0 || h <= 0) {

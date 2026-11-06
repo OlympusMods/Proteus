@@ -27,6 +27,7 @@ public final class GuiCanvas implements Canvas {
     private static final Object PIPELINE = pipeline();
     private static final Method BLIT_SPRITE = method("blitSprite", 6);
     private static final Method BLIT = method("blit", 10);
+    private static final Method BLIT_TINTED = tinted();
 
     private GuiGraphicsExtractor graphics;
     private Font font;
@@ -152,6 +153,17 @@ public final class GuiCanvas implements Canvas {
     }
 
     @Override
+    public void effectIcon(String effect, int x, int y, int size, float alpha) {
+        Identifier sprite = Identifier.parse(effect).withPrefix("mob_effect/");
+        int color = (Math.round(Math.max(0f, Math.min(1f, alpha)) * 255f) << 24) | 0xFFFFFF;
+        try {
+            BLIT_TINTED.invoke(graphics, PIPELINE, sprite, x, y, size, size, color);
+        } catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException("Could not draw the effect icon " + effect, exception);
+        }
+    }
+
+    @Override
     public void head(UUID player, int x, int y, int size) {
         Minecraft minecraft = Minecraft.getInstance();
         ClientPacketListener connection = minecraft.getConnection();
@@ -182,6 +194,18 @@ public final class GuiCanvas implements Canvas {
         } catch (ReflectiveOperationException exception) {
             throw new IllegalStateException("Could not find the GUI textured pipeline", exception);
         }
+    }
+
+    private static Method tinted() {
+        for (Method candidate : GuiGraphicsExtractor.class.getMethods()) {
+            Class<?>[] types = candidate.getParameterTypes();
+            if (candidate.getName().equals("blitSprite") && types.length == 7
+                    && types[0].getSimpleName().equals("RenderPipeline") && types[1] == Identifier.class
+                    && types[6] == int.class) {
+                return candidate;
+            }
+        }
+        throw new IllegalStateException("GuiGraphicsExtractor.blitSprite with a color was not found");
     }
 
     private static Method method(String name, int parameters) {

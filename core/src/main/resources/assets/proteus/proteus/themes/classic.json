@@ -92,6 +92,14 @@
     },
     "tooltip": { "layers": [ { "type": "sprite", "sprite": "classic/tooltip" } ] },
     "toast": { "layers": [ { "type": "sprite", "sprite": "classic/tooltip" } ] },
+    "effect": {
+      "vars": { "tone": "if(harmful > 0.5, effect_bad, effect_good)" },
+      "layers": [
+        { "type": "sprite", "sprite": "classic/tooltip" },
+        { "type": "fill", "inset": 3, "color": "alpha(tone, warn * 0.35)" },
+        { "type": "fill", "x": 3, "y": "h - 4", "w": "w - 6", "h": 1, "color": "alpha(tone, if(ambient > 0.5, 0.45, 1))" }
+      ]
+    },
     "swatch": {
       "layers": [
         { "type": "fill", "color": "if(selected > 0.5, #FFFFFFFF, #FF000000)" },
