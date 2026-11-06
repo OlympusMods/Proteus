@@ -48,7 +48,7 @@ public final class ChatSkin {
 
     public static void born(Object line) {
         if (line != null) {
-            BORN.put(line, System.nanoTime());
+            BORN.putIfAbsent(line, System.nanoTime());
         }
     }
 
