@@ -16,7 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-final class GuiCanvas implements Canvas {
+public final class GuiCanvas implements Canvas {
     private static final Map<String, ItemStack> STACKS = new HashMap<>();
 
     private GuiGraphics graphics;
@@ -24,7 +24,7 @@ final class GuiCanvas implements Canvas {
     private int width;
     private int height;
 
-    void bind(GuiGraphics graphics, Font font, int width, int height) {
+    public void bind(GuiGraphics graphics, Font font, int width, int height) {
         this.graphics = graphics;
         this.font = font;
         this.width = width;

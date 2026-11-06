@@ -26,7 +26,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-final class GuiCanvas implements Canvas {
+public final class GuiCanvas implements Canvas {
     private static final String SPRITES = "textures/gui/sprites/";
     private static final Map<String, Sprite> SPRITE_CACHE = new HashMap<>();
     private static final Map<String, ItemStack> STACKS = new HashMap<>();
@@ -39,7 +39,7 @@ final class GuiCanvas implements Canvas {
     private record Sprite(ResourceLocation texture, int width, int height, int left, int top, int right, int bottom) {
     }
 
-    void bind(GuiGraphics graphics, Font font, int width, int height) {
+    public void bind(GuiGraphics graphics, Font font, int width, int height) {
         this.graphics = graphics;
         this.font = font;
         this.width = width;
