@@ -1,5 +1,6 @@
 package com.github.olympus.proteus.client.ui;
 
+import com.github.olympus.proteus.client.PauseInfo;
 import com.github.olympus.proteus.client.ui.theme.MotionSpec;
 import java.util.Set;
 import net.minecraft.client.Minecraft;
@@ -46,6 +47,7 @@ public final class Menus {
     private static long lastFrame;
     private static Kind scope = Kind.NONE;
     private static boolean broken;
+    private static AbstractWidget drawn;
 
     private Menus() {
     }
@@ -54,7 +56,8 @@ public final class Menus {
         if (broken) {
             return Kind.NONE;
         }
-        return kind(screen instanceof TitleScreen, screen instanceof PauseScreen, UiPrefs.get());
+        return kind(screen instanceof TitleScreen, screen instanceof PauseScreen pause && PauseInfo.shown(pause),
+                UiPrefs.get());
     }
 
     static Kind kind(boolean title, boolean pause, UiPrefs prefs) {
@@ -98,6 +101,11 @@ public final class Menus {
 
     public static void exit() {
         scope = Kind.NONE;
+        drawn = null;
+    }
+
+    public static boolean drew(AbstractWidget widget) {
+        return scope != Kind.NONE && drawn == widget;
     }
 
     public static Kind scope() {
@@ -123,7 +131,7 @@ public final class Menus {
 
     public static void backdrop(Canvas canvas) {
         Theme theme = Themes.current();
-        theme.backdrop(canvas, canvas.width(), canvas.height(), scope == Kind.PAUSE);
+        theme.backdrop(canvas, canvas.width(), canvas.height(), true);
     }
 
     public static void button(Canvas canvas, AbstractWidget widget, boolean label) {
@@ -140,6 +148,7 @@ public final class Menus {
         float hover = gui.anim(id + "#h", hot ? 1f : 0f, theme.motion().get("hover"));
         float press = gui.anim(id + "#p", down ? 1f : 0f, theme.motion().get("press"));
         ButtonKind kind = primary ? ButtonKind.PRIMARY : ButtonKind.NORMAL;
+        drawn = widget;
         FADE.bind(canvas, widget.getAlpha());
         try {
             theme.button(FADE, x, y, w, h, kind, hover, press, 0f, enabled);

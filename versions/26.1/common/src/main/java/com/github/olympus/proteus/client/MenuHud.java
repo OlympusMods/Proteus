@@ -27,8 +27,8 @@ public final class MenuHud {
         Menus.exit();
     }
 
-    public static boolean active() {
-        return Menus.active();
+    public static boolean drew(AbstractWidget widget) {
+        return Menus.drew(widget);
     }
 
     public static boolean button(AbstractWidget widget, boolean label) {

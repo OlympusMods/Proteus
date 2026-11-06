@@ -22,7 +22,7 @@ public abstract class MenuButtonMixin {
 
     @Inject(method = "extractDefaultLabel", at = @At("HEAD"), cancellable = true)
     private void proteus$label(ActiveTextCollector output, CallbackInfo callback) {
-        if (MenuHud.active()) {
+        if (MenuHud.drew((AbstractButton) (Object) this)) {
             callback.cancel();
         }
     }
