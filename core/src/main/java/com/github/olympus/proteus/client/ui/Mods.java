@@ -16,6 +16,9 @@ public final class Mods {
             return PRESENT.computeIfAbsent(id, key -> {
                 try {
                     Class.forName(probe, false, Mods.class.getClassLoader());
+                    if (takeover != null) {
+                        Class.forName(takeover, false, Mods.class.getClassLoader());
+                    }
                     return true;
                 } catch (ClassNotFoundException | LinkageError error) {
                     return false;
@@ -38,7 +41,7 @@ public final class Mods {
     private static final List<Entry> ENTRIES = List.of(
             new Entry(VOICECHAT, "de.maxhenkel.voicechat.Voicechat", "com.github.olympus.proteus.client.svc.SvcTakeover"),
             new Entry(JI_AFK, "com.ji.afkcinematic.config.SupportScreen", "com.github.olympus.proteus.client.ji.JiTakeover"),
-            new Entry(MALILIB, "fi.dy.masa.malilib.gui.GuiBase", null));
+            new Entry(MALILIB, "fi.dy.masa.malilib.gui.GuiBase", "com.github.olympus.proteus.client.malilib.MalilibTakeover"));
 
     private Mods() {
     }
