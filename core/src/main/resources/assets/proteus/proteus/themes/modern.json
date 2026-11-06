@@ -28,6 +28,8 @@
     "effect_out": { "easing": "ease_in", "duration": 0.25,
                     "effects": { "fade": true, "slide": { "x": 0.3, "relative": true } } },
     "effect_move": { "easing": "spring", "rate": 14 },
+    "effect_tip": { "easing": "ease_out", "duration": 0.18,
+                    "effects": { "fade": true, "slide": { "x": -8 } } },
     "effect_warn": { "easing": "linear", "duration": 0.1, "effects": { "scale": { "from": 0.93 } } },
     "chat_message": { "easing": "ease_out", "duration": 0.28,
                       "effects": { "fade": true, "slide": { "x": -10 } } },

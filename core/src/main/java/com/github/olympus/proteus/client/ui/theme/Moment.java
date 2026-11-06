@@ -35,6 +35,14 @@ public record Moment(boolean spring, float rate, float duration, float delay, Ea
         return easing.apply(Math.max(0f, Math.min(1f, t)));
     }
 
+    public float raw(float seconds, float speed) {
+        float total = duration + delay;
+        if (total <= 0f) {
+            return 1f;
+        }
+        return Math.max(0f, Math.min(1f, seconds * speed / total));
+    }
+
     public float alphaAfter(float seconds, float speed) {
         float total = duration + delay;
         if (total <= 0f) {

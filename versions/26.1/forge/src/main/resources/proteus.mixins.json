@@ -25,6 +25,7 @@
     "RenderSystemMixin",
     "ToastAddMixin",
     "ToastOverlayMixin",
+    "TooltipMixin",
     "WidgetAlphaAccess"
   ],
   "injectors": {

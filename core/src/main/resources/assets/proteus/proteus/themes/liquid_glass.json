@@ -53,6 +53,9 @@
     "effect_out": { "easing": "ease_in", "duration": 0.26,
                     "effects": { "fade": { "easing": "linear" }, "scale": { "from": 0.8 } } },
     "effect_move": { "easing": "back", "overshoot": 1.3, "duration": 0.36 },
+    "effect_tip": { "easing": "back", "overshoot": 1.3, "duration": 0.26,
+                    "effects": { "fade": { "easing": "linear", "speed": 1.6 }, "slide": { "x": -10 },
+                                 "scale": { "from": 0.9 } } },
     "effect_warn": { "easing": "linear", "duration": 0.1, "effects": { "scale": { "from": 0.88 } } }
   },
   "widgets": {

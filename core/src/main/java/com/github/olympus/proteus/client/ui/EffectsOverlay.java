@@ -15,7 +15,13 @@ public final class EffectsOverlay {
     private static final FadeCanvas FADE = new FadeCanvas();
     private static final EffectList HUD_LIST = new EffectList();
     private static final EffectList INVENTORY_LIST = new EffectList();
+    private static final String TIP_MOTION = "effect_tip";
+    private static final long TIP_GAP = 120_000_000L;
     private static boolean failed;
+    private static Tip pending;
+    private static String tipId;
+    private static long tipStart;
+    private static long tipLast;
 
     private EffectsOverlay() {
     }
@@ -35,6 +41,7 @@ public final class EffectsOverlay {
     }
 
     public static void reset() {
+        pending = null;
         HUD_LIST.clear();
         INVENTORY_LIST.clear();
     }
@@ -171,6 +178,8 @@ public final class EffectsOverlay {
         }
         boolean wide = EffectLayout.inventoryWide(available, compact);
         EffectInfo hovered = null;
+        int hoveredY = 0;
+        int hoveredW = 0;
         for (EffectList.Entry entry : INVENTORY_LIST.entries()) {
             EffectInfo info = entry.info;
             String title = info.title();
@@ -195,29 +204,90 @@ public final class EffectsOverlay {
             boolean clipped = !wide || target.textWidth(title) > room(w);
             if (!entry.leaving && clipped && mouseX >= left && mouseX < left + w && mouseY >= y && mouseY < y + h) {
                 hovered = info;
+                hoveredY = y;
+                hoveredW = w;
             }
         }
         if (hovered != null) {
-            tooltip(target, look.theme, hovered, tickrate, mouseY, left);
+            pending = new Tip(hovered, tickrate, left, hoveredY, hoveredW);
         }
+    }
+
+    public static void tip(Canvas target) {
+        Tip tip = pending;
+        pending = null;
+        if (tip == null) {
+            return;
+        }
+        try {
+            drawTip(target, tip);
+        } catch (RuntimeException exception) {
+            fail(exception);
+        }
+    }
+
+    private record Tip(EffectInfo info, float tickrate, int left, int y, int w) {
     }
 
     private static int room(int width) {
         return width - EffectLayout.TEXT_X - EffectLayout.PAD;
     }
 
-    private static void tooltip(Canvas target, Theme theme, EffectInfo info, float tickrate, int mouseY, int left) {
+    private static void drawTip(Canvas target, Tip tip) {
+        Theme theme = Themes.current();
+        EffectInfo info = tip.info();
         int pad = theme.sizes().tooltipPad();
         String title = info.title();
-        String time = info.time(tickrate);
+        String time = info.time(tip.tickrate());
         int w = Math.max(target.textWidth(title), target.textWidth(time)) + 2 * pad;
         int line = target.lineHeight() + 1;
         int h = 2 * line + 2 * pad - 1;
-        int x = Math.max(2, left - w - 4);
-        int y = Math.max(2, Math.min(target.height() - h - 2, mouseY - h / 2));
-        theme.tooltip(target, x, y, w, h);
-        target.text(title, x + pad, y + pad, nameColor(theme, info), theme.shadowText());
-        target.text(time, x + pad, y + pad + line, timeColor(theme, info), theme.shadowText());
+        int gap = 4;
+        int x = tip.left() + tip.w() + gap;
+        boolean flipped = x + w > target.width() - 2;
+        if (flipped) {
+            x = Math.max(2, tip.left() - w - gap);
+        }
+        int y = Math.max(2, Math.min(target.height() - h - 2, tip.y() + EffectLayout.PLATE / 2 - h / 2));
+        long now = System.nanoTime();
+        if (!info.id().equals(tipId) || now - tipLast > TIP_GAP) {
+            tipStart = now;
+        }
+        tipId = info.id();
+        tipLast = now;
+        float alpha = 1f;
+        int dx = 0;
+        float scale = 1f;
+        MotionSpec motion = theme.motion();
+        if (motion.enabled() && UiPrefs.get().animations() && motion.has(TIP_MOTION)) {
+            Moment moment = motion.get(TIP_MOTION);
+            float raw = moment.raw((now - tipStart) / 1e9f, motion.speed());
+            float eased = moment.value(raw);
+            alpha = moment.effects().alpha(raw, eased);
+            dx = Math.round(moment.effects().dx(raw, eased, w));
+            if (flipped) {
+                dx = -dx;
+            }
+            scale = moment.effects().scale(raw, eased);
+        }
+        FADE.bind(target, Motion.clamp(alpha, 0f, 1f));
+        FADE.push();
+        try {
+            FADE.translate(dx, 0f);
+            if (scale != 1f) {
+                float cx = x + (flipped ? w : 0f);
+                float cy = y + h / 2f;
+                FADE.translate(cx, cy);
+                FADE.scale(scale, scale);
+                FADE.translate(-cx, -cy);
+            }
+            theme.tooltip(FADE, x, y, w, h);
+            FADE.text(title, x + pad, y + pad, nameColor(theme, info), theme.shadowText());
+            FADE.text(time, x + pad, y + pad + line, timeColor(theme, info), theme.shadowText());
+        } finally {
+            FADE.pop();
+            FADE.unbind();
+        }
     }
 
     private static int nameColor(Theme theme, EffectInfo info) {

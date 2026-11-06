@@ -50,6 +50,7 @@
                    "effects": { "fade": true, "slide": { "y": -0.4, "relative": true } } },
     "effect_out": { "easing": "ease_in", "duration": 0.25, "effects": { "fade": true } },
     "effect_move": { "easing": "ease_out", "duration": 0.22 },
+    "effect_tip": { "easing": "ease_out", "duration": 0.16, "effects": { "fade": true, "slide": { "x": -8 } } },
     "effect_warn": { "easing": "linear", "duration": 0.1, "effects": { "scale": { "from": 0.95 } } }
   },
   "widgets": {
