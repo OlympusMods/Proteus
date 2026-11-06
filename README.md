@@ -15,6 +15,7 @@ Proteus is the UI library behind Olympus mods, and it also works on its own. The
 - **Mods tab** that lists the mods Proteus can draw menus for, with a switch for each. Turn one off and its own menus come back
 - **Vanilla UI** tab with a switch for each part of the game's own interface that Proteus can draw: toasts, chat, menus and effects. Toasts are on by default and the rest are off. Under Toasts, advancements, recipes, tutorial hints and system notices can each be set back to the vanilla toast
 - **Effects** shown in game and in the inventory can be drawn by Proteus: icon, name, time left, a different look for harmful and beneficial effects, a pulse when one is about to run out, and the theme's animation when one is gained or lost. Turn it on under Vanilla UI
+- **Menus** drawn by Proteus: the title screen and the pause menu get the theme's backdrop and buttons, icon buttons included. The logo, splash, version text and what every button does stay the game's, and buttons other mods add, Mod Menu's among them, are drawn the same way. It is off by default, switch it on under Vanilla UI, where the title screen and the pause menu can be set apart
 - One toolkit across every supported version: widgets are drawn through a small `Canvas` interface, and each Minecraft range only implements that interface
 
 Open the settings with the Proteus key (unbound by default, set it under Controls, Miscellaneous), with the config button in Mod Menu or the mods list, or from the Proteus card in any mod's menu. Settings are stored in `config/proteus/ui.json`.
