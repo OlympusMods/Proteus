@@ -16,6 +16,7 @@ Proteus is the UI library behind Olympus mods, and it also works on its own. The
 - **Vanilla UI** tab with a switch for each part of the game's own interface that Proteus can draw: toasts, chat, menus and effects. Toasts are on by default and the rest are off. Under Toasts, advancements, recipes, tutorial hints and system notices can each be set back to the vanilla toast
 - **Effects** shown in game and in the inventory can be drawn by Proteus: icon, name, time left, a different look for harmful and beneficial effects, a pulse when one is about to run out, and the theme's animation when one is gained or lost. Turn it on under Vanilla UI
 - **Menus** drawn by Proteus: the title screen and the pause menu get the theme's backdrop and buttons, icon buttons included. The logo, splash, version text and what every button does stay the game's, and buttons other mods add, Mod Menu's among them, are drawn the same way. It is off by default, switch it on under Vanilla UI, where the title screen and the pause menu can be set apart
+- **Chat** drawn with the theme when you turn on the Chat switch in the Vanilla UI tab: lines, input field and scrollbar follow the style, and a theme can animate new messages. It hooks the game's own chat, so links, hover text, suggestions and chat mods keep working
 - One toolkit across every supported version: widgets are drawn through a small `Canvas` interface, and each Minecraft range only implements that interface
 
 Open the settings with the Proteus key (unbound by default, set it under Controls, Miscellaneous), with the config button in Mod Menu or the mods list, or from the Proteus card in any mod's menu. Settings are stored in `config/proteus/ui.json`.
@@ -50,7 +51,7 @@ The top-level keys are:
 
 ### Widgets
 
-Each entry in `widgets` draws one part of the UI: `backdrop`, `window`, `card`, `button` (with the variants `button.primary`, `button.danger`, `button.ghost` and `button.segment`, which start from `button`), `segment_track`, `segment_thumb`, `toggle`, `checkbox`, `inset`, `field`, `row`, `progress`, `scrollbar`, `tooltip`, `toast`, `effect` and `swatch`.
+Each entry in `widgets` draws one part of the UI: `backdrop`, `window`, `card`, `button` (with the variants `button.primary`, `button.danger`, `button.ghost` and `button.segment`, which start from `button`), `segment_track`, `segment_thumb`, `toggle`, `checkbox`, `inset`, `field`, `row`, `progress`, `scrollbar`, `tooltip`, `toast`, `effect`, `swatch`, `chat_line`, `chat_input` and `chat_scroll`.
 
 `effect` is the plate behind one active effect, 24 by 24 in game and as wide as the entry in the inventory. Its state is `harmful`, `ambient`, `inventory` (true in the inventory list) and `warn`, which pulses from 0 to 1 while the effect has less than ten seconds left. `effect_good` and `effect_bad` are the colors for beneficial and harmful effects.
 
@@ -81,7 +82,7 @@ If the shader can't load, glass is drawn as a flat rounded fill in its tint colo
 
 `sprite`, `texture`, `text`, `name` (icons) and `align` are plain text, unless they start with `=`, which makes the rest an expression: `"sprite": "=if(focus > 0.5, \"mypack:field_on\", \"mypack:field\")"`. Sprites are GUI sprites under `textures/gui/sprites/`, so a `.mcmeta` next to the png can nine-slice or tile it.
 
-Expressions have numbers, colors (`#RRGGBB` or `#AARRGGBB`), `"text"`, `+ - * / %`, comparisons, `&& || !`, and the functions `mix`, `lighten`, `darken`, `alpha`, `hsl`, `min`, `max`, `clamp`, `floor`, `round`, `step`, `if` and `exists("namespace:path")`. A name is looked up in the widget's vars, then the widget's state, then `colors`. The state is `w`, `h`, `hover`, `press`, `selected`, `enabled`, `focus`, `on`, `highlighted`, `value`, `time`, `thumb_y`, `thumb_h`, `color` (swatches), `on_label` and `off_label` (toggles) and `in_world` (backdrop), depending on the widget. States like `hover` go from 0 to 1 as the animation plays, which is what makes colors fade.
+Expressions have numbers, colors (`#RRGGBB` or `#AARRGGBB`), `"text"`, `+ - * / %`, comparisons, `&& || !`, and the functions `mix`, `lighten`, `darken`, `alpha`, `hsl`, `min`, `max`, `clamp`, `floor`, `round`, `step`, `if` and `exists("namespace:path")`. A name is looked up in the widget's vars, then the widget's state, then `colors`. The state is `w`, `h`, `hover`, `press`, `selected`, `enabled`, `focus`, `on`, `highlighted`, `value`, `time`, `thumb_y`, `thumb_h`, `opacity` (`chat_line` and `chat_scroll`, how visible the line is), `fresh` (`chat_scroll`, new messages since you scrolled), `color` (swatches), `on_label` and `off_label` (toggles) and `in_world` (backdrop), depending on the widget. States like `hover` go from 0 to 1 as the animation plays, which is what makes colors fade.
 
 ### Sizes
 
@@ -89,7 +90,7 @@ Expressions have numbers, colors (`#RRGGBB` or `#AARRGGBB`), `"text"`, `+ - * / 
 
 ### Motion
 
-`motion` has `enabled`, `speed` (multiplies every animation) and one entry per moment: `window`, `content`, `card_bar`, `toast_in`, `toast_out`, `toast_resize`, `toast_move` (toasts making room for a new one), `effect_in`, `effect_out`, `effect_move` (effects making room), `effect_warn` (the scale throb while an effect is about to run out), `tooltip`, `hover`, `press`, `select`, `toggle`, `checkbox`, `row`, `segment`, `focus`, `knob` and `scroll`.
+`motion` has `enabled`, `speed` (multiplies every animation) and one entry per moment: `window`, `content`, `card_bar`, `toast_in`, `toast_out`, `toast_resize`, `toast_move` (toasts making room for a new one), `chat_message` (a new chat line), `chat_open` (the chat input appearing), `effect_in`, `effect_out`, `effect_move` (effects making room), `effect_warn` (the scale throb while an effect is about to run out), `tooltip`, `hover`, `press`, `select`, `toggle`, `checkbox`, `row`, `segment`, `focus`, `knob` and `scroll`.
 
 ```json
 "motion": {
@@ -100,6 +101,8 @@ Expressions have numbers, colors (`#RRGGBB` or `#AARRGGBB`), `"text"`, `+ - * / 
 ```
 
 `easing` is `spring` (with `rate`), or a curve with a `duration` in seconds: `linear`, `ease_in`, `ease_out`, `ease_in_out`, `back` (`overshoot`), `bounce` or `elastic` (`period`). `delay` waits before a curve starts. `effects` apply to windows, content, the card bar, toasts, effects and tooltips: `fade`, `slide` (`x`, `y`, and `"relative": true` to move by the element's size), `scale` (`from`) and `spin` (`degrees`). Each effect can take its own `easing` and `speed`. The Animations switch in Appearance turns all of it off. A theme with no `effect_*` entries, or with `enabled` set to false, shows effects without animation.
+
+`chat_message` and `chat_open` only use `fade` and `slide`. A theme without a `chat_message` entry, or whose entry has no fade and no slide, leaves new chat lines alone. Chat lines slide only while the chat is closed, so the lines you click never move.
 
 ## Supported mods
 
