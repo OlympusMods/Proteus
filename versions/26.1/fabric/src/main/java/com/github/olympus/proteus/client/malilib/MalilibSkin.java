@@ -31,7 +31,7 @@ public final class MalilibSkin {
     }
 
     public static boolean active() {
-        return !broken && Minecraft.getInstance().gui.screen() instanceof GuiBase && Mods.active(Mods.MALILIB);
+        return !broken && MalilibScreens.current() instanceof GuiBase && Mods.active(Mods.MALILIB);
     }
 
     private static Canvas canvas(GuiGraphicsExtractor graphics) {
