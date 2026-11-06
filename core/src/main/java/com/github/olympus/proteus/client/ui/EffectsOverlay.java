@@ -16,11 +16,11 @@ public final class EffectsOverlay {
     private static final EffectList HUD_LIST = new EffectList();
     private static final EffectList INVENTORY_LIST = new EffectList();
     private static final String TIP_MOTION = "effect_tip";
-    private static final long TIP_GAP = 120_000_000L;
+    private static final long TIP_STALE = 500_000_000L;
     private static boolean failed;
     private static Tip pending;
-    private static String tipId;
-    private static long tipStart;
+    private static Tip shown;
+    private static float tipRaw;
     private static long tipLast;
 
     private EffectsOverlay() {
@@ -42,6 +42,8 @@ public final class EffectsOverlay {
 
     public static void reset() {
         pending = null;
+        shown = null;
+        tipRaw = 0f;
         HUD_LIST.clear();
         INVENTORY_LIST.clear();
     }
@@ -214,15 +216,42 @@ public final class EffectsOverlay {
     }
 
     public static void tip(Canvas target) {
-        Tip tip = pending;
+        Tip next = pending;
         pending = null;
-        if (tip == null) {
-            return;
-        }
         try {
-            drawTip(target, tip);
+            stepTip(next);
+            if (shown != null) {
+                drawTip(target, shown);
+            }
         } catch (RuntimeException exception) {
             fail(exception);
+        }
+    }
+
+    private static void stepTip(Tip next) {
+        long now = System.nanoTime();
+        long gap = tipLast == 0L ? Long.MAX_VALUE : now - tipLast;
+        tipLast = now;
+        if (gap > TIP_STALE) {
+            shown = null;
+            tipRaw = 0f;
+        }
+        float dt = Math.min(0.1f, gap / 1e9f);
+        Theme theme = Themes.current();
+        MotionSpec motion = theme.motion();
+        boolean animated = motion.enabled() && UiPrefs.get().animations() && motion.has(TIP_MOTION);
+        Moment moment = motion.get(TIP_MOTION);
+        if (next != null) {
+            if (shown == null || !shown.info().id().equals(next.info().id())) {
+                tipRaw = 0f;
+            }
+            shown = next;
+            tipRaw = animated ? moment.advance(tipRaw, 1f, dt, motion.speed()) : 1f;
+        } else if (shown != null) {
+            tipRaw = animated ? moment.advance(tipRaw, 0f, dt, motion.speed()) : 0f;
+            if (tipRaw <= 0f) {
+                shown = null;
+            }
         }
     }
 
@@ -249,26 +278,19 @@ public final class EffectsOverlay {
             x = Math.max(2, tip.left() - w - gap);
         }
         int y = Math.max(2, Math.min(target.height() - h - 2, tip.y() + EffectLayout.PLATE / 2 - h / 2));
-        long now = System.nanoTime();
-        if (!info.id().equals(tipId) || now - tipLast > TIP_GAP) {
-            tipStart = now;
-        }
-        tipId = info.id();
-        tipLast = now;
         float alpha = 1f;
         int dx = 0;
         float scale = 1f;
         MotionSpec motion = theme.motion();
         if (motion.enabled() && UiPrefs.get().animations() && motion.has(TIP_MOTION)) {
             Moment moment = motion.get(TIP_MOTION);
-            float raw = moment.raw((now - tipStart) / 1e9f, motion.speed());
-            float eased = moment.value(raw);
-            alpha = moment.effects().alpha(raw, eased);
-            dx = Math.round(moment.effects().dx(raw, eased, w));
+            float eased = moment.value(tipRaw);
+            alpha = moment.effects().alpha(tipRaw, eased);
+            dx = Math.round(moment.effects().dx(tipRaw, eased, w));
             if (flipped) {
                 dx = -dx;
             }
-            scale = moment.effects().scale(raw, eased);
+            scale = moment.effects().scale(tipRaw, eased);
         }
         FADE.bind(target, Motion.clamp(alpha, 0f, 1f));
         FADE.push();
