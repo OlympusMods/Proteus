@@ -18,6 +18,8 @@ public final class Menus {
     public static final String PAUSE_FLAG = "menus.pause";
 
     private static final Logger LOGGER = LoggerFactory.getLogger("proteus");
+    private static final Set<String> GLYPHS = Set.of("narrator.button.language", "narrator.button.accessibility",
+            "modmenu.title");
     private static final Set<String> PRIMARY = Set.of("menu.singleplayer", "menu.returnToGame");
     private static final UiHost HOST = new UiHost() {
         @Override
@@ -48,6 +50,7 @@ public final class Menus {
     private static Kind scope = Kind.NONE;
     private static boolean broken;
     private static AbstractWidget drawn;
+    private static int labelColor;
 
     private Menus() {
     }
@@ -108,6 +111,10 @@ public final class Menus {
         return scope != Kind.NONE && drawn == widget;
     }
 
+    public static int labelColor() {
+        return labelColor;
+    }
+
     public static Kind scope() {
         return scope;
     }
@@ -134,7 +141,7 @@ public final class Menus {
         theme.backdrop(canvas, canvas.width(), canvas.height(), true);
     }
 
-    public static void button(Canvas canvas, AbstractWidget widget, boolean label) {
+    public static void button(Canvas canvas, AbstractWidget widget, boolean label, float alpha) {
         Theme theme = Themes.current();
         int x = widget.getX();
         int y = widget.getY();
@@ -149,17 +156,90 @@ public final class Menus {
         float press = gui.anim(id + "#p", down ? 1f : 0f, theme.motion().get("press"));
         ButtonKind kind = primary ? ButtonKind.PRIMARY : ButtonKind.NORMAL;
         drawn = widget;
-        FADE.bind(canvas, widget.getAlpha());
+        FADE.bind(canvas, alpha);
         try {
             theme.button(FADE, x, y, w, h, kind, hover, press, 0f, enabled);
+            int color = theme.buttonText(kind, hover, 0f, enabled);
+            labelColor = Colors.alpha(color, alpha);
             if (label) {
                 String text = Draw.fit(FADE, widget.getMessage().getString(), w - 6);
-                int color = theme.buttonText(kind, hover, 0f, enabled);
                 int textY = y + (h - FADE.lineHeight()) / 2 + 1 + (press > 0.5f ? 1 : 0);
                 FADE.text(text, x + (w - FADE.textWidth(text)) / 2, textY, color, theme.shadowText());
             }
         } finally {
             FADE.unbind();
+        }
+    }
+
+    public static boolean icon(Canvas canvas, AbstractWidget widget, float alpha) {
+        String glyph = glyphKey(widget);
+        if (glyph == null) {
+            return false;
+        }
+        Theme theme = Themes.current();
+        button(canvas, widget, false, alpha);
+        FADE.bind(canvas, alpha);
+        try {
+            int cx = widget.getX() + widget.getWidth() / 2;
+            int cy = widget.getY() + widget.getHeight() / 2;
+            paint(FADE, glyph, cx, cy, labelColorRaw(theme, widget));
+        } finally {
+            FADE.unbind();
+        }
+        return true;
+    }
+
+    private static int labelColorRaw(Theme theme, AbstractWidget widget) {
+        return theme.buttonText(ButtonKind.NORMAL, widget.isHoveredOrFocused() ? 1f : 0f, 0f, widget.active);
+    }
+
+    private static String glyphKey(AbstractWidget widget) {
+        ComponentContents contents = widget.getMessage().getContents();
+        if (contents instanceof TranslatableContents translatable) {
+            String key = translatable.getKey();
+            if (GLYPHS.contains(key)) {
+                return key;
+            }
+        }
+        return null;
+    }
+
+    static void paint(Canvas c, String key, int cx, int cy, int color) {
+        switch (key) {
+            case "narrator.button.language" -> globe(c, cx, cy, color);
+            case "narrator.button.accessibility" -> person(c, cx, cy, color);
+            default -> list(c, cx, cy, color);
+        }
+    }
+
+    private static void globe(Canvas c, int cx, int cy, int color) {
+        for (int dy = -6; dy <= 6; dy++) {
+            for (int dx = -6; dx <= 6; dx++) {
+                double d = Math.sqrt(dx * dx + dy * dy);
+                boolean ring = d >= 5.0 && d <= 6.3;
+                boolean axis = d <= 6.3 && (dx == 0 || dy == 0);
+                boolean arc = Math.abs(dx) == (int) Math.round(3.0 * Math.sqrt(Math.max(0.0, 1.0 - dy * dy / 36.0)))
+                        && d <= 6.3;
+                if (ring || axis || arc) {
+                    c.fill(cx + dx, cy + dy, 1, 1, color);
+                }
+            }
+        }
+    }
+
+    private static void person(Canvas c, int cx, int cy, int color) {
+        c.fill(cx - 1, cy - 6, 3, 3, color);
+        c.fill(cx - 5, cy - 2, 11, 2, color);
+        c.fill(cx - 1, cy, 3, 3, color);
+        c.fill(cx - 3, cy + 3, 2, 4, color);
+        c.fill(cx + 1, cy + 3, 2, 4, color);
+    }
+
+    private static void list(Canvas c, int cx, int cy, int color) {
+        for (int row = 0; row < 3; row++) {
+            int y = cy - 5 + row * 4;
+            c.fill(cx - 5, y, 2, 2, color);
+            c.fill(cx - 1, y, 7, 2, color);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.github.olympus.proteus.client;
 
 import com.github.olympus.proteus.client.ui.Menus;
+import com.github.olympus.proteus.mixin.WidgetAlphaAccess;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -36,7 +37,7 @@ public final class MenuHud {
             return false;
         }
         try {
-            Menus.button(CANVAS, widget, label);
+            Menus.button(CANVAS, widget, label, ((WidgetAlphaAccess) widget).proteus$alpha());
             return true;
         } catch (RuntimeException | LinkageError error) {
             Menus.fail(error);

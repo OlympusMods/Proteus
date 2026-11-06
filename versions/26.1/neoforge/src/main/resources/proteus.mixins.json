@@ -17,7 +17,8 @@
     "MinecraftTickMixin",
     "RenderSystemMixin",
     "ToastAddMixin",
-    "ToastOverlayMixin"
+    "ToastOverlayMixin",
+    "WidgetAlphaAccess"
   ],
   "injectors": {
     "defaultRequire": 1
