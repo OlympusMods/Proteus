@@ -20,7 +20,7 @@
 - Tooltips surface: item, button and chat hover tooltips get the theme's `tooltip` box and motion instead of the purple vanilla one. Off by default under Vanilla UI
 - The compact effects list shows its tooltip to the right of the effect, above everything else, and it slides out with the new `effect_tip` motion and plays it backwards when it goes away
 - Menus: the title screen, the pause menu and every other screen built from vanilla widgets (options, world and server lists, Create World, Realms, statistics, the mods list) are drawn with the theme's backdrop, buttons, sliders, checkboxes, text fields, tabs, lists and scrollbars, including the Mod Menu button and the icon buttons. The title screen and the pause menu ease in with the theme's `window` and `content` motion, and show at once when animations are off. Off by default, with a switch for the title screen, the pause menu and the other screens under Vanilla UI. On 1.20 to 1.20.4 the lists and the dirt background stay vanilla, and on themes with dark text the lists do too
-- Menus: the server icons in the multiplayer list have rounded corners, with a Round server icons switch under Vanilla UI
+- Menus: the server and world icons in the multiplayer and singleplayer lists have rounded corners, with a Round icons switch under Vanilla UI
 - New widgets: icon toggle, and a slider that shows a label and a live level
 - `Gui.codeEditor`: a code editor with line numbers, syntax colors, error marks, auto indent, tab completion and a `?` reference page, driven by a `Language` that the mod supplies
 - The code editor has selection (Shift+arrows, Ctrl+arrows by word, click, drag, double and triple click), cut, copy, paste, undo and redo, word delete and block indent

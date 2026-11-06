@@ -28,6 +28,7 @@
     "MenuScrollMixin",
     "MenuServerIconMixin",
     "MenuSliderMixin",
+    "MenuWorldIconMixin",
     "MenuTabMixin",
     "MenuWidgetMixin",
     "ToastAddMixin",

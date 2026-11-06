@@ -28,6 +28,7 @@
     "MenuScreenMixin",
     "MenuServerIconMixin",
     "MenuSliderMixin",
+    "MenuWorldIconMixin",
     "MenuTabMixin",
     "MenuWidgetMixin",
     "MinecraftTickMixin",

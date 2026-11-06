@@ -20,6 +20,7 @@
     "MenuScreenMixin",
     "MenuServerIconMixin",
     "MenuSliderMixin",
+    "MenuWorldIconMixin",
     "MenuTabMixin",
     "MenuTitleMixin",
     "MenuWidgetMixin",
