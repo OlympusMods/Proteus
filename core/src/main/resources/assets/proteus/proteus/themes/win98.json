@@ -288,6 +288,16 @@
       ]
     },
     "chat_line": { "layers": [ { "type": "fill", "color": "alpha(#FF000040, 0.72 * opacity)" } ] },
+    "chat_bubble": {
+      "vars": { "dk": "#FF000000", "hi": "#FFFFFFFF", "sh": "#FF808080", "lt": "#FFDFDFDF", "face": "#FF000040" },
+      "layers": [
+        { "type": "fill", "x": 0, "y": 0, "w": "w", "h": "h", "color": "alpha(dk, opacity)" },
+        { "type": "fill", "x": 0, "y": 0, "w": "w - 1", "h": "h - 1", "color": "alpha(hi, opacity)" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 2", "h": "h - 2", "color": "alpha(sh, opacity)" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 3", "h": "h - 3", "color": "alpha(lt, opacity)" },
+        { "type": "fill", "x": 2, "y": 2, "w": "w - 4", "h": "h - 4", "color": "alpha(face, 0.9 * opacity)" }
+      ]
+    },
     "chat_input": {
       "vars": { "otl": "#FF808080", "obr": "#FFFFFFFF", "itl": "#FF404040", "ibr": "#FFDFDFDF", "face": "#FF000040" },
       "layers": [

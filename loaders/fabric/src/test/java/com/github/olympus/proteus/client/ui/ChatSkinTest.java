@@ -123,4 +123,96 @@ class ChatSkinTest {
         assertEquals(List.of("fill 1 2 30 9 #80102030", "fill 0 0 2 10 #FFFF0000", "fill 0 0 2 10 #FF0000FF"),
                 canvas.calls());
     }
+
+    @Test
+    void singleLineBubbleSitsOnTheRowBottom() {
+        ChatSkin.Spacing spacing = new ChatSkin.Spacing(2, 2);
+        ChatSkin.Box box = ChatSkin.bubble(0, 1, 9, 0, 50, spacing);
+        assertEquals(-4, box.x());
+        assertEquals(58, box.w());
+        assertEquals(13, box.h());
+        assertEquals(0, box.y() + box.h());
+        assertEquals(-2, ChatSkin.lift(0, spacing));
+    }
+
+    @Test
+    void wrappedMessageIsOneBubble() {
+        ChatSkin.Spacing spacing = new ChatSkin.Spacing(2, 2);
+        ChatSkin.Box box = ChatSkin.bubble(0, 3, 9, 0, 80, spacing);
+        assertEquals(31, box.h());
+        assertEquals(-31, box.y());
+    }
+
+    @Test
+    void bubblesAreSeparatedByTheGap() {
+        ChatSkin.Spacing spacing = new ChatSkin.Spacing(2, 2);
+        ChatSkin.Box lower = ChatSkin.bubble(0, 2, 9, 0, 40, spacing);
+        ChatSkin.Box upper = ChatSkin.bubble(2, 1, 9, 1, 40, spacing);
+        assertEquals(2, lower.y() - (upper.y() + upper.h()));
+        ChatSkin.Spacing compact = new ChatSkin.Spacing(1, 1);
+        ChatSkin.Box a = ChatSkin.bubble(0, 1, 9, 0, 40, compact);
+        ChatSkin.Box b = ChatSkin.bubble(1, 1, 9, 1, 40, compact);
+        assertEquals(1, a.y() - (b.y() + b.h()));
+    }
+
+    @Test
+    void textStaysInsideItsBubble() {
+        ChatSkin.Spacing spacing = new ChatSkin.Spacing(2, 2);
+        for (int groups = 0; groups < 4; groups++) {
+            ChatSkin.Box box = ChatSkin.bubble(groups * 2, 2, 9, groups, 60, spacing);
+            int textTop = -(groups * 2 + 2) * 9 + ChatSkin.lift(groups, spacing);
+            int textBottom = -(groups * 2) * 9 + ChatSkin.lift(groups, spacing);
+            assertEquals(spacing.padY(), textTop - box.y());
+            assertEquals(spacing.padY(), box.y() + box.h() - textBottom);
+        }
+    }
+
+    @Test
+    void bubblesAboveTheChatHeightDoNotFit() {
+        ChatSkin.Spacing spacing = new ChatSkin.Spacing(2, 2);
+        assertTrue(ChatSkin.fits(ChatSkin.bubble(0, 1, 9, 0, 40, spacing), 180));
+        assertTrue(!ChatSkin.fits(ChatSkin.bubble(19, 1, 9, 19, 40, spacing), 180));
+    }
+
+    @Test
+    void bubbleOpacityFollowsTheMode() {
+        assertEquals(1f, ChatSkin.bubbleAlpha(1f, 0.5, false), 0.02f);
+        assertEquals(0.5f, ChatSkin.bubbleAlpha(0.5f, 0.5, false), 0.02f);
+        assertEquals(0f, ChatSkin.bubbleAlpha(0f, 0.5, false), 0.001f);
+        assertEquals(1f, ChatSkin.bubbleAlpha(1f, 0.5, true), 0.02f);
+        assertEquals(0.4f, ChatSkin.bubbleAlpha(1f, 0.2, true), 0.02f);
+    }
+
+    @Test
+    void bubbleFallsBackToTheChatLineWidget() {
+        String widgets = """
+                {"widgets": {
+                  "chat_line": {"layers": [{"type": "fill", "color": "alpha(#FF102030, opacity)"}]}
+                }}
+                """;
+        ThemeSpec spec = ThemeSpec.parse("test:theme", JsonParser.parseString(widgets).getAsJsonObject(), null,
+                message -> {
+                });
+        StyledTheme theme = new StyledTheme(spec);
+        RecordingCanvas canvas = new RecordingCanvas();
+        theme.chatBubble(canvas, 1, 2, 30, 13, 1f);
+        assertEquals(List.of("fill 1 2 30 13 #FF102030"), canvas.calls());
+    }
+
+    @Test
+    void bubbleWidgetWinsOverTheChatLineWidget() {
+        String widgets = """
+                {"widgets": {
+                  "chat_line": {"layers": [{"type": "fill", "color": "#FF000001"}]},
+                  "chat_bubble": {"layers": [{"type": "fill", "color": "alpha(#FF102030, opacity)"}]}
+                }}
+                """;
+        ThemeSpec spec = ThemeSpec.parse("test:theme", JsonParser.parseString(widgets).getAsJsonObject(), null,
+                message -> {
+                });
+        StyledTheme theme = new StyledTheme(spec);
+        RecordingCanvas canvas = new RecordingCanvas();
+        theme.chatBubble(canvas, 0, 0, 20, 13, 0.5f);
+        assertEquals(List.of("fill 0 0 20 13 #80102030"), canvas.calls());
+    }
 }

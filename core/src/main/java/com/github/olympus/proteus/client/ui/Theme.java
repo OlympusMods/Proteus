@@ -119,6 +119,10 @@ public interface Theme {
         c.fill(x, y, w, h, Colors.alpha(0x80000000, alpha));
     }
 
+    default void chatBubble(Canvas c, int x, int y, int w, int h, float alpha) {
+        chatLine(c, x, y, w, h, alpha);
+    }
+
     default void chatInput(Canvas c, int x, int y, int w, int h) {
         c.fill(x, y, w, h, 0x80000000);
     }

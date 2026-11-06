@@ -385,6 +385,15 @@ public class StyledTheme implements Theme {
     }
 
     @Override
+    public void chatBubble(Canvas c, int x, int y, int w, int h, float alpha) {
+        if (hasWidget("chat_bubble")) {
+            render("chat_bubble", c, x, y, w, h, state("opacity", alpha));
+        } else {
+            Theme.super.chatBubble(c, x, y, w, h, alpha);
+        }
+    }
+
+    @Override
     public void chatInput(Canvas c, int x, int y, int w, int h) {
         if (hasWidget("chat_input")) {
             render("chat_input", c, x, y, w, h, state());

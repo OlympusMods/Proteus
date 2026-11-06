@@ -12,11 +12,23 @@ public final class ChatSkin {
     public static final String OPEN_MOTION = "chat_open";
     public static final String OPACITY = "chat.opacity";
     public static final String ANIMATE = "chat.animate";
+    public static final String COMPACT = "chat.compact";
+    public static final int BUBBLE_EDGE = -4;
 
     private static final int SCROLL_IDLE = 0x3333AA;
     private static final int SCROLL_FRESH = 0xCC5533;
     private static final int SCROLL_EDGE = 0xCCCCCC;
+    private static final int PAD_X = 4;
     private static final long REOPEN_NANOS = 250_000_000L;
+
+    public record Box(int x, int y, int w, int h) {
+    }
+
+    public record Spacing(int padY, int gap) {
+        public int step() {
+            return 2 * padY + gap;
+        }
+    }
 
     public record Sample(float alpha, float dx, float dy) {
         public static final Sample NONE = new Sample(1f, 0f, 0f);
@@ -50,6 +62,29 @@ public final class ChatSkin {
         if (line != null) {
             BORN.putIfAbsent(line, System.nanoTime());
         }
+    }
+
+    public static Spacing spacing() {
+        return UiPrefs.get().flag(COMPACT, false) ? new Spacing(1, 1) : new Spacing(2, 2);
+    }
+
+    public static int lift(int groupsBelow, Spacing spacing) {
+        return -(groupsBelow * spacing.step() + spacing.padY());
+    }
+
+    public static Box bubble(int bottomIndex, int lines, int rowHeight, int groupsBelow, int textWidth,
+            Spacing spacing) {
+        int y = -(bottomIndex + lines) * rowHeight + lift(groupsBelow, spacing) - spacing.padY();
+        return new Box(-PAD_X, y, textWidth + 2 * PAD_X, lines * rowHeight + 2 * spacing.padY());
+    }
+
+    public static boolean fits(Box box, int height) {
+        return -box.y() <= height;
+    }
+
+    public static float bubbleAlpha(float fade, double backgroundOpacity, boolean game) {
+        int color = Math.round(Motion.clamp(fade * (float) backgroundOpacity, 0f, 1f) * 255f) << 24;
+        return lineAlpha(color, backgroundOpacity, game);
     }
 
     public static boolean animating() {
@@ -103,6 +138,23 @@ public final class ChatSkin {
         return Motion.clamp((float) (raw / backgroundOpacity), 0f, 1f);
     }
 
+    public static void bubble(Canvas c, Box box, float fade, double backgroundOpacity, Sample sample, boolean slide) {
+        boolean game = UiPrefs.get().option(OPACITY, 0) == 1;
+        float alpha = bubbleAlpha(fade, backgroundOpacity, game);
+        int dx = slide ? Math.round(sample.dx()) : 0;
+        int dy = slide ? Math.round(sample.dy()) : 0;
+        FADE.bind(c, sample.alpha());
+        try {
+            Themes.current().chatBubble(FADE, box.x() + dx, box.y() + dy, box.w(), box.h(), alpha);
+        } finally {
+            FADE.unbind();
+        }
+    }
+
+    public static void suggest(Canvas c, int x1, int y1, int x2, int y2) {
+        Themes.current().tooltip(c, Math.min(x1, x2), Math.min(y1, y2), Math.abs(x2 - x1), Math.abs(y2 - y1));
+    }
+
     public static boolean fill(Canvas c, int x1, int y1, int x2, int y2, int color, double backgroundOpacity) {
         int x = Math.min(x1, x2);
         int y = Math.min(y1, y2);
@@ -112,7 +164,7 @@ public final class ChatSkin {
         Theme theme = Themes.current();
         if (rgb == 0 && w > 2) {
             boolean game = UiPrefs.get().option(OPACITY, 0) == 1;
-            theme.chatLine(c, x, y, w, h, lineAlpha(color, backgroundOpacity, game));
+            theme.chatBubble(c, x, y, w, h, lineAlpha(color, backgroundOpacity, game));
             return true;
         }
         if (w == 2 && (rgb == SCROLL_IDLE || rgb == SCROLL_FRESH)) {

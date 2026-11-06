@@ -17,6 +17,25 @@ public abstract class ChatMessageMixin {
     @Final
     private List<GuiMessage.Line> trimmedMessages;
 
+    @Shadow
+    private int chatScrollbarPos;
+
+    @Shadow
+    public abstract int getLinesPerPage();
+
+    @Inject(method = "extractRenderState(Lnet/minecraft/client/gui/components/ChatComponent$ChatGraphicsAccess;IILnet/"
+            + "minecraft/client/gui/components/ChatComponent$DisplayMode;)V", at = @At("HEAD"))
+    private void proteus$layout(ChatComponent.ChatGraphicsAccess access, int bottom, int tick,
+            ChatComponent.DisplayMode mode, CallbackInfo callback) {
+        ChatHooks.begin(trimmedMessages, chatScrollbarPos, getLinesPerPage());
+    }
+
+    @Inject(method = "lambda$extractRenderState$1", at = @At("HEAD"))
+    private static void proteus$bubble(int chatBottom, int entryHeight, ChatComponent.ChatGraphicsAccess access,
+            int width, float backgroundOpacity, GuiMessage.Line line, int index, float alpha, CallbackInfo callback) {
+        ChatHooks.background(chatBottom, line, alpha, backgroundOpacity);
+    }
+
     @Inject(method = "addMessageToDisplayQueue", at = @At("TAIL"))
     private void proteus$bornLines(GuiMessage message, CallbackInfo callback) {
         ChatHooks.born(trimmedMessages, message);

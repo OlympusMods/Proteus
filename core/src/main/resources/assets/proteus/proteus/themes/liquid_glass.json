@@ -19,17 +19,6 @@
   "sizes": {
     "toggle": { "width": 32, "height": 16 },
     "segment": { "pad": 2, "gap": 0 },
-    "chat_line": {
-      "vars": { "fill": "alpha(#FF101318, 0.4 * opacity)", "sheen": "alpha(#FFFFFFFF, 0.07 * opacity)" },
-      "layers": [
-        { "type": "fill", "color": "fill" },
-        { "type": "fill", "h": 1, "color": "sheen" }
-      ]
-    },
-    "chat_input": {
-      "vars": { "radius": 8, "fill": "#C0101318", "border": "alpha(accent, 0.85)" },
-      "layers": [ { "type": "panel", "radius": "radius", "color": "fill", "border": "border" } ]
-    },
     "toast": { "margin": 8, "pad": 8 }
   },
   "motion": {
@@ -67,6 +56,21 @@
     "effect_warn": { "easing": "linear", "duration": 0.1, "effects": { "scale": { "from": 0.88 } } }
   },
   "widgets": {
+    "chat_bubble": {
+      "vars": { "radius": 8, "tint": "alpha(#FF101318, 0.3 * opacity)" },
+      "layers": [
+        { "type": "glass", "radius": "radius", "color": "tint", "blur": 1.5, "refraction": 4, "depth": 6, "zoom": 2,
+          "smear": 2, "highlight": 0.55, "opacity": "opacity" }
+      ]
+    },
+    "chat_input": {
+      "vars": { "radius": "floor(h / 2)", "tint": "#40101318" },
+      "layers": [
+        { "type": "glass", "radius": "radius", "color": "tint", "blur": 1.5, "refraction": 5, "depth": 7, "zoom": 3,
+          "smear": 2, "highlight": 0.7 },
+        { "type": "ring", "radius": "radius", "color": "alpha(accent, 0.7)" }
+      ]
+    },
     "backdrop": {
       "vars": { "top": "#30000000", "bottom": "#70000000" },
       "layers": [ { "type": "gradient", "top": "top", "bottom": "bottom" } ]

@@ -287,8 +287,16 @@
         { "type": "fill", "w": 1, "color": "edge" }
       ]
     },
+    "chat_bubble": {
+      "vars": { "radius": 4, "fill": "alpha(#FF0E1624, 0.74 * opacity)", "edge": "alpha(accent, 0.8 * opacity)" },
+      "layers": [
+        { "type": "shadow", "radius": "radius", "spread": 4, "alpha": "80 * opacity" },
+        { "type": "panel", "radius": "radius", "color": "fill", "border": "edge" },
+        { "type": "ring", "inset": 1, "radius": "radius - 1", "color": "alpha(#58FFFFFF, opacity)" }
+      ]
+    },
     "chat_input": {
-      "vars": { "radius": 3, "fill": "#D00E1624", "border": "alpha(accent, 0.9)" },
+      "vars": { "radius": 4, "fill": "#D00E1624", "border": "alpha(accent, 0.9)" },
       "layers": [ { "type": "panel", "radius": "radius", "color": "fill", "border": "border" } ]
     },
     "swatch": {

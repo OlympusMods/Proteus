@@ -101,6 +101,7 @@
       ]
     },
     "chat_line": { "layers": [ { "type": "fill", "color": "alpha(#FF000000, 0.5 * opacity)" } ] },
+    "chat_bubble": { "layers": [ { "type": "fill", "color": "alpha(#FF000000, 0.5 * opacity)" } ] },
     "chat_input": { "layers": [ { "type": "fill", "color": "#80000000" } ] },
     "chat_scroll": { "layers": [ { "type": "fill", "color": "alpha(if(fresh > 0.5, #FFCC5533, #FF3333AA), opacity)" } ] },
     "swatch": {
