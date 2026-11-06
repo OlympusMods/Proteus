@@ -5,6 +5,12 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [],
   "client": [
+    "ChatInputMixin",
+    "ChatMessageMixin",
+    "ChatRenderMixin",
+    "ContainerScreenAccess",
+    "EffectsHudMixin",
+    "EffectsInventoryMixin",
     "GuiScreenMixin",
     "MenuBlurMixin",
     "MenuButtonMixin",
