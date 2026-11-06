@@ -17,6 +17,7 @@
   "segments": { "sliding": true },
   "backdrop": { "vanilla_blur": true },
   "sizes": {
+    "icon_radius": 8,
     "toggle": { "width": 32, "height": 16 },
     "segment": { "pad": 2, "gap": 0 },
     "toast": { "margin": 8, "pad": 8 }

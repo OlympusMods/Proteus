@@ -21,7 +21,7 @@ class IconShapeTest {
 
     @Test
     void runsCoverEveryRowOnce() {
-        List<int[]> runs = IconShape.runs(32, IconShape.radius(32));
+        List<int[]> runs = IconShape.runs(32, 8);
         int rows = 0;
         for (int[] run : runs) {
             assertEquals(rows, run[1]);

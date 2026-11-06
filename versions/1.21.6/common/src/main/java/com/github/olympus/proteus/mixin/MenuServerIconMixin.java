@@ -17,10 +17,10 @@ public abstract class MenuServerIconMixin {
 
     @Inject(method = "drawIcon", at = @At("HEAD"), cancellable = true)
     private void proteus$round(GuiGraphics graphics, int x, int y, ResourceLocation icon, CallbackInfo callback) {
-        if (!Menus.roundIcons()) {
+        if (Menus.iconRadius(SIZE) <= 0) {
             return;
         }
-        for (int[] run : IconShape.runs(SIZE, IconShape.radius(SIZE))) {
+        for (int[] run : IconShape.runs(SIZE, Menus.iconRadius(SIZE))) {
             graphics.blit(RenderPipelines.GUI_TEXTURED, icon, x + run[0], y + run[1], (float) run[0], (float) run[1],
                 run[2], run[3], SIZE, SIZE);
         }

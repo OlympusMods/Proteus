@@ -18,11 +18,11 @@ public abstract class MenuWorldIconMixin {
     private void proteus$round(GuiGraphics graphics, RenderPipeline pipeline,
             Identifier icon, int x, int y, float u, float v, int w, int h,
             int textureW, int textureH) {
-        if (!Menus.roundIcons() || w != h) {
+        if (w != h || Menus.iconRadius(w) <= 0) {
             graphics.blit(pipeline, icon, x, y, u, v, w, h, textureW, textureH);
             return;
         }
-        for (int[] run : IconShape.runs(w, IconShape.radius(w))) {
+        for (int[] run : IconShape.runs(w, Menus.iconRadius(w))) {
             graphics.blit(pipeline, icon, x + run[0], y + run[1], u + run[0], v + run[1], run[2], run[3], textureW,
                     textureH);
         }

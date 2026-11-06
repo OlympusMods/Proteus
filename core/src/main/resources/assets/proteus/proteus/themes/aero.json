@@ -18,6 +18,7 @@
   "segments": { "sliding": true },
   "backdrop": { "vanilla_blur": true },
   "sizes": {
+    "icon_radius": 3,
     "toggle": { "width": 30, "height": 14 },
     "segment": { "pad": 2, "gap": 0 },
     "scrollbar": { "width": 5 },

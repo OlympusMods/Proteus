@@ -21,6 +21,7 @@
     "sizes": { "left": [6, 9], "right": [6, 9], "cross": [8, 7] }
   },
   "sizes": {
+    "icon_radius": 0,
     "toggle": { "width": 34, "height": 20 },
     "segment": { "pad": 0, "gap": 2 }
   },

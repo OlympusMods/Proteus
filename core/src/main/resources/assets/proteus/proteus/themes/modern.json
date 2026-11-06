@@ -17,6 +17,7 @@
   "backdrop": { "vanilla_blur": true },
   "icons": { "draw": "painter" },
   "sizes": {
+    "icon_radius": 6,
     "toggle": { "width": 30, "height": 16 },
     "segment": { "pad": 2, "gap": 0 }
   },

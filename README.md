@@ -87,7 +87,7 @@ Expressions have numbers, colors (`#RRGGBB` or `#AARRGGBB`), `"text"`, `+ - * / 
 
 ### Sizes
 
-`sizes` changes how big things are inside a widget, not where a menu puts them: `toggle` (`width`, `height`), `segment` (`pad`, `gap`), `field.pad`, `area.pad`, `tooltip` (`pad`, `offset_x`, `offset_y`), `scrollbar.width` and `toast` (`margin`, `pad`, `icon`, `min_width`, `max_width`, `max_lines`).
+`sizes` changes how big things are inside a widget, not where a menu puts them: `toggle` (`width`, `height`), `segment` (`pad`, `gap`), `field.pad`, `area.pad`, `tooltip` (`pad`, `offset_x`, `offset_y`), `scrollbar.width`, `icon_radius` (the corner radius of server and world icons in the menus, 0 keeps them square) and `toast` (`margin`, `pad`, `icon`, `min_width`, `max_width`, `max_lines`).
 
 ### Motion
 

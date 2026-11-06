@@ -7,10 +7,6 @@ public final class IconShape {
     private IconShape() {
     }
 
-    public static int radius(int size) {
-        return Math.max(1, size / 4);
-    }
-
     public static int inset(int row, int size, int radius) {
         int edge = Math.min(row, size - 1 - row);
         if (edge >= radius) {

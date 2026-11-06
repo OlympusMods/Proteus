@@ -404,8 +404,11 @@ public final class Menus {
         return false;
     }
 
-    public static boolean roundIcons() {
-        return scope == Kind.OTHER && UiPrefs.get().flag(ROUND_ICONS_FLAG, true);
+    public static int iconRadius(int size) {
+        if (scope != Kind.OTHER || !UiPrefs.get().flag(ROUND_ICONS_FLAG, true)) {
+            return 0;
+        }
+        return Math.max(0, Math.min(size / 2, Themes.current().sizes().get("icon_radius", 0)));
     }
 
     public static boolean themedLists() {
