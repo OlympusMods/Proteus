@@ -25,6 +25,7 @@
 - Keys, Ctrl shortcuts and mouse buttons reach Proteus menus on 26.1, 26.2 and 26.3, and text fields take input on SDL
 - Themes load on Forge, NeoForge and 26.3, and a theme with a wrong value or a failing layer is skipped with a warning instead of breaking the reload
 - Toasts fall back to the vanilla toast when the Proteus toast API is missing on a newer Minecraft
+- The Toasts tab is now Vanilla UI, with a switch per surface (toasts, chat, menus, effects). Turning Toasts off gives every game toast back, and each kind still has its own Proteus or Vanilla choice
 
 ## 1.0.0
 
