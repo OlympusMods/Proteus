@@ -14,8 +14,8 @@
 - Removed `ModernTheme`, `ClassicTheme`, `UiPrefs.classic()` and `Theme.animated()`. Use `Themes.current()`, `Theme.motion().enabled()` and `Theme.accentColor()`
 - Mods tab with a switch for every supported mod you have installed. Turning one off gives you its own menus back
 - Simple Voice Chat support on Fabric, Forge and NeoForge: its voice chat menu, settings, group screens, player volumes, microphone and speaker pickers and setup screens are drawn with Proteus
-- Ji AFK Cinematic support on Fabric 1.21 to 1.21.11 and 26.1 to 26.2, and on NeoForge 1.21.6 to 1.21.8: its settings and music folder pages are drawn with Proteus
-- MaLiLib support on Fabric 1.20 to 1.21.11 and 26.1 to 26.2: buttons, backgrounds, checkboxes, sliders, scrollbars and tooltips of MaLiLib screens, including Litematica, MiniHUD and Tweakeroo, follow the theme. The background blurs when the theme asks for it, and a screen that fails to draw falls back to its own look
+- Ji AFK Cinematic support on Fabric 1.21 to 1.21.11 and 26.1 to 26.3, and on NeoForge 1.21.6 to 1.21.8: its settings and music folder pages are drawn with Proteus
+- MaLiLib support on Fabric 1.20 to 1.21.11 and 26.1 to 26.3: buttons, backgrounds, checkboxes, sliders, scrollbars and tooltips of MaLiLib screens, including Litematica, MiniHUD and Tweakeroo, follow the theme. The background blurs when the theme asks for it, and a screen that fails to draw falls back to its own look
 - Effects surface: the active effects in game and in the inventory are drawn by Proteus in the current theme, with a plate for harmful and beneficial effects, the time left, a pulse before an effect runs out, and `effect_in`, `effect_out`, `effect_move` and `effect_warn` motion. New `effect` widget and `effect_good` and `effect_bad` colors in themes
 - Tooltips surface: item, button and chat hover tooltips get the theme's `tooltip` box and motion instead of the purple vanilla one. Off by default under Vanilla UI
 - The compact effects list shows its tooltip to the right of the effect, above everything else, and it slides out with the new `effect_tip` motion and plays it backwards when it goes away

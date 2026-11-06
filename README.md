@@ -112,8 +112,8 @@ Expressions have numbers, colors (`#RRGGBB` or `#AARRGGBB`), `"text"`, `+ - * / 
 When a supported mod is installed it shows up in the Mods tab. Its menus are drawn with Proteus widgets and follow your theme and accent color.
 
 - **Simple Voice Chat** (2.6): the voice chat menu, settings, groups, player volumes, microphone and speaker pickers and the setup screens. It is available on every version Simple Voice Chat has a client build for: 1.20.1, 1.21 to 1.21.1, 1.21.4 to 1.21.5, 1.21.8, 1.21.10, 1.21.11, 26.1 and 26.2 to 26.3
-- **MaLiLib** (and the mods built on it, like Litematica, MiniHUD and Tweakeroo): buttons, screen backgrounds, checkboxes, sliders, scrollbars and tooltips are drawn with the Proteus theme, so every MaLiLib screen follows your theme and accent color. The layouts stay MaLiLib's own, only the look changes. It is Fabric only, on 1.20 to 1.21.11 and 26.1 to 26.2, because MaLiLib has no Forge or NeoForge builds. If a screen fails to draw, it falls back to MaLiLib's own look. Turn it off in the Mods tab to get the original look back
-- **Ji AFK Cinematic** (2.4.0): its settings, with the music folder pages, on Fabric 1.21 to 1.21.11 and 26.1 to 26.2. The report form and the support links are left out. They stay in Ji's own screen, which comes back when you turn Ji off in the Mods tab. On NeoForge it only works on 1.21.6 to 1.21.8, because Ji's other NeoForge builds rename their classes for each Minecraft version, so there is nothing stable to build against. Proteus shows its own copy of the settings screen as a subclass of Ji's, so Ji still sees its settings open and keeps its shortcuts out of the way while you rebind them
+- **MaLiLib** (and the mods built on it, like Litematica, MiniHUD and Tweakeroo): buttons, screen backgrounds, checkboxes, sliders, scrollbars and tooltips are drawn with the Proteus theme, so every MaLiLib screen follows your theme and accent color. The layouts stay MaLiLib's own, only the look changes. It is Fabric only, on 1.20 to 1.21.11 and 26.1 to 26.3, because MaLiLib has no Forge or NeoForge builds. If a screen fails to draw, it falls back to MaLiLib's own look. Turn it off in the Mods tab to get the original look back
+- **Ji AFK Cinematic** (2.4.0): its settings, with the music folder pages, on Fabric 1.21 to 1.21.11 and 26.1 to 26.3. The report form and the support links are left out. They stay in Ji's own screen, which comes back when you turn Ji off in the Mods tab. On NeoForge it only works on 1.21.6 to 1.21.8, because Ji's other NeoForge builds rename their classes for each Minecraft version, so there is nothing stable to build against. Proteus shows its own copy of the settings screen as a subclass of Ji's, so Ji still sees its settings open and keeps its shortcuts out of the way while you rebind them
 
 Nothing in the other mod is patched. When it opens one of its screens, Proteus puts its own in the same place and reads and writes the other mod's own settings, so the config files stay the same. A mod is supported by adding an entry in `Mods` and a `ScreenTakeover` that turns its screens into Proteus ones.
 
@@ -182,7 +182,8 @@ The icon is an item id, and a name without a namespace means `minecraft:`. The P
 | 1.21.9-1.21.10 | [`1.21.9`](versions/1.21.9) | ✅ | ✅ | ✅ |
 | 1.21.11 | [`1.21.11`](versions/1.21.11) | ✅ | ✅ | ✅ |
 | 26.1-26.1.2 | [`26.1`](versions/26.1) | ✅ | ✅ | ✅ |
-| 26.2-26.3 | [`26.2`](versions/26.2) | ✅ | ✅ | ✅ |
+| 26.2 | [`26.2`](versions/26.2) | ✅ | ✅ | ✅ |
+| 26.3 | [`26.3`](versions/26.3) | ✅ | ✅ | ✅ |
 
 Each range of Minecraft versions that one jar per loader can cover has a folder under `versions`, named after the first version of the range.
 

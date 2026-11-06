@@ -24,7 +24,7 @@ if (jiVersion) {
             if (entry != null) {
                 nested.parentFile.mkdirs()
                 nested.bytes = zip.getInputStream(entry).bytes
-            } else if (zip.getEntry('META-INF/neoforge.mods.toml') == null) {
+            } else if (zip.getEntry('META-INF/neoforge.mods.toml') == null && zip.getEntry('fabric.mod.json') == null) {
                 throw new GradleException("Ji AFK Cinematic ${jiVersion} has no nested jar for ${exact}")
             }
         } finally {
