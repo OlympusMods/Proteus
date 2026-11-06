@@ -114,4 +114,16 @@ public interface Theme {
     void toast(Canvas c, int x, int y, int w, int h);
 
     void swatch(Canvas c, int x, int y, int size, int color, float hover, float selected);
+
+    default void chatLine(Canvas c, int x, int y, int w, int h, float alpha) {
+        c.fill(x, y, w, h, Colors.alpha(0x80000000, alpha));
+    }
+
+    default void chatInput(Canvas c, int x, int y, int w, int h) {
+        c.fill(x, y, w, h, 0x80000000);
+    }
+
+    default void chatScroll(Canvas c, int x, int y, int w, int h, boolean fresh, float alpha) {
+        c.fill(x, y, w, h, Colors.alpha(fresh ? 0xFFCC5533 : 0xFF3333AA, alpha));
+    }
 }

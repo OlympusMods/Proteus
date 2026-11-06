@@ -34,6 +34,9 @@
                   "effects": { "fade": true, "slide": { "y": 0.25, "relative": true } } },
     "toast_move": { "easing": "ease_out", "duration": 0.25 },
     "toast_out": { "easing": "ease_in", "duration": 0.3, "effects": { "fade": true } },
+    "chat_message": { "easing": "ease_out", "duration": 0.25,
+                      "effects": { "fade": true, "slide": { "y": 5 } } },
+    "chat_open": { "easing": "ease_out", "duration": 0.14, "effects": { "fade": true } },
     "tooltip": { "easing": "linear", "duration": 0.12, "delay": 0.4, "effects": { "fade": true } },
     "hover": { "easing": "spring", "rate": 16 },
     "press": { "easing": "ease_out", "duration": 0.06 },
@@ -276,6 +279,17 @@
         { "type": "ring", "inset": 1, "radius": "radius - 1", "color": "#70FFFFFF" },
         { "type": "panel", "inset": 3, "radius": 0, "color": "inner", "border": "client_edge" }
       ]
+    },
+    "chat_line": {
+      "vars": { "fill": "alpha(#FF0E1624, 0.6 * opacity)", "edge": "alpha(accent, 0.7 * opacity)" },
+      "layers": [
+        { "type": "fill", "color": "fill" },
+        { "type": "fill", "w": 1, "color": "edge" }
+      ]
+    },
+    "chat_input": {
+      "vars": { "radius": 3, "fill": "#D00E1624", "border": "alpha(accent, 0.9)" },
+      "layers": [ { "type": "panel", "radius": "radius", "color": "fill", "border": "border" } ]
     },
     "swatch": {
       "vars": { "grow": "round(hover)" },

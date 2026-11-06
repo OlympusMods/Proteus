@@ -367,4 +367,38 @@ public class StyledTheme implements Theme {
         render("swatch", c, x, y, size, size, state("color", new Expr.Color(color), "hover", hover,
                 "selected", selected));
     }
+
+    private boolean hasWidget(String name) {
+        if (!failed.contains("widgets." + name) && !spec.broken(name) && spec.widget(name) != null) {
+            return true;
+        }
+        return fallback != null && fallback.hasWidget(name);
+    }
+
+    @Override
+    public void chatLine(Canvas c, int x, int y, int w, int h, float alpha) {
+        if (hasWidget("chat_line")) {
+            render("chat_line", c, x, y, w, h, state("opacity", alpha));
+        } else {
+            Theme.super.chatLine(c, x, y, w, h, alpha);
+        }
+    }
+
+    @Override
+    public void chatInput(Canvas c, int x, int y, int w, int h) {
+        if (hasWidget("chat_input")) {
+            render("chat_input", c, x, y, w, h, state());
+        } else {
+            Theme.super.chatInput(c, x, y, w, h);
+        }
+    }
+
+    @Override
+    public void chatScroll(Canvas c, int x, int y, int w, int h, boolean fresh, float alpha) {
+        if (hasWidget("chat_scroll")) {
+            render("chat_scroll", c, x, y, w, h, state("fresh", fresh, "opacity", alpha));
+        } else {
+            Theme.super.chatScroll(c, x, y, w, h, fresh, alpha);
+        }
+    }
 }

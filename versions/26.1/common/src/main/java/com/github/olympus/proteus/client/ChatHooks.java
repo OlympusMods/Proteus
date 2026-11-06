@@ -1,0 +1,97 @@
+package com.github.olympus.proteus.client;
+
+import com.github.olympus.proteus.client.ui.ChatSkin;
+import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ActiveTextCollector;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.multiplayer.chat.GuiMessage;
+import net.minecraft.util.FormattedCharSequence;
+
+public final class ChatHooks {
+    private static final GuiCanvas CANVAS = new GuiCanvas();
+    private static final int MAX_LINES = 64;
+    private static boolean warned;
+
+    private ChatHooks() {
+    }
+
+    public static void fill(GuiGraphicsExtractor graphics, int x0, int y0, int x1, int y1, int color) {
+        if (!themed(graphics, x0, y0, x1, y1, color, false)) {
+            graphics.fill(x0, y0, x1, y1, color);
+        }
+    }
+
+    public static void input(GuiGraphicsExtractor graphics, int x0, int y0, int x1, int y1, int color) {
+        if (!themed(graphics, x0, y0, x1, y1, color, true)) {
+            graphics.fill(x0, y0, x1, y1, color);
+        }
+    }
+
+    private static boolean themed(GuiGraphicsExtractor graphics, int x0, int y0, int x1, int y1, int color,
+            boolean input) {
+        if (!ChatSkin.active()) {
+            return false;
+        }
+        try {
+            Minecraft minecraft = Minecraft.getInstance();
+            CANVAS.bind(graphics, minecraft.font, graphics.guiWidth(), graphics.guiHeight());
+            if (input) {
+                ChatSkin.input(CANVAS, x0, y0, x1, y1);
+                return true;
+            }
+            return ChatSkin.fill(CANVAS, x0, y0, x1, y1, color, minecraft.options.textBackgroundOpacity().get());
+        } catch (RuntimeException exception) {
+            failed(exception);
+            return false;
+        }
+    }
+
+    public static void text(ActiveTextCollector collector, TextAlignment alignment, int x, int y,
+            ActiveTextCollector.Parameters parameters, FormattedCharSequence line, boolean slide) {
+        ChatSkin.Sample sample = ChatSkin.Sample.NONE;
+        if (ChatSkin.active()) {
+            try {
+                Font font = Minecraft.getInstance().font;
+                sample = ChatSkin.message(line, font.width(line), font.lineHeight);
+            } catch (RuntimeException exception) {
+                failed(exception);
+            }
+        }
+        if (sample == ChatSkin.Sample.NONE) {
+            collector.accept(alignment, x, y, parameters, line);
+            return;
+        }
+        int dx = slide ? Math.round(sample.dx()) : 0;
+        int dy = slide ? Math.round(sample.dy()) : 0;
+        collector.accept(alignment, x + dx, y + dy, parameters.withOpacity(parameters.opacity() * sample.alpha()),
+                line);
+    }
+
+    public static void born(List<GuiMessage.Line> lines, GuiMessage message) {
+        if (!ChatSkin.active()) {
+            return;
+        }
+        try {
+            for (int i = 0; i < lines.size() && i < MAX_LINES; i++) {
+                GuiMessage.Line line = lines.get(i);
+                if (line.parent() != message) {
+                    break;
+                }
+                ChatSkin.born(line.content());
+            }
+        } catch (RuntimeException exception) {
+            failed(exception);
+        }
+    }
+
+    private static void failed(RuntimeException exception) {
+        ChatSkin.fail();
+        if (!warned) {
+            warned = true;
+            ProteusClient.LOGGER.warn("Proteus: could not draw the chat, showing the normal one", exception);
+        }
+    }
+}

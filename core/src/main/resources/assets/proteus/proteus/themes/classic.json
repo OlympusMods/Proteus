@@ -100,6 +100,9 @@
         { "type": "fill", "x": 3, "y": "h - 4", "w": "w - 6", "h": 1, "color": "alpha(tone, if(ambient > 0.5, 0.45, 1))" }
       ]
     },
+    "chat_line": { "layers": [ { "type": "fill", "color": "alpha(#FF000000, 0.5 * opacity)" } ] },
+    "chat_input": { "layers": [ { "type": "fill", "color": "#80000000" } ] },
+    "chat_scroll": { "layers": [ { "type": "fill", "color": "alpha(if(fresh > 0.5, #FFCC5533, #FF3333AA), opacity)" } ] },
     "swatch": {
       "layers": [
         { "type": "fill", "color": "if(selected > 0.5, #FFFFFFFF, #FF000000)" },

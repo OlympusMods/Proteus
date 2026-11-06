@@ -287,6 +287,23 @@
         { "type": "fill", "x": 3, "y": "h - 5", "w": "w - 6", "h": 2, "color": "tone", "when": "ambient < 0.5" }
       ]
     },
+    "chat_line": { "layers": [ { "type": "fill", "color": "alpha(#FF000040, 0.72 * opacity)" } ] },
+    "chat_input": {
+      "vars": { "otl": "#FF808080", "obr": "#FFFFFFFF", "itl": "#FF404040", "ibr": "#FFDFDFDF", "face": "#FF000040" },
+      "layers": [
+        { "type": "fill", "x": 0, "y": 0, "w": "w", "h": "h", "color": "obr" },
+        { "type": "fill", "x": 0, "y": 0, "w": "w - 1", "h": "h - 1", "color": "otl" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 2", "h": "h - 2", "color": "ibr" },
+        { "type": "fill", "x": 1, "y": 1, "w": "w - 3", "h": "h - 3", "color": "itl" },
+        { "type": "fill", "x": 2, "y": 2, "w": "w - 4", "h": "h - 4", "color": "face" }
+      ]
+    },
+    "chat_scroll": {
+      "layers": [
+        { "type": "fill", "color": "alpha(if(fresh > 0.5, #FF9EA8D8, #FFC0C0C0), opacity)" },
+        { "type": "fill", "w": 1, "color": "alpha(#FFFFFFFF, opacity)" }
+      ]
+    },
     "swatch": {
       "layers": [
         { "type": "fill", "x": -2, "y": -2, "w": "w + 4", "h": "h + 4", "color": "#FF000080", "when": "selected > 0.5" },
