@@ -70,6 +70,10 @@ public final class Menus {
     private static float openRaw = 1f;
     private static final float[] SLOT_RAW = new float[SLOTS + 1];
     private static int widgetIndex;
+    private static int trackX;
+    private static int trackY;
+    private static int trackW;
+    private static int trackH;
     private static boolean broken;
     private static AbstractWidget drawn;
     private static int labelColor;
@@ -316,10 +320,11 @@ public final class Menus {
         }
     }
 
-    public static void checkbox(Canvas canvas, AbstractWidget widget, boolean selected, int box, float alpha) {
+    public static void checkbox(Canvas canvas, AbstractWidget widget, boolean selected, int box, boolean label,
+            float alpha) {
         Theme theme = Themes.current();
         int x = widget.getX();
-        int y = widget.getY();
+        int y = widget.getY() + (widget.getHeight() - box) / 2;
         String id = "w" + System.identityHashCode(widget);
         boolean enabled = widget.active;
         float hover = gui.anim(id + "#h", enabled && widget.isHoveredOrFocused() ? 1f : 0f,
@@ -328,12 +333,14 @@ public final class Menus {
         FADE.bind(canvas, alpha);
         try {
             theme.checkbox(FADE, x, y, box, on, hover, enabled);
-            List<String> lines = Draw.wrap(FADE, widget.getMessage().getString(), widget.getWidth() - box - 4);
-            int count = Math.min(2, lines.size());
-            int textY = y + box / 2 - count * FADE.lineHeight() / 2;
-            int color = enabled ? theme.textPrimary() : theme.textDisabled();
-            for (int i = 0; i < count; i++) {
-                FADE.text(lines.get(i), x + box + 4, textY + i * FADE.lineHeight(), color, theme.shadowText());
+            if (label) {
+                List<String> lines = Draw.wrap(FADE, widget.getMessage().getString(), widget.getWidth() - box - 4);
+                int count = Math.min(2, lines.size());
+                int textY = y + box / 2 - count * FADE.lineHeight() / 2;
+                int color = enabled ? theme.textPrimary() : theme.textDisabled();
+                for (int i = 0; i < count; i++) {
+                    FADE.text(lines.get(i), x + box + 4, textY + i * FADE.lineHeight(), color, theme.shadowText());
+                }
             }
         } finally {
             FADE.unbind();
@@ -374,6 +381,26 @@ public final class Menus {
         } finally {
             FADE.unbind();
         }
+    }
+
+    public static boolean scroller(Canvas canvas, String path, int x, int y, int w, int h) {
+        if (scope != Kind.OTHER) {
+            return false;
+        }
+        if (path.equals("widget/scroller_background")) {
+            trackX = x;
+            trackY = y;
+            trackW = w;
+            trackH = h;
+            return true;
+        }
+        if (path.equals("widget/scroller")) {
+            boolean tracked = trackW > 0 && x == trackX;
+            scrollbar(canvas, tracked ? trackX : x, tracked ? trackY : y, tracked ? trackW : w, tracked ? trackH : h,
+                    y, h, false);
+            return true;
+        }
+        return false;
     }
 
     public static boolean themedLists() {

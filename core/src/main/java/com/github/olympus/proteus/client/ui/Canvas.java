@@ -38,7 +38,9 @@ public interface Canvas {
     void sprite(String path, int x, int y, int w, int h);
 
     default void tinted(String sprite, int x, int y, int w, int h, float alpha) {
-        sprite(sprite, x, y, w, h);
+        if (alpha >= 0.5f) {
+            sprite(sprite, x, y, w, h);
+        }
     }
 
     boolean exists(String namespace, String path);

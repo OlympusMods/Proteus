@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EditBox.class)
 public abstract class MenuFieldMixin {
-    private static final int VANILLA_TEXT = -2039584;
+    private static final int VANILLA_TEXT = 0xE0E0E0;
 
     @Shadow
     private int textColor;
@@ -30,7 +30,7 @@ public abstract class MenuFieldMixin {
         EditBox self = (EditBox) (Object) this;
         proteus$drawn = bordered && self.isVisible() && MenuHud.field(self, self.isFocused());
         proteus$color = textColor;
-        if (proteus$drawn && textColor == VANILLA_TEXT && !Menus.darkChrome()) {
+        if (proteus$drawn && (textColor & 0xFFFFFF) == VANILLA_TEXT && !Menus.darkChrome()) {
             textColor = Themes.current().textPrimary();
         }
     }
@@ -38,7 +38,7 @@ public abstract class MenuFieldMixin {
     @Redirect(method = "extractWidgetRenderState", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/gui/components/EditBox;isBordered()Z"))
     private boolean proteus$skipBorder(EditBox box) {
-        return !proteus$drawn && box.isBordered();
+        return !proteus$drawn && bordered;
     }
 
     @Inject(method = "extractWidgetRenderState", at = @At("RETURN"))

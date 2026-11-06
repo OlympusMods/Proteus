@@ -121,7 +121,7 @@ public final class MenuHud {
     }
 
     public static boolean checkbox(AbstractWidget widget, boolean selected, int box) {
-        return paint(() -> Menus.checkbox(CANVAS, widget, selected, box, alpha(widget)));
+        return paint(() -> Menus.checkbox(CANVAS, widget, selected, box, true, alpha(widget)));
     }
 
     public static boolean field(AbstractWidget widget, boolean focused) {
