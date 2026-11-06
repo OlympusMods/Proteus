@@ -26,7 +26,7 @@ class EffectsTest {
     private static final String[] THEMES = {"modern", "liquid_glass", "aero", "win98", "classic"};
 
     private static EffectInfo info(String id, int ticks, boolean beneficial) {
-        return new EffectInfo(id, id, 0, ticks, false, false, beneficial, true);
+        return new EffectInfo(id, id, 0, ticks, false, false, beneficial, true, true);
     }
 
     private static JsonObject bundled(String name) throws IOException {
@@ -43,7 +43,7 @@ class EffectsTest {
         assertEquals("01:05", EffectTiming.format(1300, 20f));
         assertEquals("1:00:00", EffectTiming.format(72000, 20f));
         assertEquals("00:15", EffectTiming.format(600, 40f));
-        assertEquals("**:**", new EffectInfo("a", "A", 0, -1, true, false, true, true).time(20f));
+        assertEquals("**:**", new EffectInfo("a", "A", 0, -1, true, false, true, true, true).time(20f));
     }
 
     @Test
@@ -52,7 +52,7 @@ class EffectsTest {
         assertEquals("II", EffectTiming.level(1));
         assertEquals("X", EffectTiming.level(9));
         assertEquals("11", EffectTiming.level(10));
-        assertEquals("Speed II", new EffectInfo("s", "Speed", 1, 100, false, false, true, true).title());
+        assertEquals("Speed II", new EffectInfo("s", "Speed", 1, 100, false, false, true, true, true).title());
     }
 
     @Test
@@ -71,8 +71,8 @@ class EffectsTest {
 
     @Test
     void ambientAndInfiniteNeverWarn() {
-        EffectInfo ambient = new EffectInfo("b", "B", 0, 50, false, true, true, true);
-        EffectInfo infinite = new EffectInfo("i", "I", 0, -1, true, false, true, true);
+        EffectInfo ambient = new EffectInfo("b", "B", 0, 50, false, true, true, true, true);
+        EffectInfo infinite = new EffectInfo("i", "I", 0, -1, true, false, true, true, true);
         assertFalse(ambient.expiring());
         assertFalse(infinite.expiring());
         assertEquals(1f, ambient.blink());

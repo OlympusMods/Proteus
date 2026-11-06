@@ -13,11 +13,13 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public final class GuiCanvas implements Canvas {
     private static final Map<String, ItemStack> STACKS = new HashMap<>();
+    private static final Map<String, ResourceLocation> EFFECT_ICONS = new HashMap<>();
 
     private GuiGraphics graphics;
     private Font font;
@@ -136,6 +138,16 @@ public final class GuiCanvas implements Canvas {
                 ? ResourceLocation.fromNamespaceAndPath("proteus", path)
                 : ResourceLocation.fromNamespaceAndPath(path.substring(0, colon), path.substring(colon + 1));
         graphics.blitSprite(RenderType::guiTextured, location, x, y, w, h);
+    }
+
+    @Override
+    public void effectIcon(String effect, int x, int y, int size, float alpha) {
+        ResourceLocation texture = EFFECT_ICONS.computeIfAbsent(effect, key -> {
+            ResourceLocation id = ResourceLocation.parse(key);
+            return ResourceLocation.fromNamespaceAndPath(id.getNamespace(),
+                    "textures/mob_effect/" + id.getPath() + ".png");
+        });
+        graphics.blit(RenderType::guiTextured, texture, x, y, 0f, 0f, size, size, 18, 18, ARGB.white(alpha));
     }
 
     @Override

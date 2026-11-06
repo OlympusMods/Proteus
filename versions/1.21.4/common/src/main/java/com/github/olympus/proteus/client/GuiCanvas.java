@@ -19,11 +19,13 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public final class GuiCanvas implements Canvas {
     private static final Map<String, ItemStack> STACKS = new HashMap<>();
+    private static final Map<String, ResourceLocation> EFFECT_ICONS = new HashMap<>();
     private static boolean flatGlass;
 
     private GuiGraphics graphics;
@@ -151,6 +153,16 @@ public final class GuiCanvas implements Canvas {
         PlayerInfo info = connection == null ? null : connection.getPlayerInfo(player);
         PlayerSkin skin = info == null ? DefaultPlayerSkin.get(player) : info.getSkin();
         PlayerFaceRenderer.draw(graphics, skin, x, y, size);
+    }
+
+    @Override
+    public void effectIcon(String effect, int x, int y, int size, float alpha) {
+        ResourceLocation texture = EFFECT_ICONS.computeIfAbsent(effect, key -> {
+            ResourceLocation id = ResourceLocation.parse(key);
+            return ResourceLocation.fromNamespaceAndPath(id.getNamespace(),
+                    "textures/mob_effect/" + id.getPath() + ".png");
+        });
+        graphics.blit(RenderType::guiTextured, texture, x, y, 0f, 0f, size, size, 18, 18, ARGB.white(alpha));
     }
 
     @Override

@@ -24,6 +24,7 @@ import net.minecraft.world.item.Items;
 
 public final class GuiCanvas implements Canvas {
     private static final Map<String, ItemStack> STACKS = new HashMap<>();
+    private static final Map<String, ResourceLocation> EFFECT_ICONS = new HashMap<>();
 
     private GuiGraphics graphics;
     private Font font;
@@ -145,6 +146,20 @@ public final class GuiCanvas implements Canvas {
                 : ResourceLocation.fromNamespaceAndPath(path.substring(0, colon), path.substring(colon + 1));
         RenderSystem.enableBlend();
         graphics.blitSprite(location, x, y, w, h);
+        RenderSystem.disableBlend();
+    }
+
+    @Override
+    public void effectIcon(String effect, int x, int y, int size, float alpha) {
+        ResourceLocation texture = EFFECT_ICONS.computeIfAbsent(effect, key -> {
+            ResourceLocation id = ResourceLocation.parse(key);
+            return ResourceLocation.fromNamespaceAndPath(id.getNamespace(),
+                    "textures/mob_effect/" + id.getPath() + ".png");
+        });
+        RenderSystem.enableBlend();
+        graphics.setColor(1f, 1f, 1f, alpha);
+        graphics.blit(texture, x, y, size, size, 0f, 0f, 18, 18, 18, 18);
+        graphics.setColor(1f, 1f, 1f, 1f);
         RenderSystem.disableBlend();
     }
 

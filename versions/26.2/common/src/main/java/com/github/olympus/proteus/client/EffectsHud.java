@@ -1,6 +1,7 @@
 package com.github.olympus.proteus.client;
 
 import com.github.olympus.proteus.client.ui.EffectInfo;
+import com.github.olympus.proteus.client.ui.EffectVisibility;
 import com.github.olympus.proteus.client.ui.EffectsOverlay;
 import com.google.common.collect.Ordering;
 import java.util.ArrayList;
@@ -66,7 +67,8 @@ public final class EffectsHud {
             String id = holder.unwrapKey().map(ResourceKey::identifier).map(Object::toString).orElse(MISSING);
             result.add(new EffectInfo(id, effect.getDisplayName().getString(), instance.getAmplifier(),
                     instance.getDuration(), instance.isInfiniteDuration(), instance.isAmbient(),
-                    effect.isBeneficial(), instance.showIcon()));
+                    effect.isBeneficial(), instance.showIcon() && EffectVisibility.gui(instance),
+                    EffectVisibility.inventory(instance)));
         }
         return result;
     }

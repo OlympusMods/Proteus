@@ -149,7 +149,13 @@ public final class EffectsOverlay {
         Look look = new Look();
         boolean compact = look.prefs.flag(COMPACT, false);
         float dt = INVENTORY_LIST.step();
-        INVENTORY_LIST.sync(owner, effects, dt, look.animateIn, look.in, look.animateOut, look.out, look.speed);
+        List<EffectInfo> listed = new ArrayList<>();
+        for (EffectInfo info : effects) {
+            if (info.listed()) {
+                listed.add(info);
+            }
+        }
+        INVENTORY_LIST.sync(owner, listed, dt, look.animateIn, look.in, look.animateOut, look.out, look.speed);
         int count = 0;
         for (EffectList.Entry entry : INVENTORY_LIST.entries()) {
             if (!entry.leaving) {
