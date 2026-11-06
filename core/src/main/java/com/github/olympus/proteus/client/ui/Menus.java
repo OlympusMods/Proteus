@@ -24,6 +24,7 @@ public final class Menus {
     public static final String TITLE_FLAG = "menus.title";
     public static final String PAUSE_FLAG = "menus.pause";
     public static final String SCREENS_FLAG = "menus.screens";
+    public static final String ROUND_ICONS_FLAG = "menus.round_icons";
 
     private static final Logger LOGGER = LoggerFactory.getLogger("proteus");
     private static final Set<String> GLYPHS = Set.of("narrator.button.language", "narrator.button.accessibility",
@@ -401,6 +402,10 @@ public final class Menus {
             return true;
         }
         return false;
+    }
+
+    public static boolean roundIcons() {
+        return scope == Kind.OTHER && UiPrefs.get().flag(ROUND_ICONS_FLAG, true);
     }
 
     public static boolean themedLists() {

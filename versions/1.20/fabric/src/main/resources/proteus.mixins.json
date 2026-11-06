@@ -18,6 +18,7 @@
     "MenuFieldMixin",
     "MenuImageButtonMixin",
     "MenuScreenMixin",
+    "MenuServerIconMixin",
     "MenuSliderMixin",
     "MenuTabMixin",
     "MenuTitleMixin",

@@ -110,5 +110,7 @@
   "proteus.menus.pause": "Pause menu",
   "proteus.menus.pause.tooltip": "Draw the game menu with the theme. Mod Menu's button is included.",
   "proteus.menus.screens": "Other screens",
-  "proteus.menus.screens.tooltip": "Options, worlds, servers and every other screen that opens from the menus. Buttons, sliders, fields and lists follow the theme."
+  "proteus.menus.screens.tooltip": "Options, worlds, servers and every other screen that opens from the menus. Buttons, sliders, fields and lists follow the theme.",
+  "proteus.menus.round_icons": "Round server icons",
+  "proteus.menus.round_icons.tooltip": "Round the corners of the server icons in the multiplayer list. Needs other screens on."
 }

@@ -29,6 +29,7 @@
     "MenuIconMixin",
     "MenuListMixin",
     "MenuScrollMixin",
+    "MenuServerIconMixin",
     "MenuSliderMixin",
     "MenuTabMixin",
     "MenuWidgetMixin",
