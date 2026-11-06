@@ -7,6 +7,7 @@ import com.github.olympus.proteus.client.ui.Canvas;
 import com.github.olympus.proteus.client.ui.Mods;
 import com.github.olympus.proteus.client.ui.Theme;
 import com.github.olympus.proteus.client.ui.Themes;
+import com.github.olympus.proteus.client.ui.UiPrefs;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.render.GuiContext;
 import java.util.ArrayList;
@@ -49,7 +50,14 @@ public final class MalilibSkin {
             return false;
         }
         try {
-            Themes.current().backdrop(canvas(graphics), width, height, Minecraft.getInstance().level != null);
+            Minecraft minecraft = Minecraft.getInstance();
+            Theme theme = Themes.current();
+            boolean inWorld = minecraft.level != null;
+            if (theme.vanillaBackdrop() && (UiPrefs.get().blur() || !inWorld)
+                    && minecraft.options.getMenuBackgroundBlurriness() >= 1.0F) {
+                graphics.blurBeforeThisStratum();
+            }
+            theme.backdrop(canvas(graphics), width, height, inWorld);
             return true;
         } catch (RuntimeException exception) {
             return fail(exception);
