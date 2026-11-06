@@ -13,7 +13,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.TextAlignment;
 import net.minecraft.client.gui.components.ChatComponent;
-import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.multiplayer.chat.GuiMessage;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -181,7 +180,7 @@ public final class ChatHooks {
     }
 
     private static boolean suggesting() {
-        return ChatSkin.active() && Minecraft.getInstance().gui.screen() instanceof ChatScreen;
+        return ChatSkin.active() && ChatScreens.open();
     }
 
     public static void input(GuiGraphicsExtractor graphics, int x0, int y0, int x1, int y1, int color) {

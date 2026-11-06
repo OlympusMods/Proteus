@@ -164,7 +164,7 @@ public final class ChatSkin {
         Theme theme = Themes.current();
         if (rgb == 0 && w > 2) {
             boolean game = UiPrefs.get().option(OPACITY, 0) == 1;
-            theme.chatBubble(c, x, y, w, h, lineAlpha(color, backgroundOpacity, game));
+            theme.chatLine(c, x, y, w, h, lineAlpha(color, backgroundOpacity, game));
             return true;
         }
         if (w == 2 && (rgb == SCROLL_IDLE || rgb == SCROLL_FRESH)) {

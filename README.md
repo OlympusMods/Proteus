@@ -16,7 +16,7 @@ Proteus is the UI library behind Olympus mods, and it also works on its own. The
 - **Vanilla UI** tab with a switch for each part of the game's own interface that Proteus can draw: toasts, chat, menus, effects and tooltips. Toasts are on by default and the rest are off. Under Toasts, advancements, recipes, tutorial hints and system notices can each be set back to the vanilla toast
 - **Effects** shown in game and in the inventory can be drawn by Proteus: icon, name, time left, a different look for harmful and beneficial effects, a pulse when one is about to run out, and the theme's animation when one is gained or lost. Turn it on under Vanilla UI
 - **Menus** drawn by Proteus: the title screen and the pause menu get the theme's backdrop and buttons, icon buttons included. The logo, splash, version text and what every button does stay the game's, and buttons other mods add, Mod Menu's among them, are drawn the same way. It is off by default, switch it on under Vanilla UI, where the title screen and the pause menu can be set apart
-- **Chat** drawn with the theme when you turn on the Chat switch in the Vanilla UI tab: lines, input field and scrollbar follow the style, and a theme can animate new messages. It hooks the game's own chat, so links, hover text, suggestions and chat mods keep working
+- **Chat** drawn with the theme when you turn on the Chat switch in the Vanilla UI tab: every message is a floating bubble, and the input field, command suggestions and scrollbar follow the style. A theme can animate new messages. Bubbles are on 26.1 and newer; older versions keep one flat line per message. It hooks the game's own chat, so links, hover text, suggestions and chat mods keep working
 - One toolkit across every supported version: widgets are drawn through a small `Canvas` interface, and each Minecraft range only implements that interface
 
 Open the settings with the Proteus key (unbound by default, set it under Controls, Miscellaneous), with the config button in Mod Menu or the mods list, or from the Proteus card in any mod's menu. Settings are stored in `config/proteus/ui.json`.
@@ -51,7 +51,7 @@ The top-level keys are:
 
 ### Widgets
 
-Each entry in `widgets` draws one part of the UI: `backdrop`, `window`, `card`, `button` (with the variants `button.primary`, `button.danger`, `button.ghost` and `button.segment`, which start from `button`), `segment_track`, `segment_thumb`, `toggle`, `checkbox`, `inset`, `field`, `row`, `progress`, `scrollbar`, `tooltip`, `toast`, `effect`, `swatch`, `chat_line`, `chat_input` and `chat_scroll`.
+Each entry in `widgets` draws one part of the UI: `backdrop`, `window`, `card`, `button` (with the variants `button.primary`, `button.danger`, `button.ghost` and `button.segment`, which start from `button`), `segment_track`, `segment_thumb`, `toggle`, `checkbox`, `inset`, `field`, `row`, `progress`, `scrollbar`, `tooltip`, `toast`, `effect`, `swatch`, `chat_bubble`, `chat_line`, `chat_input` and `chat_scroll`.
 
 `effect` is the plate behind one active effect, 24 by 24 in game and as wide as the entry in the inventory. Its state is `harmful`, `ambient`, `inventory` (true in the inventory list) and `warn`, which pulses from 0 to 1 while the effect has less than ten seconds left. `effect_good` and `effect_bad` are the colors for beneficial and harmful effects.
 
@@ -102,7 +102,9 @@ Expressions have numbers, colors (`#RRGGBB` or `#AARRGGBB`), `"text"`, `+ - * / 
 
 `easing` is `spring` (with `rate`), or a curve with a `duration` in seconds: `linear`, `ease_in`, `ease_out`, `ease_in_out`, `back` (`overshoot`), `bounce` or `elastic` (`period`). `delay` waits before a curve starts. `effects` apply to windows, content, the card bar, toasts, effects and tooltips: `fade`, `slide` (`x`, `y`, and `"relative": true` to move by the element's size), `scale` (`from`) and `spin` (`degrees`). Each effect can take its own `easing` and `speed`. The Animations switch in Appearance turns all of it off. A theme with no `effect_*` entries, or with `enabled` set to false, shows effects without animation.
 
-`chat_message` and `chat_open` only use `fade` and `slide`. A theme without a `chat_message` entry, or whose entry has no fade and no slide, leaves new chat lines alone. Chat lines slide only while the chat is closed, so the lines you click never move.
+`chat_bubble` is one message: it gets the size of the wrapped text plus padding, and the state `opacity` (the fade of old messages). Give it a `radius`, a fill, a border, a `shadow` or a `glass` layer. A theme that only has `chat_line` gets that widget as the bubble. `chat_input` is the input pill. The Compact bubbles switch in the Vanilla UI tab trims the padding and the gap.
+
+`chat_message` and `chat_open` only use `fade` and `slide`. A theme without a `chat_message` entry, or whose entry has no fade and no slide, leaves new chat lines alone. Bubbles slide only while the chat is closed, so the ones you click never move.
 
 ## Supported mods
 

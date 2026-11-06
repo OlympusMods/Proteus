@@ -81,7 +81,7 @@
   "proteus.effects.compact": "Compact inventory list",
   "proteus.effects.compact.tooltip": "Show only the icons in the inventory. The name and time appear when you hover one.",
   "proteus.chat.heading": "Chat",
-  "proteus.chat.note": "Every message is a floating bubble drawn with the theme, and so are the input field, the suggestions and the scrollbar. Links, hover text, suggestions and signed messages work as before.",
+  "proteus.chat.note": "Messages, the input field and the scrollbar are drawn with the theme. On 26.1 and newer each message is a floating bubble. Links, hover text, suggestions and signed messages work as before.",
   "proteus.chat.opacity": "Background",
   "proteus.chat.opacity.theme": "Theme",
   "proteus.chat.opacity.game": "Game",
