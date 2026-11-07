@@ -215,6 +215,10 @@ public final class Menus {
         return scope != Kind.NONE;
     }
 
+    public static boolean shadow(boolean original) {
+        return original && !(active() && !Themes.current().shadowText());
+    }
+
     public static boolean keepsVanillaBlur() {
         Theme theme = Themes.current();
         return theme.vanillaBackdrop() && UiPrefs.get().blur();

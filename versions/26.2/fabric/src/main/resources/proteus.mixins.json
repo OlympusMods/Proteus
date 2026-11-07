@@ -23,6 +23,7 @@
     "MenuCheckboxMixin",
     "MenuFieldMixin",
     "MenuGraphicsMixin",
+    "MenuTextMixin",
     "MenuIconMixin",
     "MenuListMixin",
     "MenuScrollMixin",
@@ -36,6 +37,7 @@
     "ToastOverlayMixin",
     "EffectsTipMixin",
     "TooltipMixin",
+    "TooltipTextMixin",
     "WidgetAlphaAccess"
   ],
   "injectors": {

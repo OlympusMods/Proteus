@@ -21,6 +21,17 @@ public final class Tooltips {
         return !failed && UiPrefs.get().surface(Surface.TOOLTIPS);
     }
 
+    public static boolean shadow(boolean original) {
+        return original && !(active() && !Themes.current().shadowText());
+    }
+
+    public static int textColor(int original) {
+        if (original == -1 && active() && !Menus.darkChrome()) {
+            return Themes.current().textPrimary();
+        }
+        return original;
+    }
+
     public static boolean background(Canvas canvas, int x, int y, int w, int h) {
         if (!active()) {
             return false;
