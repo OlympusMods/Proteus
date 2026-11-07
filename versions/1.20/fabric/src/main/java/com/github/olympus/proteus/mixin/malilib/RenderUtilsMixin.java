@@ -29,6 +29,8 @@ public abstract class RenderUtilsMixin {
     private static void proteus$dialog(int x, int y, int width, int height, int background, int border, CallbackInfo ci) {
         if (MalilibSkin.list(x, y, width, height)) {
             ci.cancel();
+        } else if (width >= 100 && height >= 40 && MalilibSkin.widgetBox(x, y, width, height)) {
+            ci.cancel();
         } else if (width >= 100 && height >= 40 && MalilibSkin.window(x, y, width, height)) {
             ci.cancel();
         }

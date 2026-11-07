@@ -8,6 +8,8 @@ import com.github.olympus.proteus.client.ui.Mods;
 import com.github.olympus.proteus.client.ui.Theme;
 import com.github.olympus.proteus.client.ui.Themes;
 import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.widgets.WidgetBase;
+import fi.dy.masa.malilib.render.RenderUtils;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -18,6 +20,8 @@ public final class MalilibSkin {
     private static GuiGraphics frame;
     private static boolean broken;
     private static boolean dropdown;
+
+    private static final StackWalker WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 
     private MalilibSkin() {
     }
@@ -84,6 +88,24 @@ public final class MalilibSkin {
             return false;
         }
         return inset(x, y, w, h);
+    }
+
+    private static boolean fromWidget() {
+        return WALKER.walk(frames -> frames.map(StackWalker.StackFrame::getDeclaringClass)
+                .filter(type -> type != RenderUtils.class && !type.getName().startsWith("com.github.olympus"))
+                .findFirst().filter(WidgetBase.class::isAssignableFrom).isPresent());
+    }
+
+    public static boolean widgetBox(int x, int y, int w, int h) {
+        if (!active() || !fromWidget()) {
+            return false;
+        }
+        try {
+            Themes.current().card(canvas(), x - 2, y - 4, w + 4, h + 6);
+            return true;
+        } catch (RuntimeException exception) {
+            return fail(exception);
+        }
     }
 
     public static boolean window(int x, int y, int w, int h) {

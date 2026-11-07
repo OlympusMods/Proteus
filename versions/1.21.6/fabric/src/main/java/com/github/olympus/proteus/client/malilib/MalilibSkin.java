@@ -10,6 +10,8 @@ import com.github.olympus.proteus.client.ui.Themes;
 import com.github.olympus.proteus.client.ui.UiPrefs;
 import com.github.olympus.proteus.mixin.malilib.GuiGraphicsAccess;
 import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.widgets.WidgetBase;
+import fi.dy.masa.malilib.render.RenderUtils;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
@@ -27,6 +29,8 @@ public final class MalilibSkin {
     private static boolean broken;
     private static boolean armed;
     private static boolean dropdown;
+
+    private static final StackWalker WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 
     private MalilibSkin() {
     }
@@ -96,6 +100,24 @@ public final class MalilibSkin {
 
     private static void cover(int x, int y, int w, int h) {
         LABELS.removeIf(label -> label.x() >= x && label.x() < x + w && label.y() >= y && label.y() < y + h);
+    }
+
+    private static boolean fromWidget() {
+        return WALKER.walk(frames -> frames.map(StackWalker.StackFrame::getDeclaringClass)
+                .filter(type -> type != RenderUtils.class && !type.getName().startsWith("com.github.olympus"))
+                .findFirst().filter(WidgetBase.class::isAssignableFrom).isPresent());
+    }
+
+    public static boolean widgetBox(GuiGraphics graphics, int x, int y, int w, int h) {
+        if (!active() || !fromWidget()) {
+            return false;
+        }
+        try {
+            Themes.current().card(canvas(graphics), x - 2, y - 4, w + 4, h + 6);
+            return true;
+        } catch (RuntimeException exception) {
+            return fail(exception);
+        }
     }
 
     public static boolean window(GuiGraphics graphics, int x, int y, int w, int h) {

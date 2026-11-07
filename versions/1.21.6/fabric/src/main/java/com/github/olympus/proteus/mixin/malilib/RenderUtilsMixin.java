@@ -30,6 +30,8 @@ public abstract class RenderUtilsMixin {
             CallbackInfo ci) {
         if (MalilibSkin.list(ctx, x, y, width, height)) {
             ci.cancel();
+        } else if (width >= 100 && height >= 40 && MalilibSkin.widgetBox(ctx, x, y, width, height)) {
+            ci.cancel();
         } else if (width >= 100 && height >= 40 && MalilibSkin.window(ctx, x, y, width, height)) {
             ci.cancel();
         }
