@@ -195,7 +195,10 @@ public final class Layer {
                 case SPRITE -> c.sprite(resource.string(scope), lx, ly, lw, lh);
                 case TILED -> tiled(scope, lx, ly, lw, lh);
                 case ICON -> scope.theme.icon(c, resource.string(scope), lx + lw / 2, ly + lh / 2, color(color, scope));
-                case CHECK -> Icons.check(c, lx, ly, color(color, scope));
+                case CHECK -> {
+                    c.lift();
+                    Icons.check(c, lx, ly, color(color, scope));
+                }
                 case TEXT -> text(scope, lx, ly, lw, lh);
                 case GROUP -> nested(scope, children, lx, ly, lw, lh);
                 case GLASS -> c.glass(lx, ly, lw, lh, glass(scope, r));

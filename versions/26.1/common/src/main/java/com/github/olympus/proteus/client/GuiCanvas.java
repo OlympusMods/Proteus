@@ -177,6 +177,11 @@ public final class GuiCanvas implements Canvas {
     }
 
     @Override
+    public void lift() {
+        graphics.nextStratum();
+    }
+
+    @Override
     public void glass(int x, int y, int w, int h, Glass glass) {
         if (w <= 0 || h <= 0 || glass.opacity() <= 0f) {
             return;

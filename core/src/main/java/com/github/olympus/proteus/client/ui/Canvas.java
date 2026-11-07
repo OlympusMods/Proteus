@@ -53,6 +53,9 @@ public interface Canvas {
     default void effectIcon(String effect, int x, int y, int size, float alpha) {
     }
 
+    default void lift() {
+    }
+
     default void glass(int x, int y, int w, int h, Glass glass) {
         Draw.round(this, x, y, w, h, glass.radius(), glass.fallbackColor());
     }
