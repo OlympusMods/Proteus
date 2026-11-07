@@ -69,6 +69,24 @@ public final class MalilibSkin {
         dropdown = open;
     }
 
+    public static int dropdownText(int color) {
+        return dropdown && active() ? Themes.current().textPrimary() : color;
+    }
+
+    public static boolean rect(GuiGraphicsExtractor graphics, int x, int y, int w, int h, int color) {
+        if (!dropdown || !active()) {
+            return false;
+        }
+        if (color >>> 24 == 0x60) {
+            try {
+                Themes.current().row(canvas(graphics), x, y, w, h, 1f, false);
+            } catch (RuntimeException exception) {
+                return fail(exception);
+            }
+        }
+        return true;
+    }
+
     public static boolean list(GuiGraphicsExtractor graphics, int x, int y, int w, int h) {
         if (!dropdown) {
             return false;
@@ -197,6 +215,9 @@ public final class MalilibSkin {
             boolean hovered) {
         if (!active()) {
             return false;
+        }
+        if (dropdown && thumbH >= h - 2) {
+            return true;
         }
         try {
             Themes.current().scrollbar(canvas(graphics), x, y, w, h, thumbY, thumbH, hovered ? 1f : 0f);
