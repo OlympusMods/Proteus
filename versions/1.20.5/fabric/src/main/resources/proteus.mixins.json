@@ -38,6 +38,8 @@
     "ToastAddMixin",
     "ToastOverlayMixin",
     "TooltipMixin",
+    "TooltipTextMixin",
+    "MenuTextMixin",
     "WidgetAlphaAccess"
   ],
   "injectors": {
