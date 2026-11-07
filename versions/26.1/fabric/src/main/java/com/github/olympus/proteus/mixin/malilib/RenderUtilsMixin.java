@@ -21,7 +21,9 @@ public abstract class RenderUtilsMixin {
     @Inject(method = "drawOutlinedBox(Lfi/dy/masa/malilib/render/GuiContext;IIIIII)V", at = @At("HEAD"), cancellable = true)
     private static void proteus$dialog(GuiContext ctx, int x, int y, int width, int height, int background, int border,
             CallbackInfo ci) {
-        if (width >= 100 && height >= 40 && MalilibSkin.window(ctx, x, y, width, height)) {
+        if (MalilibSkin.list(ctx, x, y, width, height)) {
+            ci.cancel();
+        } else if (width >= 100 && height >= 40 && MalilibSkin.window(ctx, x, y, width, height)) {
             ci.cancel();
         }
     }
