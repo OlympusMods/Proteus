@@ -1313,11 +1313,12 @@ public final class Gui {
         int thumbH = thumbHeight(scroll);
         float max = contentHeight - scrollH;
         int thumbY = scrollY + Math.round((scrollH - thumbH) * (scroll.current / max));
-        int trackX = scrollX + scrollW - 4;
+        int barW = sizes().scrollbarWidth();
+        int trackX = scrollX + scrollW - barW;
         String barId = "sb:" + scrollId;
-        boolean hot = (active == null || barId.equals(active)) && over(trackX - 2, scrollY, 6, scrollH);
+        boolean hot = (active == null || barId.equals(active)) && over(trackX - 2, scrollY, barW + 4, scrollH);
         float hover = anim(barId + "#h", hot || barId.equals(active) ? 1f : 0f, "hover");
-        theme.scrollbar(canvas, trackX, scrollY, sizes().scrollbarWidth(), scrollH, thumbY, thumbH, hover);
+        theme.scrollbar(canvas, trackX, scrollY, barW, scrollH, thumbY, thumbH, hover);
         if (hot && pressed && !consumed) {
             consumed = true;
             active = barId;
