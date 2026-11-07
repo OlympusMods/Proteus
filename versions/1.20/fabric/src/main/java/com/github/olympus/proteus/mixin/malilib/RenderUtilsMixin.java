@@ -18,9 +18,18 @@ public abstract class RenderUtilsMixin {
         }
     }
 
+    @Inject(method = "drawRect(IIIII)V", at = @At("HEAD"), cancellable = true)
+    private static void proteus$rect(int x, int y, int width, int height, int color, CallbackInfo ci) {
+        if (MalilibSkin.rect(x, y, width, height, color)) {
+            ci.cancel();
+        }
+    }
+
     @Inject(method = "drawOutlinedBox(IIIIII)V", at = @At("HEAD"), cancellable = true)
     private static void proteus$dialog(int x, int y, int width, int height, int background, int border, CallbackInfo ci) {
-        if (width >= 100 && height >= 40 && MalilibSkin.window(x, y, width, height)) {
+        if (MalilibSkin.list(x, y, width, height)) {
+            ci.cancel();
+        } else if (width >= 100 && height >= 40 && MalilibSkin.window(x, y, width, height)) {
             ci.cancel();
         }
     }

@@ -11,6 +11,7 @@
     "GuiBaseMixin",
     "GuiGraphicsAccess",
     "GuiScrollBarMixin",
+    "WidgetDropDownListMixin",
     "RenderUtilsMixin",
     "WidgetCheckBoxMixin",
     "WidgetSliderMixin"

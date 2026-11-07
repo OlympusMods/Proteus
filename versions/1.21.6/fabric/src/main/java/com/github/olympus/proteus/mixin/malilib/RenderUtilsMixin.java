@@ -18,10 +18,19 @@ public abstract class RenderUtilsMixin {
         }
     }
 
+    @Inject(method = {"drawRect(Lnet/minecraft/class_332;IIIII)V", "drawRect(Lnet/minecraft/client/gui/GuiGraphics;IIIII)V"}, at = @At("HEAD"), cancellable = true)
+    private static void proteus$rect(GuiGraphics ctx, int x, int y, int width, int height, int color, CallbackInfo ci) {
+        if (MalilibSkin.rect(ctx, x, y, width, height, color)) {
+            ci.cancel();
+        }
+    }
+
     @Inject(method = {"drawOutlinedBox(Lnet/minecraft/class_332;IIIIII)V", "drawOutlinedBox(Lnet/minecraft/client/gui/GuiGraphics;IIIIII)V"}, at = @At("HEAD"), cancellable = true)
     private static void proteus$dialog(GuiGraphics ctx, int x, int y, int width, int height, int background, int border,
             CallbackInfo ci) {
-        if (width >= 100 && height >= 40 && MalilibSkin.window(ctx, x, y, width, height)) {
+        if (MalilibSkin.list(ctx, x, y, width, height)) {
+            ci.cancel();
+        } else if (width >= 100 && height >= 40 && MalilibSkin.window(ctx, x, y, width, height)) {
             ci.cancel();
         }
     }

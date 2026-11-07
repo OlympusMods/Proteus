@@ -26,6 +26,7 @@ public final class MalilibSkin {
 
     private static boolean broken;
     private static boolean armed;
+    private static boolean dropdown;
 
     private MalilibSkin() {
     }
@@ -64,6 +65,39 @@ public final class MalilibSkin {
         }
     }
 
+    public static void dropdown(boolean open) {
+        dropdown = open;
+    }
+
+    public static int dropdownText(int color) {
+        return dropdown && active() ? Themes.current().textPrimary() : color;
+    }
+
+    public static boolean rect(GuiGraphics graphics, int x, int y, int w, int h, int color) {
+        if (!dropdown || !active()) {
+            return false;
+        }
+        if (color >>> 24 == 0x60) {
+            try {
+                Themes.current().row(canvas(graphics), x, y, w, h, 1f, false);
+            } catch (RuntimeException exception) {
+                return fail(exception);
+            }
+        }
+        return true;
+    }
+
+    public static boolean list(GuiGraphics graphics, int x, int y, int w, int h) {
+        if (!dropdown || h <= 24) {
+            return false;
+        }
+        return inset(graphics, x, y, w, h);
+    }
+
+    private static void cover(int x, int y, int w, int h) {
+        LABELS.removeIf(label -> label.x() >= x && label.x() < x + w && label.y() >= y && label.y() < y + h);
+    }
+
     public static boolean window(GuiGraphics graphics, int x, int y, int w, int h) {
         if (!active()) {
             return false;
@@ -82,6 +116,9 @@ public final class MalilibSkin {
             return false;
         }
         try {
+            if (armed) {
+                cover(x, y, w, h);
+            }
             Themes.current().button(canvas(graphics), x, y, w, h, ButtonKind.NORMAL, hovered ? 1f : 0f, 0f, 0f,
                     enabled);
             return true;
@@ -105,6 +142,10 @@ public final class MalilibSkin {
                 armed = false;
                 return false;
             }
+            int right = left + c.textWidth(text);
+            int bottom = y + c.lineHeight();
+            LABELS.removeIf(other -> other.x() < right && other.x() + c.textWidth(other.text()) > left
+                    && other.y() < bottom && other.y() + c.lineHeight() > y);
             LABELS.add(new Label(left, y, text, color, theme.shadowText(), ((GuiGraphicsAccess) ctx).proteus$scissors().peek()));
             return true;
         } catch (RuntimeException exception) {
@@ -174,6 +215,9 @@ public final class MalilibSkin {
             boolean hovered) {
         if (!active()) {
             return false;
+        }
+        if (dropdown && thumbH >= h - 2) {
+            return true;
         }
         try {
             Themes.current().scrollbar(canvas(graphics), x, y, w, h, thumbY, thumbH, hovered ? 1f : 0f);
