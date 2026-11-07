@@ -88,6 +88,8 @@
   "proteus.chat.opacity.tooltip": "Theme uses the opacity of the theme. Game scales it with the game's Text Background Opacity, where 50% is the theme's own.",
   "proteus.chat.animate": "Animate messages",
   "proteus.chat.animate.tooltip": "New messages and the input field move in the way the theme says. Themes without chat animations stay still.",
+  "proteus.chat.panel": "One box",
+  "proteus.chat.panel.tooltip": "Draw all visible messages in a single box instead of a bubble for each message.",
   "proteus.chat.compact": "Compact bubbles",
   "proteus.chat.compact.tooltip": "Less padding and a smaller gap between message bubbles.",
   "proteus.toasts.heading": "Game toasts",

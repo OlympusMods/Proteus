@@ -29,7 +29,7 @@
 - Typing in a Proteus text field no longer moves the player with Inventory Move style mods
 - Keys, Ctrl shortcuts and mouse buttons reach Proteus menus on 26.1, 26.2 and 26.3, and text fields take input on SDL
 - Themes load on Forge, NeoForge and 26.3, and a theme with a wrong value or a failing layer is skipped with a warning instead of breaking the reload
-- Chat surface: with the Chat switch on in the Vanilla UI tab, the chat messages, the input field and the scrollbar are drawn with the theme (`chat_bubble`, `chat_line`, `chat_input` and `chat_scroll` widgets). Each message is a floating bubble and the command suggestions follow the theme; a Compact bubbles switch trims the spacing. New lines and the input field animate with `chat_message` and `chat_open` if the theme has them, and the chat falls back to vanilla if drawing fails
+- Chat surface: with the Chat switch on in the Vanilla UI tab, the chat messages, the input field and the scrollbar are drawn with the theme (`chat_bubble`, `chat_line`, `chat_input` and `chat_scroll` widgets). Each message is a floating bubble and the command suggestions follow the theme; a Compact bubbles switch trims the spacing and a One box switch draws all visible messages in a single box. New lines and the input field animate with `chat_message` and `chat_open` if the theme has them, and the chat falls back to vanilla if drawing fails
 - Toasts fall back to the vanilla toast when the Proteus toast API is missing on a newer Minecraft
 - The Toasts tab is now Vanilla UI, with a switch per surface (toasts, chat, menus, effects, tooltips). Turning Toasts off gives every game toast back, and each kind still has its own Proteus or Vanilla choice
 

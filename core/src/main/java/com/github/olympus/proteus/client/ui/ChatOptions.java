@@ -24,7 +24,7 @@ final class ChatOptions {
         }
         y += 4;
 
-        int cardH = 8 + 3 * (ROW + 6) - 6 + 8;
+        int cardH = 8 + 4 * (ROW + 6) - 6 + 8;
         theme.card(panel.fade(), ix, y, lw, cardH);
         int rowY = y + 8;
 
@@ -47,6 +47,13 @@ final class ChatOptions {
         if (gui.switchRow("chat-animate", ix + 12, rowY, lw - 24, ROW, text("proteus.chat.animate"), animate, true,
                 text("proteus.chat.animate.tooltip"), text("proteus.state.on"), text("proteus.state.off"))) {
             prefs.setFlag(ChatSkin.ANIMATE, !animate);
+        }
+        rowY += ROW + 6;
+
+        boolean oneBox = prefs.flag(ChatSkin.PANEL, false);
+        if (gui.switchRow("chat-panel", ix + 12, rowY, lw - 24, ROW, text("proteus.chat.panel"), oneBox, true,
+                text("proteus.chat.panel.tooltip"), text("proteus.state.on"), text("proteus.state.off"))) {
+            prefs.setFlag(ChatSkin.PANEL, !oneBox);
         }
         rowY += ROW + 6;
 

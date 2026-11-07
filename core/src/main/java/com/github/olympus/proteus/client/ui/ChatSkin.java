@@ -3,7 +3,9 @@ package com.github.olympus.proteus.client.ui;
 import com.github.olympus.proteus.client.ui.theme.Effects;
 import com.github.olympus.proteus.client.ui.theme.Moment;
 import com.github.olympus.proteus.client.ui.theme.MotionSpec;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -13,15 +15,20 @@ public final class ChatSkin {
     public static final String OPACITY = "chat.opacity";
     public static final String ANIMATE = "chat.animate";
     public static final String COMPACT = "chat.compact";
+    public static final String PANEL = "chat.panel";
     public static final int BUBBLE_EDGE = -4;
 
     private static final int SCROLL_IDLE = 0x3333AA;
     private static final int SCROLL_FRESH = 0xCC5533;
     private static final int SCROLL_EDGE = 0xCCCCCC;
     private static final int PAD_X = 4;
+    private static final int PANEL_PAD = 2;
     private static final long REOPEN_NANOS = 250_000_000L;
 
     public record Box(int x, int y, int w, int h) {
+    }
+
+    private record Drawn(Box box, float alpha) {
     }
 
     public record Spacing(int padY, int gap) {
@@ -36,6 +43,9 @@ public final class ChatSkin {
 
     private static final Map<Object, Long> BORN = Collections.synchronizedMap(new WeakHashMap<>());
     private static final FadeCanvas FADE = new FadeCanvas();
+    private static final List<Drawn> DRAWN = new ArrayList<>();
+    private static List<Drawn> previous = new ArrayList<>();
+    private static boolean panelDrawn;
     private static volatile boolean broken;
     private static long lastInput;
     private static long openedAt;
@@ -54,6 +64,9 @@ public final class ChatSkin {
     public static void reset() {
         broken = false;
         BORN.clear();
+        DRAWN.clear();
+        previous = new ArrayList<>();
+        panelDrawn = false;
         lastInput = 0L;
         openedAt = 0L;
     }
@@ -64,7 +77,14 @@ public final class ChatSkin {
         }
     }
 
+    public static boolean panel() {
+        return UiPrefs.get().flag(PANEL, false);
+    }
+
     public static Spacing spacing() {
+        if (panel()) {
+            return new Spacing(0, 0);
+        }
         return UiPrefs.get().flag(COMPACT, false) ? new Spacing(1, 1) : new Spacing(2, 2);
     }
 
@@ -74,6 +94,11 @@ public final class ChatSkin {
 
     public static Box bubble(int bottomIndex, int lines, int rowHeight, int groupsBelow, int textWidth,
             Spacing spacing) {
+        if (bottomIndex == 0 && groupsBelow == 0) {
+            previous = new ArrayList<>(DRAWN);
+            DRAWN.clear();
+            panelDrawn = false;
+        }
         int y = -(bottomIndex + lines) * rowHeight + lift(groupsBelow, spacing) - spacing.padY();
         return new Box(-PAD_X, y, textWidth + 2 * PAD_X, lines * rowHeight + 2 * spacing.padY());
     }
@@ -148,7 +173,42 @@ public final class ChatSkin {
         draw(c, box, lineAlpha(color, backgroundOpacity, game), sample, slide);
     }
 
+    private static void panel(Canvas c, Box box, float alpha, float fade) {
+        DRAWN.add(new Drawn(box, alpha));
+        if (panelDrawn) {
+            return;
+        }
+        panelDrawn = true;
+        if (previous.isEmpty()) {
+            return;
+        }
+        int left = Integer.MAX_VALUE;
+        int top = Integer.MAX_VALUE;
+        int right = Integer.MIN_VALUE;
+        int bottom = Integer.MIN_VALUE;
+        float strongest = 0f;
+        for (Drawn drawn : previous) {
+            Box b = drawn.box();
+            left = Math.min(left, b.x());
+            top = Math.min(top, b.y());
+            right = Math.max(right, b.x() + b.w());
+            bottom = Math.max(bottom, b.y() + b.h());
+            strongest = Math.max(strongest, drawn.alpha());
+        }
+        FADE.bind(c, fade);
+        try {
+            Themes.current().chatBubble(FADE, left, top - PANEL_PAD, right - left, bottom - top + 2 * PANEL_PAD,
+                    strongest);
+        } finally {
+            FADE.unbind();
+        }
+    }
+
     private static void draw(Canvas c, Box box, float alpha, Sample sample, boolean slide) {
+        if (panel()) {
+            panel(c, box, alpha, 1f);
+            return;
+        }
         int dx = slide ? Math.round(sample.dx()) : 0;
         int dy = slide ? Math.round(sample.dy()) : 0;
         FADE.bind(c, sample.alpha());
