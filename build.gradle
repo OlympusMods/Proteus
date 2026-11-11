@@ -97,7 +97,6 @@ def delegated = [
     compile            : ['compileJava', 'Compiles %s with Java %d'],
     clean              : ['clean', 'Cleans %s'],
     runClient          : ['runClient', 'Runs the %s client'],
-    publishToMavenLocal: ['publishToMavenLocal', 'Installs the %s jar into the local Maven repository'],
     publishMods        : ['publishMods', 'Publishes the %s jar to Modrinth and CurseForge'],
     publishModrinth    : ['publishModrinth', 'Publishes the %s jar to Modrinth'],
     publishCurseforge  : ['publishCurseforge', 'Publishes the %s jar to CurseForge']

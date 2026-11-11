@@ -119,14 +119,19 @@ Nothing in the other mod is patched. When it opens one of its screens, Proteus p
 
 ## For mod authors
 
-Add Proteus as a dependency (the artifact name follows the jar: `proteus-<loader>-<minecraft versions>`):
+Add Proteus as a dependency from Modrinth's Maven. Every upload has its own version number, `<version>+<loader>-<minecraft versions>`, so you pick the jar by loader and range:
 
 ```groovy
-repositories { mavenLocal() }   // until the library is on a public Maven repository
+repositories {
+    maven {
+        url = 'https://api.modrinth.com/maven'
+        content { includeGroup 'maven.modrinth' }
+    }
+}
 
 dependencies {
-    modImplementation "com.github.olympus.proteus:proteus-fabric-1.21-1.21.1:1.1.0"   // Fabric
-    implementation "com.github.olympus.proteus:proteus-neoforge-1.21-1.21.1:1.1.0"    // NeoForge
+    modImplementation "maven.modrinth:S9H9TVdr:1.1.0+fabric-1.21-1.21.1"   // Fabric
+    implementation "maven.modrinth:S9H9TVdr:1.1.0+neoforge-1.21-1.21.1"    // NeoForge
 }
 ```
 
