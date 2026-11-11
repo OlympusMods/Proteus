@@ -50,7 +50,7 @@ def loaderTitle = info.loader == 'neoforge' ? 'NeoForge' : loaderName
 
 publishMods {
     file = info.jar()
-    version = publishVersion
+    version = "${publishVersion}+${info.loader}-${info.label}".toString()
     displayName = "Proteus ${publishVersion} (${loaderTitle} ${info.label})"
     changelog = providers.fileContents(layout.projectDirectory.file('CHANGELOG.md')).asText.map { changelogFor(it, publishVersion) }
     type = publishVersion.contains('alpha') ? ALPHA : (publishVersion.contains('beta') ? BETA : STABLE)
