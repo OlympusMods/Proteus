@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.1.0
 
 - Themes from resource packs at `assets/<namespace>/proteus/themes/<name>.json`, reloaded with F3+T. Modern and Classic are themes too and packs can change them
 - Themes set colors, borders, corner radius, shadows, textures, icons, widget sizes and paddings, and every animation: spring or curve easing (back, bounce, elastic and more), speed, delay, and fade, slide, scale and spin effects
