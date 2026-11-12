@@ -3,7 +3,7 @@ import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 
 def windows = System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')
-def modVersion = findProperty('mod_version') ?: '1.1.0'
+def modVersion = findProperty('mod_version') ?: '1.1.1'
 def useDaemon = Boolean.parseBoolean(String.valueOf(findProperty('useDaemon') ?: 'false'))
 def copyLayers = windows || Boolean.parseBoolean(String.valueOf(findProperty('copyLayers') ?: 'false'))
 def extraArgs = String.valueOf(findProperty('childArgs') ?: '').trim()
