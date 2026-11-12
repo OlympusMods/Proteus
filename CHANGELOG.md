@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1
+
+- Fixed a crash on startup on Minecraft 1.21.9 and 1.21.10 on Fabric, Forge and NeoForge: the effect tooltip hook targeted a method that 1.21.9 renamed
+
 ## 1.1.0
 
 - Themes from resource packs at `assets/<namespace>/proteus/themes/<name>.json`, reloaded with F3+T. Modern and Classic are themes too and packs can change them
